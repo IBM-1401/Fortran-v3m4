@@ -1,0 +1,864 @@
+%!PS-Adobe-3.0
+%%BoundingBox: 38 24 574 768
+%%Title: Enscript Output
+%%For: W. Van Snyder
+%%Creator: GNU enscript 1.6.4
+%%CreationDate: Tue Jul 15 00:12:03 2008
+%%Orientation: Landscape
+%%Pages: (atend)
+%%DocumentMedia: Letter 612 792 0 () ()
+%%DocumentNeededResources: (atend)
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset Enscript-Prolog 1.6 4
+%
+% Procedures.
+%
+
+/_S {	% save current state
+  /_s save def
+} def
+/_R {	% restore from saved state
+  _s restore
+} def
+
+/S {	% showpage protecting gstate
+  gsave
+  showpage
+  grestore
+} bind def
+
+/MF {	% fontname newfontname -> -	make a new encoded font
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  % insert only valid encoding vectors
+  encoding_vector length 256 eq {
+    newfont /Encoding encoding_vector put
+  } if
+
+  newfontname newfont definefont pop
+} def
+
+/MF_PS { % fontname newfontname -> -	make a new font preserving its enc
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  newfontname newfont definefont pop
+} def
+
+/SF { % fontname width height -> -	set a new font
+  /height exch def
+  /width exch def
+
+  findfont
+  [width 0 0 height 0 0] makefont setfont
+} def
+
+/SUF { % fontname width height -> -	set a new user font
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF
+  /F-gs-user-font width height SF
+} def
+
+/SUF_PS { % fontname width height -> -	set a new user font preserving its enc
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF_PS
+  /F-gs-user-font width height SF
+} def
+
+/M {moveto} bind def
+/s {show} bind def
+
+/Box {	% x y w h -> -			define box path
+  /d_h exch def /d_w exch def /d_y exch def /d_x exch def
+  d_x d_y  moveto
+  d_w 0 rlineto
+  0 d_h rlineto
+  d_w neg 0 rlineto
+  closepath
+} def
+
+/bgs {	% x y height blskip gray str -> -	show string with bg color
+  /str exch def
+  /gray exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    gray setgray
+    fill
+  grestore
+  x y M str s
+} def
+
+/bgcs { % x y height blskip red green blue str -> -  show string with bg color
+  /str exch def
+  /blue exch def
+  /green exch def
+  /red exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    red green blue setrgbcolor
+    fill
+  grestore
+  x y M str s
+} def
+
+% Highlight bars.
+/highlight_bars {	% nlines lineheight output_y_margin gray -> -
+  gsave
+    setgray
+    /ymarg exch def
+    /lineheight exch def
+    /nlines exch def
+
+    % This 2 is just a magic number to sync highlight lines to text.
+    0 d_header_y ymarg sub 2 sub translate
+
+    /cw d_output_w cols div def
+    /nrows d_output_h ymarg 2 mul sub lineheight div cvi def
+
+    % for each column
+    0 1 cols 1 sub {
+      cw mul /xp exch def
+
+      % for each rows
+      0 1 nrows 1 sub {
+        /rn exch def
+        rn lineheight mul neg /yp exch def
+        rn nlines idiv 2 mod 0 eq {
+	  % Draw highlight bar.  4 is just a magic indentation.
+	  xp 4 add yp cw 8 sub lineheight neg Box fill
+	} if
+      } for
+    } for
+
+  grestore
+} def
+
+% Line highlight bar.
+/line_highlight {	% x y width height gray -> -
+  gsave
+    /gray exch def
+    Box gray setgray fill
+  grestore
+} def
+
+% Column separator lines.
+/column_lines {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h translate
+    /cw d_output_w cols div def
+    1 1 cols 1 sub {
+      cw mul 0 moveto
+      0 d_output_h rlineto stroke
+    } for
+  grestore
+} def
+
+% Column borders.
+/column_borders {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h moveto
+    0 d_output_h rlineto
+    d_output_w 0 rlineto
+    0 d_output_h neg rlineto
+    closepath stroke
+  grestore
+} def
+
+% Do the actual underlay drawing
+/draw_underlay {
+  ul_style 0 eq {
+    ul_str true charpath stroke
+  } {
+    ul_str show
+  } ifelse
+} def
+
+% Underlay
+/underlay {	% - -> -
+  gsave
+    0 d_page_h translate
+    d_page_h neg d_page_w atan rotate
+
+    ul_gray setgray
+    ul_font setfont
+    /dw d_page_h dup mul d_page_w dup mul add sqrt def
+    ul_str stringwidth pop dw exch sub 2 div ul_h_ptsize -2 div moveto
+    draw_underlay
+  grestore
+} def
+
+/user_underlay {	% - -> -
+  gsave
+    ul_x ul_y translate
+    ul_angle rotate
+    ul_gray setgray
+    ul_font setfont
+    0 0 ul_h_ptsize 2 div sub moveto
+    draw_underlay
+  grestore
+} def
+
+% Page prefeed
+/page_prefeed {		% bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} def
+
+% Wrapped line markers
+/wrapped_line_mark {	% x y charwith charheight type -> -
+  /type exch def
+  /h exch def
+  /w exch def
+  /y exch def
+  /x exch def
+
+  type 2 eq {
+    % Black boxes (like TeX does)
+    gsave
+      0 setlinewidth
+      x w 4 div add y M
+      0 h rlineto w 2 div 0 rlineto 0 h neg rlineto
+      closepath fill
+    grestore
+  } {
+    type 3 eq {
+      % Small arrows
+      gsave
+        .2 setlinewidth
+        x w 2 div add y h 2 div add M
+        w 4 div 0 rlineto
+        x w 4 div add y lineto stroke
+
+        x w 4 div add w 8 div add y h 4 div add M
+        x w 4 div add y lineto
+	w 4 div h 8 div rlineto stroke
+      grestore
+    } {
+      % do nothing
+    } ifelse
+  } ifelse
+} def
+
+% EPSF import.
+
+/BeginEPSF {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack
+  userdict begin
+  /showpage { } def
+  0 setgray 0 setlinecap
+  1 setlinewidth 0 setlinejoin
+  10 setmiterlimit [ ] 0 setdash newpath
+  /languagelevel where {
+    pop languagelevel
+    1 ne {
+      false setstrokeadjust false setoverprint
+    } if
+  } if
+} bind def
+
+/EndEPSF {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+%%EndResource
+%%BeginResource: procset Enscript-Encoding-88591 1.6 4
+/encoding_vector [
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclam       	/quotedbl     	/numbersign   	
+/dollar       	/percent      	/ampersand    	/quoteright   	
+/parenleft    	/parenright   	/asterisk     	/plus         	
+/comma        	/hyphen       	/period       	/slash        	
+/zero         	/one          	/two          	/three        	
+/four         	/five         	/six          	/seven        	
+/eight        	/nine         	/colon        	/semicolon    	
+/less         	/equal        	/greater      	/question     	
+/at           	/A            	/B            	/C            	
+/D            	/E            	/F            	/G            	
+/H            	/I            	/J            	/K            	
+/L            	/M            	/N            	/O            	
+/P            	/Q            	/R            	/S            	
+/T            	/U            	/V            	/W            	
+/X            	/Y            	/Z            	/bracketleft  	
+/backslash    	/bracketright 	/asciicircum  	/underscore   	
+/quoteleft    	/a            	/b            	/c            	
+/d            	/e            	/f            	/g            	
+/h            	/i            	/j            	/k            	
+/l            	/m            	/n            	/o            	
+/p            	/q            	/r            	/s            	
+/t            	/u            	/v            	/w            	
+/x            	/y            	/z            	/braceleft    	
+/bar          	/braceright   	/tilde        	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclamdown   	/cent         	/sterling     	
+/currency     	/yen          	/brokenbar    	/section      	
+/dieresis     	/copyright    	/ordfeminine  	/guillemotleft	
+/logicalnot   	/hyphen       	/registered   	/macron       	
+/degree       	/plusminus    	/twosuperior  	/threesuperior	
+/acute        	/mu           	/paragraph    	/bullet       	
+/cedilla      	/onesuperior  	/ordmasculine 	/guillemotright	
+/onequarter   	/onehalf      	/threequarters	/questiondown 	
+/Agrave       	/Aacute       	/Acircumflex  	/Atilde       	
+/Adieresis    	/Aring        	/AE           	/Ccedilla     	
+/Egrave       	/Eacute       	/Ecircumflex  	/Edieresis    	
+/Igrave       	/Iacute       	/Icircumflex  	/Idieresis    	
+/Eth          	/Ntilde       	/Ograve       	/Oacute       	
+/Ocircumflex  	/Otilde       	/Odieresis    	/multiply     	
+/Oslash       	/Ugrave       	/Uacute       	/Ucircumflex  	
+/Udieresis    	/Yacute       	/Thorn        	/germandbls   	
+/agrave       	/aacute       	/acircumflex  	/atilde       	
+/adieresis    	/aring        	/ae           	/ccedilla     	
+/egrave       	/eacute       	/ecircumflex  	/edieresis    	
+/igrave       	/iacute       	/icircumflex  	/idieresis    	
+/eth          	/ntilde       	/ograve       	/oacute       	
+/ocircumflex  	/otilde       	/odieresis    	/divide       	
+/oslash       	/ugrave       	/uacute       	/ucircumflex  	
+/udieresis    	/yacute       	/thorn        	/ydieresis    	
+] def
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Courier
+/HFpt_w 10 def
+/HFpt_h 10 def
+/Courier-Bold /HF-gs-font MF
+/HF /HF-gs-font findfont [HFpt_w 0 0 HFpt_h 0 0] makefont def
+/Courier /F-gs-font MF
+/F-gs-font 7 7 SF
+/#copies 1 def
+% Pagedevice definitions:
+gs_languagelevel 1 gt {
+  <<
+    /PageSize [612 792] 
+  >> setpagedevice
+} if
+%%BeginResource: procset Enscript-Header-simple 1.6 4
+
+/do_header {	% print default simple header
+  gsave
+    d_header_x d_header_y HFpt_h 3 div add translate
+
+    HF setfont
+    user_header_p {
+      5 0 moveto user_header_left_str show
+
+      d_header_w user_header_center_str stringwidth pop sub 2 div
+      0 moveto user_header_center_str show
+
+      d_header_w user_header_right_str stringwidth pop sub 5 sub
+      0 moveto user_header_right_str show
+    } {
+      fname length fmodstr length add pagenumstr length add 95 6 idiv add d_header_w 6 idiv le{
+        5 0 moveto fname show
+        45 0 rmoveto fmodstr show
+        45 0 rmoveto pagenumstr show
+      } {
+        5 0 moveto fmodstr show
+        45 0 rmoveto pagenumstr show
+        fname length d_header_w 6 idiv idiv 1 add 10 mul 5 exch moveto
+        1 1 fname length d_header_w 6 idiv idiv
+        {
+          dup fname exch 1 sub d_header_w 6 idiv mul d_header_w 6 idiv getinterval show
+          5 exch 10 mul fname length d_header_w 6 idiv idiv 1 add 10 mul exch sub moveto
+        } for
+        5 10 moveto
+        fname fname length d_header_w 6 idiv idiv d_header_w 6 idiv mul dup fname length exch sub getinterval show
+      }ifelse
+    }ifelse
+
+  grestore
+} def
+%%EndResource
+/d_page_w 744 def
+/d_page_h 536 def
+/d_header_x 0 def
+/d_header_y 492 def
+/d_header_w 744 def
+/d_header_h 44 def
+/d_footer_x 0 def
+/d_footer_y 0 def
+/d_footer_w 744 def
+/d_footer_h 0 def
+/d_output_w 744 def
+/d_output_h 492 def
+/cols 1 def
+%%EndSetup
+%%Page: (1) 1
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 1 def
+/fname (phase-51.51.asc) def
+/fdir () def
+/ftail (phase-51.51.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (1) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 474 M
+(CLEAR STORAGE 1     ,008015,022026,030037,044,049,053053N000000N00001026                                         1) s
+5 466 M
+(CLEAR STORAGE 2     L068116,105106,110117B101/I9I#071029C029056B026/B001/0991,001/001117I0?                      2) s
+5 458 M
+(BOOTSTRAP           ,008015,022029,036040,047054,061068,072/061039              ,0010011040                      3) s
+5 442 M
+(                          FORTRAN COMPILER -- REPLACE PHASE ONE -- PHASE 51                              PAGE    1) s
+5 426 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 410 M
+( 101                JOB   FORTRAN COMPILER -- REPLACE PHASE ONE -- PHASE 51) s
+5 402 M
+( 102                CTL   6611) s
+5 394 M
+( 103         *) s
+5 386 M
+( 104         * OBJECT-TIME INSTRUCTIONS WHICH REFERENCE STATEMENT NUMBERS) s
+5 378 M
+( 105         * ARE CORRECTED TO THE OBJECT-TIME ADDRESSES OF THE) s
+5 370 M
+( 106         * STATEMENT.  SUBSCRIPT STRINGS ARE CLEANED UP.) s
+5 362 M
+( 107         *) s
+5 354 M
+( 108         X1     EQU   89                                                          0089) s
+5 346 M
+( 109         X2     EQU   94                                                          0094) s
+5 338 M
+( 110         X3     EQU   99                                                          0099) s
+5 330 M
+( 111         *) s
+5 322 M
+( 112         * STUFF IN THE RESIDENT AREA) s
+5 314 M
+( 113         *) s
+5 306 M
+( 114         PHASID EQU   110  PHASE ID, FOR SNAPSHOT DUMPS                           0110) s
+5 298 M
+( 115         SUBSCR EQU   116  WM CLEARED IF SUBSCRIPT CODE NEEDED                    0116) s
+5 290 M
+( 116         SEQTAB EQU   148  BOTTOM OF SEQUENCE NUMBER TABLE - 2                    0148) s
+5 282 M
+( 117         BOTFMT EQU   154  BOTTOM OF FORMAT STRINGS OR NUMBER TABLE - 1           0154) s
+5 274 M
+( 118         NEGARY EQU   163  16000 - ARYSIZ                                         0163) s
+5 266 M
+( 119         SNAPSH EQU   333  CORE DUMP SNAPSHOT                                     0333) s
+5 258 M
+( 120         LOADNX EQU   700  LOAD NEXT OVERLAY                                      0700) s
+5 250 M
+( 121         CLEARL EQU   707  CS AT START OF OVERLAY LOADER                          0707) s
+5 242 M
+( 122         LOADXX EQU   793  EXIT FROM OVERLAY LOADER                               0793) s
+5 234 M
+( 123         CLRBOT EQU   833  BOTTOM OF CORE TO CLEAR IN OVERLAY LOADER              0833) s
+5 226 M
+( 124         *) s
+5 218 M
+( 125         * RUNTIME ROUTINES) s
+5 210 M
+( 126         *) s
+5 202 M
+( 127         ARITF  EQU   700 ARITHMETIC INTERPRETER                                  0700) s
+5 194 M
+( 128         *) s
+5 186 M
+( 129                ORG   838                                                                0838) s
+5 178 M
+( 130    838  BEGINN MCW   X3,SX3                                                   7  0838  M 099 S49            4) s
+5 170 M
+( 131    845         MCW   SEQTAB,*&7                                               7  0845  M 148 858            4) s
+5 162 M
+( 132    852         MCW   KGREAT,0                                                 7  0852  M S50 000            4) s
+5 154 M
+( 133    859         MCW   BOTFMT,X2                                                7  0859  M 154 094            4) s
+5 146 M
+( 134    866         MCW   KGREAT,1600                                              7  0866  M S50 W00            4) s
+5 138 M
+( 135    873  GETSUB BCE   FIND,0&X2,$  WITHIN TEN OF TOP OF SUBSCRIPT?   V3M4      8  0873  B S71 0!0 $          5) s
+5 130 M
+( 136    881         CHAIN 9                                                                             MACRO) s
+5 122 M
+( 137                BCE                                                            1  0881  B           GEN      5) s
+5 114 M
+( 138                BCE                                                            1  0882  B           GEN      5) s
+5 106 M
+( 139                BCE                                                            1  0883  B           GEN      5) s
+5 98 M
+( 140                BCE                                                            1  0884  B           GEN      5) s
+5 90 M
+( 141                BCE                                                            1  0885  B           GEN      5) s
+5 82 M
+( 142                BCE                                                            1  0886  B           GEN      5) s
+5 74 M
+( 143                BCE                                                            1  0887  B           GEN      6) s
+5 66 M
+( 144                BCE                                                            1  0888  B           GEN      6) s
+5 58 M
+( 145                BCE                                                            1  0889  B           GEN      6) s
+5 50 M
+( 146    890  BOTEX  BCE   BOTTOM,0&X2,>  GREATER SIGN BELOW CODE?                  8  0890  B |15 0!0 >          6) s
+5 42 M
+( 147    898         CHAIN 9                                                                             MACRO) s
+_R
+S
+%%Page: (2) 2
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 2 def
+/fname (phase-51.51.asc) def
+/fdir () def
+/ftail (phase-51.51.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (2) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- REPLACE PHASE ONE -- PHASE 51                              PAGE    2) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 148                BCE                                                            1  0898  B           GEN      6) s
+5 442 M
+( 149                BCE                                                            1  0899  B           GEN      6) s
+5 434 M
+( 150                BCE                                                            1  0900  B           GEN      6) s
+5 426 M
+( 151                BCE                                                            1  0901  B           GEN      7) s
+5 418 M
+( 152                BCE                                                            1  0902  B           GEN      7) s
+5 410 M
+( 153                BCE                                                            1  0903  B           GEN      7) s
+5 402 M
+( 154                BCE                                                            1  0904  B           GEN      7) s
+5 394 M
+( 155                BCE                                                            1  0905  B           GEN      7) s
+5 386 M
+( 156                BCE                                                            1  0906  B           GEN      7) s
+5 378 M
+( 157    907         SBR   X2                                                       4  0907  H 094                7) s
+5 370 M
+( 158    911         B     GETSUB                                                   4  0911  B 873                8) s
+5 362 M
+( 159    915  GETSB2 BCE   SUBTOP,0&X2,$  TOP OF SUBSCRIPT?                         8  0915  B 931 0!0 $          8) s
+5 354 M
+( 160    923         SBR   X2                                                       4  0923  H 094                8) s
+5 346 M
+( 161    927         B     GETSB2                                                   4  0927  B 915                8) s
+5 338 M
+( 162    931  SUBTOP MN    0&X2                                                     4  0931  D 0!0                8) s
+5 330 M
+( 163    935         SAR   X2                                                       4  0935  Q 094                8) s
+5 322 M
+( 164    939         BCE   SUBBOT,0&X2,$  WITHIN 16 OF BOTTOM OF SUBSCRIPT?         8  0939  B 966 0!0 $          8) s
+5 314 M
+( 165    947         CHAIN 15                                                                            MACRO) s
+5 306 M
+( 166                BCE                                                            1  0947  B           GEN      9) s
+5 298 M
+( 167                BCE                                                            1  0948  B           GEN      9) s
+5 290 M
+( 168                BCE                                                            1  0949  B           GEN      9) s
+5 282 M
+( 169                BCE                                                            1  0950  B           GEN      9) s
+5 274 M
+( 170                BCE                                                            1  0951  B           GEN      9) s
+5 266 M
+( 171                BCE                                                            1  0952  B           GEN      9) s
+5 258 M
+( 172                BCE                                                            1  0953  B           GEN      9) s
+5 250 M
+( 173                BCE                                                            1  0954  B           GEN     10) s
+5 242 M
+( 174                BCE                                                            1  0955  B           GEN     10) s
+5 234 M
+( 175                BCE                                                            1  0956  B           GEN     10) s
+5 226 M
+( 176                BCE                                                            1  0957  B           GEN     10) s
+5 218 M
+( 177                BCE                                                            1  0958  B           GEN     10) s
+5 210 M
+( 178                BCE                                                            1  0959  B           GEN     10) s
+5 202 M
+( 179                BCE                                                            1  0960  B           GEN     10) s
+5 194 M
+( 180                BCE                                                            1  0961  B           GEN     11) s
+5 186 M
+( 181    962         B     GETSUB                                                   4  0962  B 873               11) s
+5 178 M
+( 182    966  SUBBOT CW    SUBSCR                                                   4  0966  \) 116               11) s
+5 170 M
+( 183    970  DEC3   MN    0&X2                                                     4  0970  D 0!0               11) s
+5 162 M
+( 184    974         MN                                                             1  0974  D                   11) s
+5 154 M
+( 185    975         MN                                                             1  0975  D                   11) s
+5 146 M
+( 186    976         SAR   X2                                                       4  0976  Q 094               11) s
+5 138 M
+( 187    980         SW    1&X2                                                     4  0980  , 0!1               12) s
+5 130 M
+( 188    984         BCE   DEC1,0&X2,$                                              8  0984  B |03 0!0 $         12) s
+5 122 M
+( 189    992         MZ    *-4,2&X2                                                 7  0992  Y 994 0!2           12) s
+5 114 M
+( 190    999         B     DEC3                                                     4  0999  B 970               12) s
+5 106 M
+( 191  1 003  DEC1   MN    0&X2                                                     4  1003  D 0!0               12) s
+5 98 M
+( 192  1 007         SAR   X2                                                       4  1007  Q 094               12) s
+5 90 M
+( 193  1 011         B     GETSUB                                                   4  1011  B 873               12) s
+5 82 M
+( 194  1 015  BOTTOM MCW   APASS2,BOTEX&3                                           7  1015  M S53 893           13) s
+5 74 M
+( 195  1 022         MCW   X3,X2                                                    7  1022  M 099 094           13) s
+5 66 M
+( 196  1 029         B     GETSUB                                                   4  1029  B 873               13) s
+5 58 M
+( 197  1 033  PASS2X BCE   DONE,0&X3,                                               8  1033  B S10 0?0           13) s
+_R
+S
+%%Page: (3) 3
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 3 def
+/fname (phase-51.51.asc) def
+/fdir () def
+/ftail (phase-51.51.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (3) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- REPLACE PHASE ONE -- PHASE 51                              PAGE    3) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 198  1 041         MCW   X3,LINK&6                                                7  1041  M 099 /37           13) s
+5 442 M
+( 199  1 048         C     0&X3                                                     4  1048  C 0?0               13) s
+5 434 M
+( 200  1 052         SBR   X2                                                       4  1052  H 094               14) s
+5 426 M
+( 201  1 056         SBR   X3                                                       4  1056  H 099               14) s
+5 418 M
+( 202  1 060         BCE   TARITF,1&X3,|  TOP OF ARITHMETIC ASSIGNMENT              8  1060  B /74 0?1 |         14) s
+5 410 M
+( 203  1 068  TESTWM BW    PASS2X,4&X2                                              8  1068  V |33 0!4 1         14) s
+5 402 M
+( 204  1 076         BWZ                                                            1  1076  V                   14) s
+5 394 M
+( 205  1 077         BWZ                                                            1  1077  V                   14) s
+5 386 M
+( 206  1 078         BM    NOLINK,3&X2                                              8  1078  V /42 0!3 K         14) s
+5 378 M
+( 207  1 086         C     4&X2,A277X3                                              7  1086  C 0!4 S56           15) s
+5 370 M
+( 208  1 093         BE    PASS2X                                                   5  1093  B |33 S             15) s
+5 362 M
+( 209  1 098         BWZ   ADDLNK,3&X2,B                                            8  1098  V /17 0!3 B         15) s
+5 354 M
+( 210  1 106  BUMPX2 SBR   X2,3&X2                                                  7  1106  H 094 0!3           15) s
+5 346 M
+( 211  1 113         B     TESTWM                                                   4  1113  B |68               15) s
+5 338 M
+( 212  1 117  ADDLNK MCW   4&X2,X1  WHY NOT JUST MA 4&X2,LINK&6 ???                 7  1117  M 0!4 089           15) s
+5 330 M
+( 213  1 124         MZ    *-6,*&6  X1 TAG                                          7  1124  Y /24 /36           16) s
+5 322 M
+( 214  1 131  LINK   SBR   4&X2,0                                                   7  1131  H 0!4 000           16) s
+5 314 M
+( 215  1 138         B     BUMPX2                                                   4  1138  B /06               16) s
+5 306 M
+( 216  1 142  NOLINK MCW   4&X2,X1                                                  7  1142  M 0!4 089           16) s
+5 298 M
+( 217  1 149         MA    NEGARY,X1                                                7  1149  # 163 089           16) s
+5 290 M
+( 218  1 156         MCW   0&X1,X1                                                  7  1156  M 0|0 089           16) s
+5 282 M
+( 219  1 163         MCW   X1,4&X2                                                  7  1163  M 089 0!4           17) s
+5 274 M
+( 220  1 170         B     BUMPX2                                                   4  1170  B /06               17) s
+5 266 M
+( 221  1 174  TARITF BW    *&5,2&X3  NEED TO LOOK FOR BRANCH TO ARITF?              8  1174  V /86 0?2 1         17) s
+5 258 M
+( 222  1 182         B     PASS2X                                                   4  1182  B |33               17) s
+5 250 M
+( 223  1 186  FARITF C     0&X3  FIND THE BRANCH TO ARITF                           4  1186  C 0?0               17) s
+5 242 M
+( 224  1 190         SBR   X3                                                       4  1190  H 099               17) s
+5 234 M
+( 225  1 194         C     4&X3,BARITF&3  BRANCH TO ARITHMETIC INTERPRETER?         7  1194  C 0?4 S60           17) s
+5 226 M
+( 226  1 201         BE    PASS2X         YES                                       5  1201  B |33 S             18) s
+5 218 M
+( 227  1 206         B     FARITF         NO, LOOK AGAIN                            4  1206  B /86               18) s
+5 210 M
+( 228  1 210  DONE   MCW   SX3,X3                                                   7  1210  M S49 099           18) s
+5 202 M
+( 229  1 217         BSS   SNAPSH,C                                                 5  1217  B 333 C             18) s
+5 194 M
+( 230  1 222         SBR   LOADXX&3,934                                             7  1222  H 796 934           18) s
+5 186 M
+( 231  1 229         SBR   CLEARL&3,GMWM                                            7  1229  H 710 S96           18) s
+5 178 M
+( 232  1 236         LCA   LOAD52,PHASID                                            7  1236  L S70 110           19) s
+5 170 M
+( 233  1 243         B     LOADNX                                                   4  1243  B 700               19) s
+5 162 M
+( 234  1 249  SX3    DCW   #3                                                       3  1249                      19) s
+5 154 M
+( 235  1 250  KGREAT DCW   @>@  GREATER THAN SIGN                                   1  1250                      19) s
+5 146 M
+( 236  1 253  APASS2 DSA   PASS2X                                                   3  1253  |33                 19) s
+5 138 M
+( 237  1 256  A277X3 DSA   277&X3                                                   3  1256  2G7                 19) s
+5 130 M
+( 238  1 257  BARITF B     ARITF                                                    4  1257  B 700               19) s
+5 122 M
+( 239  1 270  LOAD52 DCW   @LOAD 52B&C@                                            10  1270                      20) s
+5 114 M
+( 240  1 271  FIND   BCE   BOTEX,0&X2,>    GREATER SIGN BELOW CODE?       V3M4      8  1271  B 890 0!0 >         20) s
+5 106 M
+( 241  1 279         BCE   SUBTOP,0&X2,$   TOP OF SUBSCRIPT?              V3M4      8  1279  B 931 0!0 $         20) s
+5 98 M
+( 242  1 287         SBR   X2                                             V3M4      4  1287  H 094               20) s
+5 90 M
+( 243  1 291         BIN   FIND,                                          V3M4      5  1291  B S71               20) s
+5 82 M
+( 244  1 296  GMWM   DCW   @}@                                                      1  1296              GMARK   20) s
+5 74 M
+( 245                EX    BEGINN                                                            B 838               21) s
+5 66 M
+( 246                END                                                                     / 000 080) s
+_R
+S
+%%Page: (4) 4
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 4 def
+/fname (phase-51.51.asc) def
+/fdir () def
+/ftail (phase-51.51.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (4) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- REPLACE PHASE ONE -- PHASE 51                              PAGE    4) s
+5 466 M
+(SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  ) s
+5 458 M
+(A277X3   1256    ADDLNK   1117    APASS2   1253    ARITF     700    BARITF   1257    BEGINN    838    BOTEX     890   ) s
+5 450 M
+(BOTFMT    154    BOTTOM   1015    BUMPX2   1106    CLEARL    707    CLRBOT    833    DEC1     1003    DEC3      970   ) s
+5 442 M
+(DONE     1210    FARITF   1186    FIND     1271    GETSB2    915    GETSUB    873    GMWM     1296    KGREAT   1250   ) s
+5 434 M
+(LINK     1131    LOAD52   1270    LOADNX    700    LOADXX    793    NEGARY    163    NOLINK   1142    PASS2X   1033   ) s
+5 426 M
+(PHASID    110    SEQTAB    148    SNAPSH    333    SUBBOT    966    SUBSCR    116    SUBTOP    931    SX3      1249   ) s
+5 418 M
+(TARITF   1174    TESTWM   1068    X1         89    X2         94    X3         99   ) s
+_R
+S
+%%Trailer
+%%Pages: 4
+%%DocumentNeededResources: font Courier-Bold Courier 
+%%EOF

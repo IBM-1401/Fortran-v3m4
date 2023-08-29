@@ -1,0 +1,824 @@
+%!PS-Adobe-3.0
+%%BoundingBox: 38 24 574 768
+%%Title: Enscript Output
+%%For: W. Van Snyder
+%%Creator: GNU enscript 1.6.4
+%%CreationDate: Tue Jul 15 00:12:03 2008
+%%Orientation: Landscape
+%%Pages: (atend)
+%%DocumentMedia: Letter 612 792 0 () ()
+%%DocumentNeededResources: (atend)
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset Enscript-Prolog 1.6 4
+%
+% Procedures.
+%
+
+/_S {	% save current state
+  /_s save def
+} def
+/_R {	% restore from saved state
+  _s restore
+} def
+
+/S {	% showpage protecting gstate
+  gsave
+  showpage
+  grestore
+} bind def
+
+/MF {	% fontname newfontname -> -	make a new encoded font
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  % insert only valid encoding vectors
+  encoding_vector length 256 eq {
+    newfont /Encoding encoding_vector put
+  } if
+
+  newfontname newfont definefont pop
+} def
+
+/MF_PS { % fontname newfontname -> -	make a new font preserving its enc
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  newfontname newfont definefont pop
+} def
+
+/SF { % fontname width height -> -	set a new font
+  /height exch def
+  /width exch def
+
+  findfont
+  [width 0 0 height 0 0] makefont setfont
+} def
+
+/SUF { % fontname width height -> -	set a new user font
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF
+  /F-gs-user-font width height SF
+} def
+
+/SUF_PS { % fontname width height -> -	set a new user font preserving its enc
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF_PS
+  /F-gs-user-font width height SF
+} def
+
+/M {moveto} bind def
+/s {show} bind def
+
+/Box {	% x y w h -> -			define box path
+  /d_h exch def /d_w exch def /d_y exch def /d_x exch def
+  d_x d_y  moveto
+  d_w 0 rlineto
+  0 d_h rlineto
+  d_w neg 0 rlineto
+  closepath
+} def
+
+/bgs {	% x y height blskip gray str -> -	show string with bg color
+  /str exch def
+  /gray exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    gray setgray
+    fill
+  grestore
+  x y M str s
+} def
+
+/bgcs { % x y height blskip red green blue str -> -  show string with bg color
+  /str exch def
+  /blue exch def
+  /green exch def
+  /red exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    red green blue setrgbcolor
+    fill
+  grestore
+  x y M str s
+} def
+
+% Highlight bars.
+/highlight_bars {	% nlines lineheight output_y_margin gray -> -
+  gsave
+    setgray
+    /ymarg exch def
+    /lineheight exch def
+    /nlines exch def
+
+    % This 2 is just a magic number to sync highlight lines to text.
+    0 d_header_y ymarg sub 2 sub translate
+
+    /cw d_output_w cols div def
+    /nrows d_output_h ymarg 2 mul sub lineheight div cvi def
+
+    % for each column
+    0 1 cols 1 sub {
+      cw mul /xp exch def
+
+      % for each rows
+      0 1 nrows 1 sub {
+        /rn exch def
+        rn lineheight mul neg /yp exch def
+        rn nlines idiv 2 mod 0 eq {
+	  % Draw highlight bar.  4 is just a magic indentation.
+	  xp 4 add yp cw 8 sub lineheight neg Box fill
+	} if
+      } for
+    } for
+
+  grestore
+} def
+
+% Line highlight bar.
+/line_highlight {	% x y width height gray -> -
+  gsave
+    /gray exch def
+    Box gray setgray fill
+  grestore
+} def
+
+% Column separator lines.
+/column_lines {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h translate
+    /cw d_output_w cols div def
+    1 1 cols 1 sub {
+      cw mul 0 moveto
+      0 d_output_h rlineto stroke
+    } for
+  grestore
+} def
+
+% Column borders.
+/column_borders {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h moveto
+    0 d_output_h rlineto
+    d_output_w 0 rlineto
+    0 d_output_h neg rlineto
+    closepath stroke
+  grestore
+} def
+
+% Do the actual underlay drawing
+/draw_underlay {
+  ul_style 0 eq {
+    ul_str true charpath stroke
+  } {
+    ul_str show
+  } ifelse
+} def
+
+% Underlay
+/underlay {	% - -> -
+  gsave
+    0 d_page_h translate
+    d_page_h neg d_page_w atan rotate
+
+    ul_gray setgray
+    ul_font setfont
+    /dw d_page_h dup mul d_page_w dup mul add sqrt def
+    ul_str stringwidth pop dw exch sub 2 div ul_h_ptsize -2 div moveto
+    draw_underlay
+  grestore
+} def
+
+/user_underlay {	% - -> -
+  gsave
+    ul_x ul_y translate
+    ul_angle rotate
+    ul_gray setgray
+    ul_font setfont
+    0 0 ul_h_ptsize 2 div sub moveto
+    draw_underlay
+  grestore
+} def
+
+% Page prefeed
+/page_prefeed {		% bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} def
+
+% Wrapped line markers
+/wrapped_line_mark {	% x y charwith charheight type -> -
+  /type exch def
+  /h exch def
+  /w exch def
+  /y exch def
+  /x exch def
+
+  type 2 eq {
+    % Black boxes (like TeX does)
+    gsave
+      0 setlinewidth
+      x w 4 div add y M
+      0 h rlineto w 2 div 0 rlineto 0 h neg rlineto
+      closepath fill
+    grestore
+  } {
+    type 3 eq {
+      % Small arrows
+      gsave
+        .2 setlinewidth
+        x w 2 div add y h 2 div add M
+        w 4 div 0 rlineto
+        x w 4 div add y lineto stroke
+
+        x w 4 div add w 8 div add y h 4 div add M
+        x w 4 div add y lineto
+	w 4 div h 8 div rlineto stroke
+      grestore
+    } {
+      % do nothing
+    } ifelse
+  } ifelse
+} def
+
+% EPSF import.
+
+/BeginEPSF {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack
+  userdict begin
+  /showpage { } def
+  0 setgray 0 setlinecap
+  1 setlinewidth 0 setlinejoin
+  10 setmiterlimit [ ] 0 setdash newpath
+  /languagelevel where {
+    pop languagelevel
+    1 ne {
+      false setstrokeadjust false setoverprint
+    } if
+  } if
+} bind def
+
+/EndEPSF {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+%%EndResource
+%%BeginResource: procset Enscript-Encoding-88591 1.6 4
+/encoding_vector [
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclam       	/quotedbl     	/numbersign   	
+/dollar       	/percent      	/ampersand    	/quoteright   	
+/parenleft    	/parenright   	/asterisk     	/plus         	
+/comma        	/hyphen       	/period       	/slash        	
+/zero         	/one          	/two          	/three        	
+/four         	/five         	/six          	/seven        	
+/eight        	/nine         	/colon        	/semicolon    	
+/less         	/equal        	/greater      	/question     	
+/at           	/A            	/B            	/C            	
+/D            	/E            	/F            	/G            	
+/H            	/I            	/J            	/K            	
+/L            	/M            	/N            	/O            	
+/P            	/Q            	/R            	/S            	
+/T            	/U            	/V            	/W            	
+/X            	/Y            	/Z            	/bracketleft  	
+/backslash    	/bracketright 	/asciicircum  	/underscore   	
+/quoteleft    	/a            	/b            	/c            	
+/d            	/e            	/f            	/g            	
+/h            	/i            	/j            	/k            	
+/l            	/m            	/n            	/o            	
+/p            	/q            	/r            	/s            	
+/t            	/u            	/v            	/w            	
+/x            	/y            	/z            	/braceleft    	
+/bar          	/braceright   	/tilde        	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclamdown   	/cent         	/sterling     	
+/currency     	/yen          	/brokenbar    	/section      	
+/dieresis     	/copyright    	/ordfeminine  	/guillemotleft	
+/logicalnot   	/hyphen       	/registered   	/macron       	
+/degree       	/plusminus    	/twosuperior  	/threesuperior	
+/acute        	/mu           	/paragraph    	/bullet       	
+/cedilla      	/onesuperior  	/ordmasculine 	/guillemotright	
+/onequarter   	/onehalf      	/threequarters	/questiondown 	
+/Agrave       	/Aacute       	/Acircumflex  	/Atilde       	
+/Adieresis    	/Aring        	/AE           	/Ccedilla     	
+/Egrave       	/Eacute       	/Ecircumflex  	/Edieresis    	
+/Igrave       	/Iacute       	/Icircumflex  	/Idieresis    	
+/Eth          	/Ntilde       	/Ograve       	/Oacute       	
+/Ocircumflex  	/Otilde       	/Odieresis    	/multiply     	
+/Oslash       	/Ugrave       	/Uacute       	/Ucircumflex  	
+/Udieresis    	/Yacute       	/Thorn        	/germandbls   	
+/agrave       	/aacute       	/acircumflex  	/atilde       	
+/adieresis    	/aring        	/ae           	/ccedilla     	
+/egrave       	/eacute       	/ecircumflex  	/edieresis    	
+/igrave       	/iacute       	/icircumflex  	/idieresis    	
+/eth          	/ntilde       	/ograve       	/oacute       	
+/ocircumflex  	/otilde       	/odieresis    	/divide       	
+/oslash       	/ugrave       	/uacute       	/ucircumflex  	
+/udieresis    	/yacute       	/thorn        	/ydieresis    	
+] def
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Courier
+/HFpt_w 10 def
+/HFpt_h 10 def
+/Courier-Bold /HF-gs-font MF
+/HF /HF-gs-font findfont [HFpt_w 0 0 HFpt_h 0 0] makefont def
+/Courier /F-gs-font MF
+/F-gs-font 7 7 SF
+/#copies 1 def
+% Pagedevice definitions:
+gs_languagelevel 1 gt {
+  <<
+    /PageSize [612 792] 
+  >> setpagedevice
+} if
+%%BeginResource: procset Enscript-Header-simple 1.6 4
+
+/do_header {	% print default simple header
+  gsave
+    d_header_x d_header_y HFpt_h 3 div add translate
+
+    HF setfont
+    user_header_p {
+      5 0 moveto user_header_left_str show
+
+      d_header_w user_header_center_str stringwidth pop sub 2 div
+      0 moveto user_header_center_str show
+
+      d_header_w user_header_right_str stringwidth pop sub 5 sub
+      0 moveto user_header_right_str show
+    } {
+      fname length fmodstr length add pagenumstr length add 95 6 idiv add d_header_w 6 idiv le{
+        5 0 moveto fname show
+        45 0 rmoveto fmodstr show
+        45 0 rmoveto pagenumstr show
+      } {
+        5 0 moveto fmodstr show
+        45 0 rmoveto pagenumstr show
+        fname length d_header_w 6 idiv idiv 1 add 10 mul 5 exch moveto
+        1 1 fname length d_header_w 6 idiv idiv
+        {
+          dup fname exch 1 sub d_header_w 6 idiv mul d_header_w 6 idiv getinterval show
+          5 exch 10 mul fname length d_header_w 6 idiv idiv 1 add 10 mul exch sub moveto
+        } for
+        5 10 moveto
+        fname fname length d_header_w 6 idiv idiv d_header_w 6 idiv mul dup fname length exch sub getinterval show
+      }ifelse
+    }ifelse
+
+  grestore
+} def
+%%EndResource
+/d_page_w 744 def
+/d_page_h 536 def
+/d_header_x 0 def
+/d_header_y 492 def
+/d_header_w 744 def
+/d_header_h 44 def
+/d_footer_x 0 def
+/d_footer_y 0 def
+/d_footer_w 744 def
+/d_footer_h 0 def
+/d_output_w 744 def
+/d_output_h 492 def
+/cols 1 def
+%%EndSetup
+%%Page: (1) 1
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 1 def
+/fname (lib-2-2.monitor.asc) def
+/fdir () def
+/ftail (lib-2-2.monitor.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:49 2008) def
+/pagenumstr (1) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 474 M
+(CLEAR STORAGE 1     ,008015,022026,030037,044,049,053053N000000N00001026                                         1) s
+5 466 M
+(CLEAR STORAGE 2     L068116,105106,110117B101/I9I#071029C029056B026/B001/0991,001/001117I0?                      2) s
+5 458 M
+(BOOTSTRAP           ,008015,022029,036040,047054,061068,072/061039              ,0010011040                      3) s
+5 442 M
+(                          FORTRAN COMPILER -- OVERLAY LOADER                                             PAGE    1) s
+5 426 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 410 M
+( 101                JOB   FORTRAN COMPILER -- OVERLAY LOADER) s
+5 402 M
+( 102                CTL   6611) s
+5 394 M
+( 103         *) s
+5 386 M
+( 104         * XLINKF LOADER - FUNCTION I.) s
+5 378 M
+( 105         *) s
+5 370 M
+( 106         * INPUTS ARE IN 84-86, \(274..279\)&X3 AND MAYBE EXIT&\(1..3\).) s
+5 362 M
+( 107         *) s
+5 354 M
+( 108         * IF THE CHARACTER ADDRESSED BY 84-86 IS $, CLEAR FROM 3+\(CONTENTS) s
+5 346 M
+( 109         * OF 84-86\) DOWN TO DOWNTO, ELSE CLEAR FROM TOP OF CORE.) s
+5 338 M
+( 110         *) s
+5 330 M
+( 111         * IF THE TARGET IN \(274..279\)&X3 IS ZERO WITH SOME ZONE, LOAD FROM) s
+5 322 M
+( 112         * CARDS.  IF THE TARGET IS NEGATIVE OR BLANK, LOAD THE FIRST RECORD) s
+5 314 M
+( 113         * FROM TAPE AT 1 AND BRANCH TO 1.  OTHERWISE HUNT FOR IT, AND WHEN) s
+5 306 M
+( 114         * FOUND LOAD THE NEXT BLOCK AT 333 AND THE ONE AFTER THAT AT 700,) s
+5 298 M
+( 115         * AND BRANCH TO THE ADDRESS STORED INTO EXIT&3.) s
+5 290 M
+( 116         *) s
+5 282 M
+( 117         X1     EQU   89                                                          0089) s
+5 274 M
+( 118         X2     EQU   94                                                          0094) s
+5 266 M
+( 119         X3     EQU   99                                                          0099) s
+5 258 M
+( 120         *) s
+5 250 M
+( 121         TARGET EQU   279&X3                                                      0279 X) s
+5 242 M
+( 122         *) s
+5 234 M
+( 123                ORG   333                                                                0333) s
+5 226 M
+( 124    333  HALT   H     HALT                                                     4  0333  . 333                4) s
+5 218 M
+( 125    337         MCW   86,X2                                                    7  0337  M 086 094            4) s
+5 210 M
+( 126    344         CS    80                                                       4  0344  / 080                4) s
+5 202 M
+( 127    348         BCE   SETCLR,0&X2,$  SET THE CLEAR ADDRESS                     8  0348  B 585 0!0 $          4) s
+5 194 M
+( 128         *) s
+5 186 M
+( 129         * CLEAR FROM TOP OF CORE OR THE SPECIFIED CLEAR ADDRESS DOWN TO) s
+5 178 M
+( 130         * DOWNTO.) s
+5 170 M
+( 131         *) s
+5 162 M
+( 132    356  CLEAR  CS    0                                                        4  0356  / 000                4) s
+5 154 M
+( 133    360         SBR   CLEAR&3                                                  4  0360  H 359                4) s
+5 146 M
+( 134    364         C     CLEAR&3,DOWNTO                                           7  0364  C 359 645            4) s
+5 138 M
+( 135    371         BU    CLEAR                                                    5  0371  B 356 /              5) s
+5 130 M
+( 136    376         SW    TARGET-5                                                 4  0376  , 2G4                5) s
+5 122 M
+( 137    380         MZ    TARGET,KZ6                                               7  0380  Y 2G9 642            5) s
+5 114 M
+( 138    387         C     KZ6,TARGET                                               7  0387  C 642 2G9            5) s
+5 106 M
+( 139    394         BE    CDLOOP         TARGET IS ZERO WITH SOME ZONE             5  0394  B 603 S              5) s
+5 98 M
+( 140    399         BM    LOAD1,TARGET   TARGET IS NEGATIVE                        8  0399  V 620 2G9 K          5) s
+5 90 M
+( 141    407         MZ    KZ6-5,TARGET   CLEAR ZONE OF LOW-ORDER TARGET CHAR       7  0407  Y 637 2G9            6) s
+5 82 M
+( 142    414         C     BLANKS,TARGET                                            7  0414  C 699 2G9            6) s
+5 74 M
+( 143    421         BE    LOAD1          TARGET IS BLANKS                          5  0421  B 620 S              6) s
+5 66 M
+( 144         *) s
+5 58 M
+( 145         * SET GMWM IN 22) s
+5 50 M
+( 146         *) s
+5 42 M
+( 147    426         SW    22                                                       4  0426  , 022                6) s
+_R
+S
+%%Page: (2) 2
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 2 def
+/fname (lib-2-2.monitor.asc) def
+/fdir () def
+/ftail (lib-2-2.monitor.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:49 2008) def
+/pagenumstr (2) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- OVERLAY LOADER                                             PAGE    2) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 148    430         MCW   GM,22                                                    7  0430  M 680 022            6) s
+5 442 M
+( 149         *) s
+5 434 M
+( 150         * HUNT FOR LIB IN 8-10 AND THE TARGET \(TARGET\) IN 12-17) s
+5 426 M
+( 151         *) s
+5 418 M
+( 152    437  HUNT   RT    1,1                                                      8  0437  M %U1 001 R          6) s
+5 410 M
+( 153    445         BEF   ENDFIL                                                   5  0445  B 478 K              7) s
+5 402 M
+( 154    450         C     10,LIB                                                   7  0450  C 010 648            7) s
+5 394 M
+( 155    457         BU    HUNT                                                     5  0457  B 437 /              7) s
+5 386 M
+( 156    462         C     17,TARGET                                                7  0462  C 017 2G9            7) s
+5 378 M
+( 157    469         BE    FOUND                                                    5  0469  B 498 S              7) s
+5 370 M
+( 158    474         B     HUNT                                                     4  0474  B 437                7) s
+5 362 M
+( 159         *) s
+5 354 M
+( 160         * END OF FILE.  CHANGE THE NOP TO A HALT AND BRANCH TO LOAD) s
+5 346 M
+( 161         * FROM CARDS, THEN REWIND THE TAPE AND HUNT AGAIN.  THEREBY, THE) s
+5 338 M
+( 162         * TAPE IS ONLY SEARCHED TWICE.) s
+5 330 M
+( 163         *) s
+5 322 M
+( 164    478  ENDFIL NOP   CDLOOP  BECOMES  H    CDLOOP                             4  0478  N 603                7) s
+5 314 M
+( 165    482         MCW   ERRHLT,ENDFIL                                            7  0482  M 581 478            8) s
+5 306 M
+( 166    489         RWD   1                                                        5  0489  U %U1 R              8) s
+5 298 M
+( 167    494         B     HUNT                                                     4  0494  B 437                8) s
+5 290 M
+( 168         *) s
+5 282 M
+( 169         * FOUND THE TARGET) s
+5 274 M
+( 170         * LOAD THE NEXT BLOCK AT 333 AND THE ONE AFTER THAT AT 700,) s
+5 266 M
+( 171         * THEN BRANCH TO THE ADDRESS PLUGGED INTO EXIT&3) s
+5 258 M
+( 172         *) s
+5 250 M
+( 173    498  FOUND  LCA   KZ6-1,101  CLEAR                                         7  0498  L 641 101            8) s
+5 242 M
+( 174    505         LCA   KZ6-1        INDEX                                       4  0505  L 641                8) s
+5 234 M
+( 175    509         LCA   KZ6-1          REGISTERS                                 4  0509  L 641                8) s
+5 226 M
+( 176    513         RTW   1,333      HOPE SHORT ENOUGH NOT TO CLOBBER US           8  0513  L %U1 333 R          8) s
+5 218 M
+( 177    521         BER   TAPERR                                                   5  0521  B 557 L              9) s
+5 210 M
+( 178    526         MCW   KZ6-5,KZ6-1                                              7  0526  M 637 641            9) s
+5 202 M
+( 179    533         SBR   TAPERX&3,READ2                                           7  0533  H 580 540            9) s
+5 194 M
+( 180    540  READ2  B     READ2X                                         V3M4      4  0540  B 649                9) s
+5 186 M
+( 181    544  READ2R MN    0-0                                            V3M4      4  0544  D 000                9) s
+5 178 M
+( 182    548         SW                                                   V3M4      1  0548  ,                    9) s
+5 170 M
+( 183    549         NOP                                                  V3M4      1  0549  N                    9) s
+5 162 M
+( 184    550         NOP                                                  V3M4      1  0550  N                   10) s
+5 154 M
+( 185    552         DCW   @NL@                                           V3M4      2  0552                      10) s
+5 146 M
+( 186    553  EXIT   B     0                                                        4  0553  B 000               10) s
+5 138 M
+( 187    557  TAPERR A     K1,KZ6-1                                                 7  0557  A 679 641           10) s
+5 130 M
+( 188    564         BCE   ERRHLT,KZ6-1,9  NINE ERRORS?                             8  0564  B 581 641 9         10) s
+5 122 M
+( 189    572         BSP   1                                                        5  0572  U %U1 B             10) s
+5 114 M
+( 190    577  TAPERX B     FOUND                                                    4  0577  B 498               10) s
+5 106 M
+( 191    581  ERRHLT H     ERRHLT                                                   4  0581  . 581               11) s
+5 98 M
+( 192         *) s
+5 90 M
+( 193         * SET THE CLEAR START ADDRESS) s
+5 82 M
+( 194         *) s
+5 74 M
+( 195    585  SETCLR MCW   3&X2,CLEAR&3                                             7  0585  M 0!3 359           11) s
+5 66 M
+( 196    592         MZ    KZ6-5,CLEAR&2                                            7  0592  Y 637 358           11) s
+5 58 M
+( 197    599         B     CLEAR                                                    4  0599  B 356               11) s
+_R
+S
+%%Page: (3) 3
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 3 def
+/fname (lib-2-2.monitor.asc) def
+/fdir () def
+/ftail (lib-2-2.monitor.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:49 2008) def
+/pagenumstr (3) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- OVERLAY LOADER                                             PAGE    3) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 198         *) s
+5 442 M
+( 199         * TARGET IS 00000X WHERE X IS ZERO WITH SOME ZONE.) s
+5 434 M
+( 200         * READ CARDS UNTIL ONE WITH COMMA \(SW\) IN COLUMN 1 IS FOUND,) s
+5 426 M
+( 201         * THEN BRANCH TO IT.) s
+5 418 M
+( 202         *) s
+5 410 M
+( 203    603  CDLOOP SW    1                                                        4  0603  , 001               11) s
+5 402 M
+( 204    607         R                                                              1  0607  1                   11) s
+5 394 M
+( 205    608         BCE   1,1,,                                                    8  0608  B 001 001 ,         11) s
+5 386 M
+( 206    616         B     CDLOOP                                                   4  0616  B 603               12) s
+5 378 M
+( 207         *) s
+5 370 M
+( 208         * LOAD A BLOCK INTO 1 AND BRANCH TO IT) s
+5 362 M
+( 209         *) s
+5 354 M
+( 210    620  LOAD1  RWD   1                                                        5  0620  U %U1 R             12) s
+5 346 M
+( 211    625         RTW   1,1                                                      8  0625  L %U1 001 R         12) s
+5 338 M
+( 212    633         B     1                                                        4  0633  B 001               12) s
+5 330 M
+( 213         *) s
+5 322 M
+( 214         * DATA) s
+5 314 M
+( 215         *) s
+5 306 M
+( 216    642  KZ6    DCW   000000                                                   6  0642                      12) s
+5 298 M
+( 217    645  DOWNTO DSA   BLANKS                                                   3  0645  699                 12) s
+5 290 M
+( 218    648  LIB    DCW   @LIB@                                                    3  0648                      12) s
+5 282 M
+( 219    649  READ2X RTW   1,700                                          V3M4      8  0649  L %U1 700 R         13) s
+5 274 M
+( 220    657         SBR   READ2R&3                                       V3M4      4  0657  H 547               13) s
+5 266 M
+( 221    661         BER   TAPERR                                         V3M4      5  0661  B 557 L             13) s
+5 258 M
+( 222    666         B     READ2R                                         V3M4      4  0666  B 544               13) s
+5 250 M
+( 223    678         DC    #9                                             V3M4      9  0678                      13) s
+5 242 M
+( 224    679  K1     DCW   @1@                                                      1  0679                      13) s
+5 234 M
+( 225    680  GM     DC    @}@                                                      1  0680              GMARK   13) s
+5 226 M
+( 226    699  BLANKS DC    #19                                                     19  0699                      14) s
+5 218 M
+( 227                EX                                                                      B 000               15) s
+5 210 M
+( 228                END                                                                     / 000 080) s
+_R
+S
+%%Page: (4) 4
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 4 def
+/fname (lib-2-2.monitor.asc) def
+/fdir () def
+/ftail (lib-2-2.monitor.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:49 2008) def
+/pagenumstr (4) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- OVERLAY LOADER                                             PAGE    4) s
+5 466 M
+(SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  ) s
+5 458 M
+(BLANKS    699    CDLOOP    603    CLEAR     356    DOWNTO    645    ENDFIL    478    ERRHLT    581    EXIT      553   ) s
+5 450 M
+(FOUND     498    GM        680    HALT      333    HUNT      437    K1        679    KZ6       642    LIB       648   ) s
+5 442 M
+(LOAD1     620    READ2     540    READ2R    544    READ2X    649    SETCLR    585    TAPERR    557    TAPERX    577   ) s
+5 434 M
+(TARGET    279+X3 X1         89    X2         94    X3         99   ) s
+_R
+S
+%%Trailer
+%%Pages: 4
+%%DocumentNeededResources: font Courier-Bold Courier 
+%%EOF

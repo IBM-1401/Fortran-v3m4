@@ -1,0 +1,39 @@
+               JOB
+               CTL  6611
+               ORG  845
+  845          MCW  94,83                        DCW  'M094083'
+  852          SW   1011                         DCW  ',|11'
+  856          LCA  1011,0&X2                    DCW  'L|110!0'
+  863          SBR  94                           DCW  'H094'
+  867          BW   918,0&X1                     DCW  'V9180|01'
+  875          B    942                          DCW  'B942'
+  879          B    942                          DCW  'B942'
+  883          BCE  867,1&X2,}                   DCW  'B8670!1}'
+  891          CW   1&X2                         DCW  ')0!1'
+  895          C    0&X1                         DCW  'C0|0'
+  899          SAR  89                           DCW  'Q089'
+  903          SBR  89,1&X1                      DCW  'H0890|1'
+  910          B    942                          DCW  'B942'
+  914          B    867                          DCW  'B867'
+  918          CW   0&X1                         DCW  ')0|0'
+  922          BCE  969,0&X1,                    DCW  'B9690|0 '
+  930          B    942                          DCW  'B942'
+  934          B    942                          DCW  'B942'
+  938          B    922                          DCW  'B922'
+  942          SBR  968                          DCW  'H968'
+  946          LCA  0&X1,0&X2                    DCW  'L0|00!0'
+  953          SAR  89                           DCW  'Q089'
+  957          C    0&X2                         DCW  'C0!0'
+  961          SAR  94                           DCW  'Q094'
+  965          B    0                            DCW  'B000'
+  969          BSS  333,D                        DCW  'B333D'
+  974          SBR  786,838                      DCW  'H786838'
+  981          SBR  833                          DCW  'H833'
+  985          SBR  796,937                      DCW  'H796937'
+  992          SBR  710,1018                     DCW  'H710|18'
+  999          LCA  1017,110                     DCW  'L|17110'
+ 1006          B    700                          DCW  'B700'
+ 1011          DCW  @ }@
+ 1017          DCW  @STNUM2@
+ 1018          DCW  @}@
+               END

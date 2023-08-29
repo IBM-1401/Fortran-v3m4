@@ -1,0 +1,60 @@
+               JOB
+               CTL  6611
+               ORG  838
+  840          DCW  #3
+  843          DCW  #3
+  846          DCW  #3
+  849          DCW  #3
+  852          DCW  #3
+  855          DCW  #3
+  858          DCW  #3
+  861          DCW  #3
+  864          DCW  #3
+  867          DCW  #3
+  870          DCW  #3
+  873          DCW  #3
+  876          DCW  #3
+  879          DCW  #3
+  882          DCW  #3
+  885          DCW  #3
+  888          DCW  #3
+  891          DCW  #3
+  894          DCW  #3
+  897          DCW  #3
+  900          DCW  #3
+  903          DCW  #3
+  906          DCW  #3
+  909          DCW  #3
+  912          DSA  2132                         DCW  'J32'
+  915          DCW  #3
+  918          DCW  #3
+  921          DCW  #3
+  924          DCW  #3
+  927          DSA  924                          DCW  '924'
+  930          DCW  #3
+  933          DCW  #3
+  934          B    1036                         DCW  'B|36'
+  938          SBR  786,934                      DCW  'H786934'
+  945          SBR  833                          DCW  'H833'
+  949          SBR  796,337                      DCW  'H796337'
+  956          SBR  710,1696                     DCW  'H710W96'
+  963          LCA  982,110                      DCW  'L982110'
+  970          B    700                          DCW  'B700'
+  982          DCW  @FUNLOAD C@
+  983          SBR  786,333                      DCW  'H786333'
+  990          SBR  833,983                      DCW  'H833983'
+  997          BSS  333,C                        DCW  'B333C'
+ 1002          SBR  796,938                      DCW  'H796938'
+ 1009          SBR  710,1696                     DCW  'H710W96'
+ 1016          LCA  1035,110                     DCW  'L|35110'
+ 1023          B    700                          DCW  'B700'
+ 1035          DCW  @FUNLOAD B@
+ 1036          BWZ  1048,99,2                    DCW  'V|480992'
+ 1044          B    983                          DCW  'B983'
+ 1048          BWZ  1060,97,S                    DCW  'V|60097S'
+ 1056          B    983                          DCW  'B983'
+ 1060          SBR  99,2000                      DCW  'H099!00'
+ 1116          DCW  @B983                                              @
+               ORG  1696
+ 1696          DCW  @}@
+               END

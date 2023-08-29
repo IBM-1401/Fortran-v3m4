@@ -1,0 +1,11 @@
+               JOB
+               CTL  6611
+               ORG  838
+  838          BSS  333,C                        DCW  'B333C'
+  843          SBR  710,1068                     DCW  'H710|68'
+  850          LCA  1067,110                     DCW  'L|67110'
+  906          DCW  @B700                                              @
+               ORG  1061
+ 1067          DCW  @ARITH 4@
+ 1068          DCW  @}@
+               END

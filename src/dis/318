@@ -1,0 +1,23 @@
+               JOB
+               CTL  6611
+               ORG  201
+  201          BCE  769,769,1                    DCW  'B7697691'
+  209          RTW  1,700                        DCW  'L%U1700R'
+  217          BER  284                          DCW  'B284L'
+  222          RWD  1                            DCW  'U%U1R'
+  227          MCW  191,1209                     DCW  'M191S09'
+  234          CW   1696                         DCW  ')W96'
+  238          MCW  188,1330                     DCW  'M188T30'
+  245          MCW  690,1536                     DCW  'M690V36'
+  252          MCW  692,837                      DCW  'M692837'
+  259          CC   1                            DCW  'F1'
+  261          BW   280,184                      DCW  'V2801841'
+  269          MCW  183,89                       DCW  'M183089'
+  276          H    0&X1                         DCW  '.0|0'
+  280          H    280                          DCW  '.280'
+  284          BSP  1                            DCW  'U%U1B'
+  289          H    3333,3333                    DCW  '.C33C33'
+  296          B    209                          DCW  'B209'
+  300          DCW  @0@
+  301          DCW  @}@
+               END

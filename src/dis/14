@@ -1,0 +1,43 @@
+               JOB
+               CTL  6611
+               ORG  849
+  853          DCW  #5
+  856          DCW  #3
+  857          CC   L                            DCW  'FL'
+  859          CS   332                          DCW  '/332'
+  863          CS                                DCW  '/'
+  864          MCW  1047,237                     DCW  'M|47237'
+  871          W                                 DCW  '2'
+  872          CC   J                            DCW  'FJ'
+  874          MCW  1048,2699                    DCW  'M|48O99'
+  881          MCW  94,856                       DCW  'M094856'
+  888          S    1050                         DCW  'S|50'
+  892          S    1052                         DCW  'S|52'
+  896          MZ   86,1049                      DCW  'Y086|49'
+  903          MZ   84,1051                      DCW  'Y084|51'
+  910          BWZ  929,1051,2                   DCW  'V929|512'
+  918          A    1054,1052                    DCW  'A|54|52'
+  925          B    910                          DCW  'B910'
+  929          BWZ  948,1049,2                   DCW  'V948|492'
+  937          A    1056,1050                    DCW  'A|56|50'
+  944          B    929                          DCW  'B929'
+  948          A    1051,1050                    DCW  'A|51|50'
+  955          MCW  86,853                       DCW  'M086853'
+  962          MCW  1050                         DCW  'M|50'
+  966          ZA   853                          DCW  '?853'
+  970          MZ   972,853                      DCW  'Y972853'
+  977          BSS  333,C                        DCW  'B333C'
+  982          SBR  786,857                      DCW  'H786857'
+  989          SBR  833                          DCW  'H833'
+  993          SBR  710,2699                     DCW  'H710O99'
+ 1000          LCA  1066,110                     DCW  'L|66110'
+ 1007          B    700                          DCW  'B700'
+ 1047          DCW  @STORAGE ASSIGNMENT - SIMPLE VARIABLES@
+ 1048          DCW  #1
+ 1050          DCW  #2
+ 1052          DCW  #2
+ 1054          DCW  @A0@
+ 1056          DCW  @?4@
+ 1066          DCW  @VARBL QUAD@
+ 1067          DCW  @}@
+               END

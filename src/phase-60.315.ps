@@ -1,0 +1,994 @@
+%!PS-Adobe-3.0
+%%BoundingBox: 38 24 574 768
+%%Title: Enscript Output
+%%For: W. Van Snyder
+%%Creator: GNU enscript 1.6.4
+%%CreationDate: Tue Jul 15 00:12:03 2008
+%%Orientation: Landscape
+%%Pages: (atend)
+%%DocumentMedia: Letter 612 792 0 () ()
+%%DocumentNeededResources: (atend)
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset Enscript-Prolog 1.6 4
+%
+% Procedures.
+%
+
+/_S {	% save current state
+  /_s save def
+} def
+/_R {	% restore from saved state
+  _s restore
+} def
+
+/S {	% showpage protecting gstate
+  gsave
+  showpage
+  grestore
+} bind def
+
+/MF {	% fontname newfontname -> -	make a new encoded font
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  % insert only valid encoding vectors
+  encoding_vector length 256 eq {
+    newfont /Encoding encoding_vector put
+  } if
+
+  newfontname newfont definefont pop
+} def
+
+/MF_PS { % fontname newfontname -> -	make a new font preserving its enc
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  newfontname newfont definefont pop
+} def
+
+/SF { % fontname width height -> -	set a new font
+  /height exch def
+  /width exch def
+
+  findfont
+  [width 0 0 height 0 0] makefont setfont
+} def
+
+/SUF { % fontname width height -> -	set a new user font
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF
+  /F-gs-user-font width height SF
+} def
+
+/SUF_PS { % fontname width height -> -	set a new user font preserving its enc
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF_PS
+  /F-gs-user-font width height SF
+} def
+
+/M {moveto} bind def
+/s {show} bind def
+
+/Box {	% x y w h -> -			define box path
+  /d_h exch def /d_w exch def /d_y exch def /d_x exch def
+  d_x d_y  moveto
+  d_w 0 rlineto
+  0 d_h rlineto
+  d_w neg 0 rlineto
+  closepath
+} def
+
+/bgs {	% x y height blskip gray str -> -	show string with bg color
+  /str exch def
+  /gray exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    gray setgray
+    fill
+  grestore
+  x y M str s
+} def
+
+/bgcs { % x y height blskip red green blue str -> -  show string with bg color
+  /str exch def
+  /blue exch def
+  /green exch def
+  /red exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    red green blue setrgbcolor
+    fill
+  grestore
+  x y M str s
+} def
+
+% Highlight bars.
+/highlight_bars {	% nlines lineheight output_y_margin gray -> -
+  gsave
+    setgray
+    /ymarg exch def
+    /lineheight exch def
+    /nlines exch def
+
+    % This 2 is just a magic number to sync highlight lines to text.
+    0 d_header_y ymarg sub 2 sub translate
+
+    /cw d_output_w cols div def
+    /nrows d_output_h ymarg 2 mul sub lineheight div cvi def
+
+    % for each column
+    0 1 cols 1 sub {
+      cw mul /xp exch def
+
+      % for each rows
+      0 1 nrows 1 sub {
+        /rn exch def
+        rn lineheight mul neg /yp exch def
+        rn nlines idiv 2 mod 0 eq {
+	  % Draw highlight bar.  4 is just a magic indentation.
+	  xp 4 add yp cw 8 sub lineheight neg Box fill
+	} if
+      } for
+    } for
+
+  grestore
+} def
+
+% Line highlight bar.
+/line_highlight {	% x y width height gray -> -
+  gsave
+    /gray exch def
+    Box gray setgray fill
+  grestore
+} def
+
+% Column separator lines.
+/column_lines {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h translate
+    /cw d_output_w cols div def
+    1 1 cols 1 sub {
+      cw mul 0 moveto
+      0 d_output_h rlineto stroke
+    } for
+  grestore
+} def
+
+% Column borders.
+/column_borders {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h moveto
+    0 d_output_h rlineto
+    d_output_w 0 rlineto
+    0 d_output_h neg rlineto
+    closepath stroke
+  grestore
+} def
+
+% Do the actual underlay drawing
+/draw_underlay {
+  ul_style 0 eq {
+    ul_str true charpath stroke
+  } {
+    ul_str show
+  } ifelse
+} def
+
+% Underlay
+/underlay {	% - -> -
+  gsave
+    0 d_page_h translate
+    d_page_h neg d_page_w atan rotate
+
+    ul_gray setgray
+    ul_font setfont
+    /dw d_page_h dup mul d_page_w dup mul add sqrt def
+    ul_str stringwidth pop dw exch sub 2 div ul_h_ptsize -2 div moveto
+    draw_underlay
+  grestore
+} def
+
+/user_underlay {	% - -> -
+  gsave
+    ul_x ul_y translate
+    ul_angle rotate
+    ul_gray setgray
+    ul_font setfont
+    0 0 ul_h_ptsize 2 div sub moveto
+    draw_underlay
+  grestore
+} def
+
+% Page prefeed
+/page_prefeed {		% bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} def
+
+% Wrapped line markers
+/wrapped_line_mark {	% x y charwith charheight type -> -
+  /type exch def
+  /h exch def
+  /w exch def
+  /y exch def
+  /x exch def
+
+  type 2 eq {
+    % Black boxes (like TeX does)
+    gsave
+      0 setlinewidth
+      x w 4 div add y M
+      0 h rlineto w 2 div 0 rlineto 0 h neg rlineto
+      closepath fill
+    grestore
+  } {
+    type 3 eq {
+      % Small arrows
+      gsave
+        .2 setlinewidth
+        x w 2 div add y h 2 div add M
+        w 4 div 0 rlineto
+        x w 4 div add y lineto stroke
+
+        x w 4 div add w 8 div add y h 4 div add M
+        x w 4 div add y lineto
+	w 4 div h 8 div rlineto stroke
+      grestore
+    } {
+      % do nothing
+    } ifelse
+  } ifelse
+} def
+
+% EPSF import.
+
+/BeginEPSF {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack
+  userdict begin
+  /showpage { } def
+  0 setgray 0 setlinecap
+  1 setlinewidth 0 setlinejoin
+  10 setmiterlimit [ ] 0 setdash newpath
+  /languagelevel where {
+    pop languagelevel
+    1 ne {
+      false setstrokeadjust false setoverprint
+    } if
+  } if
+} bind def
+
+/EndEPSF {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+%%EndResource
+%%BeginResource: procset Enscript-Encoding-88591 1.6 4
+/encoding_vector [
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclam       	/quotedbl     	/numbersign   	
+/dollar       	/percent      	/ampersand    	/quoteright   	
+/parenleft    	/parenright   	/asterisk     	/plus         	
+/comma        	/hyphen       	/period       	/slash        	
+/zero         	/one          	/two          	/three        	
+/four         	/five         	/six          	/seven        	
+/eight        	/nine         	/colon        	/semicolon    	
+/less         	/equal        	/greater      	/question     	
+/at           	/A            	/B            	/C            	
+/D            	/E            	/F            	/G            	
+/H            	/I            	/J            	/K            	
+/L            	/M            	/N            	/O            	
+/P            	/Q            	/R            	/S            	
+/T            	/U            	/V            	/W            	
+/X            	/Y            	/Z            	/bracketleft  	
+/backslash    	/bracketright 	/asciicircum  	/underscore   	
+/quoteleft    	/a            	/b            	/c            	
+/d            	/e            	/f            	/g            	
+/h            	/i            	/j            	/k            	
+/l            	/m            	/n            	/o            	
+/p            	/q            	/r            	/s            	
+/t            	/u            	/v            	/w            	
+/x            	/y            	/z            	/braceleft    	
+/bar          	/braceright   	/tilde        	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclamdown   	/cent         	/sterling     	
+/currency     	/yen          	/brokenbar    	/section      	
+/dieresis     	/copyright    	/ordfeminine  	/guillemotleft	
+/logicalnot   	/hyphen       	/registered   	/macron       	
+/degree       	/plusminus    	/twosuperior  	/threesuperior	
+/acute        	/mu           	/paragraph    	/bullet       	
+/cedilla      	/onesuperior  	/ordmasculine 	/guillemotright	
+/onequarter   	/onehalf      	/threequarters	/questiondown 	
+/Agrave       	/Aacute       	/Acircumflex  	/Atilde       	
+/Adieresis    	/Aring        	/AE           	/Ccedilla     	
+/Egrave       	/Eacute       	/Ecircumflex  	/Edieresis    	
+/Igrave       	/Iacute       	/Icircumflex  	/Idieresis    	
+/Eth          	/Ntilde       	/Ograve       	/Oacute       	
+/Ocircumflex  	/Otilde       	/Odieresis    	/multiply     	
+/Oslash       	/Ugrave       	/Uacute       	/Ucircumflex  	
+/Udieresis    	/Yacute       	/Thorn        	/germandbls   	
+/agrave       	/aacute       	/acircumflex  	/atilde       	
+/adieresis    	/aring        	/ae           	/ccedilla     	
+/egrave       	/eacute       	/ecircumflex  	/edieresis    	
+/igrave       	/iacute       	/icircumflex  	/idieresis    	
+/eth          	/ntilde       	/ograve       	/oacute       	
+/ocircumflex  	/otilde       	/odieresis    	/divide       	
+/oslash       	/ugrave       	/uacute       	/ucircumflex  	
+/udieresis    	/yacute       	/thorn        	/ydieresis    	
+] def
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Courier
+/HFpt_w 10 def
+/HFpt_h 10 def
+/Courier-Bold /HF-gs-font MF
+/HF /HF-gs-font findfont [HFpt_w 0 0 HFpt_h 0 0] makefont def
+/Courier /F-gs-font MF
+/F-gs-font 7 7 SF
+/#copies 1 def
+% Pagedevice definitions:
+gs_languagelevel 1 gt {
+  <<
+    /PageSize [612 792] 
+  >> setpagedevice
+} if
+%%BeginResource: procset Enscript-Header-simple 1.6 4
+
+/do_header {	% print default simple header
+  gsave
+    d_header_x d_header_y HFpt_h 3 div add translate
+
+    HF setfont
+    user_header_p {
+      5 0 moveto user_header_left_str show
+
+      d_header_w user_header_center_str stringwidth pop sub 2 div
+      0 moveto user_header_center_str show
+
+      d_header_w user_header_right_str stringwidth pop sub 5 sub
+      0 moveto user_header_right_str show
+    } {
+      fname length fmodstr length add pagenumstr length add 95 6 idiv add d_header_w 6 idiv le{
+        5 0 moveto fname show
+        45 0 rmoveto fmodstr show
+        45 0 rmoveto pagenumstr show
+      } {
+        5 0 moveto fmodstr show
+        45 0 rmoveto pagenumstr show
+        fname length d_header_w 6 idiv idiv 1 add 10 mul 5 exch moveto
+        1 1 fname length d_header_w 6 idiv idiv
+        {
+          dup fname exch 1 sub d_header_w 6 idiv mul d_header_w 6 idiv getinterval show
+          5 exch 10 mul fname length d_header_w 6 idiv idiv 1 add 10 mul exch sub moveto
+        } for
+        5 10 moveto
+        fname fname length d_header_w 6 idiv idiv d_header_w 6 idiv mul dup fname length exch sub getinterval show
+      }ifelse
+    }ifelse
+
+  grestore
+} def
+%%EndResource
+/d_page_w 744 def
+/d_page_h 536 def
+/d_header_x 0 def
+/d_header_y 492 def
+/d_header_w 744 def
+/d_header_h 44 def
+/d_footer_x 0 def
+/d_footer_y 0 def
+/d_footer_w 744 def
+/d_footer_h 0 def
+/d_output_w 744 def
+/d_output_h 492 def
+/cols 1 def
+%%EndSetup
+%%Page: (1) 1
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 1 def
+/fname (phase-60.315.asc) def
+/fdir () def
+/ftail (phase-60.315.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:51 2008) def
+/pagenumstr (1) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 474 M
+(CLEAR STORAGE 1     ,008015,022026,030037,044,049,053053N000000N00001026                                         1) s
+5 466 M
+(CLEAR STORAGE 2     L068116,105106,110117B101/I9I#071029C029056B026/B001/0991,001/001117I0?                      2) s
+5 458 M
+(BOOTSTRAP           ,008015,022029,036040,047054,061068,072/061039              ,0010011040                      3) s
+5 442 M
+(                          FORTRAN COMPILER -- CONDENSED DECK PHASE 3 -- 60                               PAGE    1) s
+5 426 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 410 M
+( 101                JOB   FORTRAN COMPILER -- CONDENSED DECK PHASE 3 -- 60) s
+5 402 M
+( 102                CTL   6611) s
+5 394 M
+( 103         *) s
+5 386 M
+( 104         X1     EQU   89                                                          0089) s
+5 378 M
+( 105         X2     EQU   94                                                          0094) s
+5 370 M
+( 106         X3     EQU   99                                                          0099) s
+5 362 M
+( 107         *) s
+5 354 M
+( 108         * STUFF IN THE RESIDENT AREA) s
+5 346 M
+( 109         *) s
+5 338 M
+( 110         PHASID EQU   110  PHASE ID, FOR SNAPSHOT DUMPS                           0110) s
+5 330 M
+( 111         NSTMTS EQU   183  NUMBER OF STATEMENTS, INCLUDING GENERATED STOP         0183) s
+5 322 M
+( 112         *                 BEGINNING OF GENERATED CODE BY NOW.) s
+5 314 M
+( 113         GLOBER EQU   184  GLOBAL ERROR FLAG -- WM MEANS ERROR                    0184) s
+5 306 M
+( 114         ARYTOP EQU   194  TOP OF ARRAYS IN OBJECT CODE                           0194) s
+5 298 M
+( 115         SNAPSH EQU   333  CORE DUMP SNAPSHOT                                     0333) s
+5 290 M
+( 116         CONDNS EQU   693  P FOR CONDENSED DECK                                   0693) s
+5 282 M
+( 117         FMTSW  EQU   696  X FOR NO FORMAT, L FOR LIMITED FORMAT                  0696) s
+5 274 M
+( 118         *                 BLANK FOR ORDINARY, A FOR A CONVERSION) s
+5 266 M
+( 119         LOADNX EQU   700  LOAD NEXT OVERLAY                                      0700) s
+5 258 M
+( 120         CLEARL EQU   707  CS AT START OF OVERLAY LOADER                          0707) s
+5 250 M
+( 121         *) s
+5 242 M
+( 122         * RUNTIME ADDRESSES) s
+5 234 M
+( 123         *) s
+5 226 M
+( 124         FMTBAS EQU   1697  BASE ADDRESS OF LIMITED AND NORMAL                    1697) s
+5 218 M
+( 125         LGM    EQU   2015  GMWM AT END OF LIMITED ROUTINE                        2015) s
+5 210 M
+( 126         NGM    EQU   4269  GMWM AT END OF NORMAL ROUTINE                         4269) s
+5 202 M
+( 127         FMTBAA EQU   4280  BASE ADDRESS FOR A-CONVERSION                         4280) s
+5 194 M
+( 128         AGM    EQU   4616  GMWM AT END OF A-CONVERSION                           4616) s
+5 186 M
+( 129         *) s
+5 178 M
+( 130                ORG   838                                                                0838) s
+5 170 M
+( 131    838  BEGINN MCW   NSTMTS,X1  BEGINNING OF GENERATED CODE                   7  0838  M 183 089            4) s
+5 162 M
+( 132    845         BCE   *&5,CONDNS,P                                             8  0845  B 857 693 P          4) s
+5 154 M
+( 133    853         B     DONE                                                     4  0853  B U74                4) s
+5 146 M
+( 134    857         BW    DONE,GLOBER                                              8  0857  V U74 184 1          4) s
+5 138 M
+( 135    865  LOOP   SBR   PUEXIT&3,SETUP                                           7  0865  H /55 893            4) s
+5 130 M
+( 136    872         MCW   SETWMS-11,W7  ,040040                                    7  0872  M V10 V38            5) s
+5 122 M
+( 137    879         MCW   A146,X3                                                  7  0879  M V25 099            5) s
+5 114 M
+( 138    886         MCW   LCA,140                                                  7  0886  M V26 140            5) s
+5 106 M
+( 139    893  SETUP  CS    139                                                      4  0893  / 139                5) s
+5 98 M
+( 140    897         BCV   *&5                                                      5  0897  B 906 @              5) s
+5 90 M
+( 141    902         B     *&3                                                      4  0902  B 908                5) s
+5 82 M
+( 142    906         CC    1                                                        2  0906  F 1                  5) s
+5 74 M
+( 143    908         MCW   SETWMS,171                                               7  0908  M V21 171            6) s
+5 66 M
+( 144    915         SW    140                                                      4  0915  , 140                6) s
+5 58 M
+( 145    919         CS    332                                                      4  0919  / 332                6) s
+5 50 M
+( 146    923         CS                                                             1  0923  /                    6) s
+5 42 M
+( 147    924         SW    101                                                      4  0924  , 101                6) s
+_R
+S
+%%Page: (2) 2
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 2 def
+/fname (phase-60.315.asc) def
+/fdir () def
+/ftail (phase-60.315.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:51 2008) def
+/pagenumstr (2) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- CONDENSED DECK PHASE 3 -- 60                               PAGE    2) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 148    928         MCW   A001,X2                                                  7  0928  M V29 094            6) s
+5 442 M
+( 149    935         MCW   K1,W1                                                    7  0935  M V30 V31            6) s
+5 434 M
+( 150    942         MCW   W7,153                                                   7  0942  M V38 153            7) s
+5 426 M
+( 151    949         BW    CWLOAD,FLAG                                              8  0949  V S91 V22 1          7) s
+5 418 M
+( 152    957  MORE   MN    0&X1,100&X2  MOVE A CHARACTER                            7  0957  D 0|0 1!0            7) s
+5 410 M
+( 153    964         MZ    0&X1,100&X2    TO THE PUNCH AREA                         7  0964  Y 0|0 1!0            7) s
+5 402 M
+( 154    971  CHKTOP C     ARYTOP,X1                                                7  0971  C 194 089            7) s
+5 394 M
+( 155    978         BE    TOP                                                      5  0978  B S04 S              8) s
+5 386 M
+( 156    983         SBR   X1,1&X1                                                  7  0983  H 089 0|1            8) s
+5 378 M
+( 157    990         SBR   X2,1&X2                                                  7  0990  H 094 0!1            8) s
+5 370 M
+( 158    997         BCE   ENDCOD,0&X1,]  RIGHT BRACKET MEANS END OF CODE           8  0997  B S83 0|0 ]          8) s
+5 362 M
+( 159  1 005         BW    WM,0&X1                                                  8  1005  V S15 0|0 1          8) s
+5 354 M
+( 160  1 013         C     A040,X2                                                  7  1013  C V41 094            9) s
+5 346 M
+( 161  1 020         BL    MORE                                                     5  1020  B 957 T              9) s
+5 338 M
+( 162  1 025         C     A160,X3                                                  7  1025  C V44 099            9) s
+5 330 M
+( 163  1 032         BL    SETCW                                                    5  1032  B /75 T              9) s
+5 322 M
+( 164  1 037         MCW   A040,167                                                 7  1037  M V41 167            9) s
+5 314 M
+( 165  1 044         BH    *&8                                                      5  1044  B |56 U              9) s
+5 306 M
+( 166  1 049         MCW   A040,164                                                 7  1049  M V41 164           10) s
+5 298 M
+( 167  1 056         CW    140                                                      4  1056  \) 140               10) s
+5 290 M
+( 168  1 060  SW     SW    0                                                        4  1060  , 000               10) s
+5 282 M
+( 169  1 064         SBR   X2                                                       4  1064  H 094               10) s
+5 274 M
+( 170  1 068         A     KM990,X2&1                                               7  1068  A V47 095           10) s
+5 266 M
+( 171  1 075         MCW   239,139  CLEAR PART OF CARD ABOVE LOADED CHARS           7  1075  M 239 139           10) s
+5 258 M
+( 172  1 082  SX1    SBR   X1,0                                                     7  1082  H 089 000           11) s
+5 250 M
+( 173  1 089  PUNCH0 MCW   SETWMS-11,W7  ,040040                                    7  1089  M V10 V38           11) s
+5 242 M
+( 174  1 096         MCW   A146,X3                                                  7  1096  M V25 099           11) s
+5 234 M
+( 175  1 103  PUNCH  A     K1,175  BUMP SEQUENCE NUMBER                             7  1103  A V30 175           11) s
+5 226 M
+( 176  1 110         MN    0&X2                                                     4  1110  D 0!0               11) s
+5 218 M
+( 177  1 114         SBR   143                                                      4  1114  H 143               11) s
+5 210 M
+( 178  1 118         C     143,A000                                                 7  1118  C 143 V50           12) s
+5 202 M
+( 179  1 125  PUEX1  BE    AFTARY                                         V3M4      5  1125  B T48 S             12) s
+5 194 M
+( 180  1 130         MN    0&X1                                                     4  1130  D 0|0               12) s
+5 186 M
+( 181  1 134         SBR   146                                                      4  1134  H 146               12) s
+5 178 M
+( 182  1 138         LCA   180,280                                                  7  1138  L 180 280           12) s
+5 170 M
+( 183  1 145         LCA                                                            1  1145  L                   12) s
+5 162 M
+( 184  1 146         LCA                                                            1  1146  L                   12) s
+5 154 M
+( 185  1 147         BSS   *&5,B                                                    5  1147  B /56 B             13) s
+5 146 M
+( 186  1 152  PUEXIT P     SETUP                                                    4  1152  4 893               13) s
+5 138 M
+( 187  1 156         SW    PREXIT&1                                                 4  1156  , /72               13) s
+5 130 M
+( 188  1 160         MCW   PUEXIT&3,PREXIT&3                                        7  1160  M /55 /74           13) s
+5 122 M
+( 189  1 167         CW    PREXIT&1                                                 4  1167  \) /72               13) s
+5 114 M
+( 190  1 171  PREXIT WP    SETUP                                                    4  1171  6 893               13) s
+5 106 M
+( 191         *) s
+5 98 M
+( 192         * PUT A CW INSTRUCTION IN W7) s
+5 90 M
+( 193         *) s
+5 82 M
+( 194  1 175  SETCW  MCW   CW,W7-6                                                  7  1175  M V51 V32           13) s
+5 74 M
+( 195  1 182         MCW   X1,W7                                                    7  1182  M 089 V38           14) s
+5 66 M
+( 196  1 189         MCW   X1                                                       4  1189  M 089               14) s
+5 58 M
+( 197  1 193         MCW   A153,X3                                                  7  1193  M V54 099           14) s
+_R
+S
+%%Page: (3) 3
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 3 def
+/fname (phase-60.315.asc) def
+/fdir () def
+/ftail (phase-60.315.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:51 2008) def
+/pagenumstr (3) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- CONDENSED DECK PHASE 3 -- 60                               PAGE    3) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 198  1 200         B     PUNCH                                                    4  1200  B /03               14) s
+5 442 M
+( 199         *) s
+5 434 M
+( 200         * GOT TO TOP OF ARRAYS) s
+5 426 M
+( 201         *) s
+5 418 M
+( 202  1 204  TOP    SBR   PUEXIT&3,AFTARY                                          7  1204  H /55 T48           14) s
+5 410 M
+( 203  1 211         B     PUNCH                                                    4  1211  B /03               14) s
+5 402 M
+( 204         *) s
+5 394 M
+( 205         * FOUND WM) s
+5 386 M
+( 206         *) s
+5 378 M
+( 207  1 215  WM     MCW   X1,SX1&6                                                 7  1215  M 089 |88           15) s
+5 370 M
+( 208  1 222         SBR   SW&3,100&X2                                              7  1222  H |63 1!0           15) s
+5 362 M
+( 209  1 229         C     A040,X2                                                  7  1229  C V41 094           15) s
+5 354 M
+( 210  1 236         BE    PUNCH0                                                   5  1236  B |89 S             15) s
+5 346 M
+( 211  1 241         C     A167,X3                                                  7  1241  C V57 099           15) s
+5 338 M
+( 212  1 248         BE    PUNCH0                                                   5  1248  B |89 S             15) s
+5 330 M
+( 213  1 253         SBR   X3,3&X3                                                  7  1253  H 099 0?3           16) s
+5 322 M
+( 214  1 260         ZS    W1                                                       4  1260  ! V31               16) s
+5 314 M
+( 215  1 264         BM    BUMPX3,W1                                                8  1264  V T37 V31 K         16) s
+5 306 M
+( 216  1 272  WM2    MCW   X1,0&X3                                                  7  1272  M 089 0?0           16) s
+5 298 M
+( 217  1 279         B     MORE                                                     4  1279  B 957               16) s
+5 290 M
+( 218         *) s
+5 282 M
+( 219         * SAW A RIGHT BRACKET -- END OF CODE) s
+5 274 M
+( 220         *) s
+5 266 M
+( 221  1 283  ENDCOD SW    FLAG                                                     4  1283  , V22               16) s
+5 258 M
+( 222  1 287         B     PUNCH0                                                   4  1287  B |89               16) s
+5 250 M
+( 223         *) s
+5 242 M
+( 224         * SET A CW INSTRUCTION IN THE LOAD AREA) s
+5 234 M
+( 225         *) s
+5 226 M
+( 226  1 291  CWLOAD CW    FLAG                                                     4  1291  \) V22               17) s
+5 218 M
+( 227  1 295         MCM   0&X1                                                     4  1295  P 0|0               17) s
+5 210 M
+( 228  1 299         SBR   X1                                                       4  1299  H 089               17) s
+5 202 M
+( 229  1 303         BW    MORE,0&X1                                                8  1303  V 957 0|0 1         17) s
+5 194 M
+( 230  1 311         MCW   X1,153                                                   7  1311  M 089 153           17) s
+5 186 M
+( 231  1 318         MCW   X1                                                       4  1318  M 089               17) s
+5 178 M
+( 232  1 322         MCW   CW                                                       4  1322  M V51               17) s
+5 170 M
+( 233  1 326         MCW   A153,X3                                                  7  1326  M V54 099           18) s
+5 162 M
+( 234  1 333         B     MORE                                                     4  1333  B 957               18) s
+5 154 M
+( 235         *) s
+5 146 M
+( 236  1 337  BUMPX3 SBR   X3,1&X3                                                  7  1337  H 099 0?1           18) s
+5 138 M
+( 237  1 344         B     WM2                                                      4  1344  B S72               18) s
+5 130 M
+( 238         *) s
+5 122 M
+( 239         * AFTER THE ARRAYS) s
+5 114 M
+( 240         *) s
+5 106 M
+( 241  1 348  AFTARY SBR   X1,FMTBAS                                                7  1348  H 089 W97           18) s
+5 98 M
+( 242  1 355         BCE   XFMT,FMTSW,X  NO FORMAT ROUTINE                          8  1355  B U26 696 X         18) s
+5 90 M
+( 243  1 363         BCE   LFMT,FMTSW,L  LIMITED FORMAT ROUTINE                     8  1363  B U04 696 L         19) s
+5 82 M
+( 244  1 371         BCE   AFMT,FMTSW,A  A-CONVERSION FORMAT                        8  1371  B U15 696 A         19) s
+5 74 M
+( 245  1 379  SETCHK SBR   CHKTOP&3,USRBAS    NORMAL FORMAT                         7  1379  H 974 V03           19) s
+5 66 M
+( 246  1 386         SBR   PUEX1&3,XFMT                                   V3M4      7  1386  H /28 U26           19) s
+5 58 M
+( 247  1 393         SBR   TOP&6,XFMT                                               7  1393  H S10 U26           19) s
+_R
+S
+%%Page: (4) 4
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 4 def
+/fname (phase-60.315.asc) def
+/fdir () def
+/ftail (phase-60.315.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:51 2008) def
+/pagenumstr (4) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- CONDENSED DECK PHASE 3 -- 60                               PAGE    4) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 248  1 400         B     LOOP                                                     4  1400  B 865               20) s
+5 442 M
+( 249  1 404  LFMT   SBR   USRBAS,LGM&1  AFTER LIMITED FORMAT                       7  1404  H V03 !16           20) s
+5 434 M
+( 250  1 411         B     SETCHK                                                   4  1411  B T79               20) s
+5 426 M
+( 251  1 415  AFMT   SBR   USRBAS,AGM&1  AFTER A CONVERSION                         7  1415  H V03 61X           20) s
+5 418 M
+( 252  1 422         B     SETCHK                                                   4  1422  B T79               20) s
+5 410 M
+( 253  1 426  XFMT   CS    171                                                      4  1426  / 171               20) s
+5 402 M
+( 254  1 430         MCW   A080,146                                                 7  1430  M V60 146           20) s
+5 394 M
+( 255  1 437         MCW   NSTMTS                                                   4  1437  M 183               21) s
+5 386 M
+( 256  1 441         LCA   CS                                                       4  1441  L V61               21) s
+5 378 M
+( 257  1 445         A     K1,175                                                   7  1445  A V30 175           21) s
+5 370 M
+( 258  1 452         LCA   180,280                                                  7  1452  L 180 280           21) s
+5 362 M
+( 259  1 459         LCA                                                            1  1459  L                   21) s
+5 354 M
+( 260  1 460         CS                                                             1  1460  /                   21) s
+5 346 M
+( 261  1 461         BSS   PRINT,B                                                  5  1461  B U97 B             21) s
+5 338 M
+( 262  1 466         P                                                              1  1466  4                   22) s
+5 330 M
+( 263  1 467  LASTCD CS    180                                                      4  1467  / 180               22) s
+5 322 M
+( 264  1 471         P                                                              1  1471  4                   22) s
+5 314 M
+( 265  1 472         SS    8                                                        2  1472  K 8                 22) s
+5 306 M
+( 266  1 474  DONE   BSS   SNAPSH,C                                                 5  1474  B 333 C             22) s
+5 298 M
+( 267  1 479         SBR   CLEARL&3,GMWM                                            7  1479  H 710 V73           22) s
+5 290 M
+( 268  1 486         LCA   GAUX1,PHASID                                             7  1486  L V69 110           22) s
+5 282 M
+( 269  1 493         B     LOADNX                                                   4  1493  B 700               23) s
+5 274 M
+( 270  1 497  PRINT  WP    LASTCD                                                   4  1497  6 U67               23) s
+5 266 M
+( 271         *) s
+5 258 M
+( 272         * DATA) s
+5 250 M
+( 273         *) s
+5 242 M
+( 274  1 503  USRBAS DSA   FMTBAA         BASE ADDRESS OF USER CODE                 3  1503  28|                 23) s
+5 234 M
+( 275  1 521  SETWMS DCW   @,040040,0400401040@                                    18  1521                      23) s
+5 226 M
+( 276  1 522  FLAG   DC    #1                                                       1  1522                      23) s
+5 218 M
+( 277  1 525  A146   DSA   146                                                      3  1525  146                 23) s
+5 210 M
+( 278  1 526  LCA    LCA                                                            1  1526  L                   23) s
+5 202 M
+( 279  1 529  A001   DSA   1                                                        3  1529  001                 23) s
+5 194 M
+( 280  1 530  K1     DCW   1                                                        1  1530                      24) s
+5 186 M
+( 281  1 531  W1     DCW   #1                                                       1  1531                      24) s
+5 178 M
+( 282  1 538  W7     DCW   #7                                                       7  1538                      24) s
+5 170 M
+( 283  1 541  A040   DSA   40                                                       3  1541  040                 24) s
+5 162 M
+( 284  1 544  A160   DSA   160                                                      3  1544  160                 24) s
+5 154 M
+( 285  1 547  KM990  DCW   -990                                                     3  1547                      24) s
+5 146 M
+( 286  1 550  A000   DSA   0                                                        3  1550  000                 24) s
+5 138 M
+( 287  1 551  CW     CW                                                             1  1551  \)                   25) s
+5 130 M
+( 288  1 554  A153   DSA   153                                                      3  1554  153                 25) s
+5 122 M
+( 289  1 557  A167   DSA   167                                                      3  1557  167                 25) s
+5 114 M
+( 290  1 560  A080   DSA   80                                                       3  1560  080                 25) s
+5 106 M
+( 291  1 561  CS     CS                                                             1  1561  /                   25) s
+5 98 M
+( 292  1 569  GAUX1  DCW   @GAUX ONE@                                               8  1569                      25) s
+5 90 M
+( 293  1 572         DSA   3999                                                     3  1572  I99                 25) s
+5 82 M
+( 294  1 573  GMWM   DCW   @}@                                                      1  1573              GMARK   26) s
+5 74 M
+( 295                EX    BEGINN                                                            B 838               27) s
+5 66 M
+( 296                END                                                                     / 000 080) s
+_R
+S
+%%Page: (5) 5
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 5 def
+/fname (phase-60.315.asc) def
+/fdir () def
+/ftail (phase-60.315.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:51 2008) def
+/pagenumstr (5) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- CONDENSED DECK PHASE 3 -- 60                               PAGE    5) s
+5 466 M
+(SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  ) s
+5 458 M
+(A000     1550    A001     1529    A040     1541    A080     1560    A146     1525    A153     1554    A160     1544   ) s
+5 450 M
+(A167     1557    AFMT     1415    AFTARY   1348    AGM      4616    ARYTOP    194    BEGINN    838    BUMPX3   1337   ) s
+5 442 M
+(CHKTOP    971    CLEARL    707    CONDNS    693    CS       1561    CW       1551    CWLOAD   1291    DONE     1474   ) s
+5 434 M
+(ENDCOD   1283    FLAG     1522    FMTBAA   4280    FMTBAS   1697    FMTSW     696    GAUX1    1569    GLOBER    184   ) s
+5 426 M
+(GMWM     1573    K1       1530    KM990    1547    LASTCD   1467    LCA      1526    LFMT     1404    LGM      2015   ) s
+5 418 M
+(LOADNX    700    LOOP      865    MORE      957    NGM      4269    NSTMTS    183    PHASID    110    PREXIT   1171   ) s
+5 410 M
+(PRINT    1497    PUEX1    1125    PUEXIT   1152    PUNCH    1103    PUNCH0   1089    SETCHK   1379    SETCW    1175   ) s
+5 402 M
+(SETUP     893    SETWMS   1521    SNAPSH    333    SW       1060    SX1      1082    TOP      1204    USRBAS   1503   ) s
+5 394 M
+(W1       1531    W7       1538    WM       1215    WM2      1272    X1         89    X2         94    X3         99   ) s
+5 386 M
+(XFMT     1426   ) s
+_R
+S
+%%Trailer
+%%Pages: 5
+%%DocumentNeededResources: font Courier-Bold Courier 
+%%EOF

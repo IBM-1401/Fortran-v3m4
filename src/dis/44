@@ -1,0 +1,22 @@
+               JOB
+               CTL  6611
+               ORG  838
+  838          BCE  861,0&X1,                    DCW  'B8610|0 '
+  846          MCW  0&X1,925                     DCW  'M0|0925'
+  853          BCE  884,922,C                    DCW  'B884922C'
+  861          BSS  333,C                        DCW  'B333C'
+  866          SBR  710,931                      DCW  'H710931'
+  873          LCA  930,110                      DCW  'L930110'
+  880          B    700                          DCW  'B700'
+  884          LCA  0&X1,0&X3                    DCW  'L0|00?0'
+  891          SAR  89                           DCW  'Q089'
+  895          C    0&X3                         DCW  'C0?0'
+  899          SAR  99                           DCW  'Q099'
+  903          LCA  1&X1,2&X3                    DCW  'L0|10?2'
+  910          C    0&X1                         DCW  'C0|0'
+  914          SAR  89                           DCW  'Q089'
+  918          B    838                          DCW  'B838'
+  925          DCW  #4
+  930          DCW  @DOMSK@
+  931          DCW  @}@
+               END

@@ -1,0 +1,52 @@
+               JOB
+               CTL  6611
+               ORG  857
+  857          CC   J                            DCW  'FJ'
+  859          MCW  89,1079                      DCW  'M089|79'
+  866          MCW  688,94                       DCW  'M688094'
+  873          BCE  945,0&X2,}                   DCW  'B9450!0}'
+  881          SBR  94                           DCW  'H094'
+  885          C    94,83                        DCW  'C094083'
+  892          BU   873                          DCW  'B873/'
+  897          MCW  1079,89                      DCW  'M|79089'
+  904          BSS  333,D                        DCW  'B333D'
+  909          SBR  786,838                      DCW  'H786838'
+  916          SBR  833                          DCW  'H833'
+  920          SBR  796,838                      DCW  'H796838'
+  927          SBR  710,2698                     DCW  'H710O98'
+  934          LCA  1088,110                     DCW  'L|88110'
+  941          B    700                          DCW  'B700'
+  945          BW   965,0&X2                     DCW  'V9650!01'
+  953          MN   0&X2                         DCW  'D0!0'
+  957          SBR  94                           DCW  'H094'
+  961          B    873                          DCW  'B873'
+  965          CS   299                          DCW  '/299'
+  969          MCW  1121,233                     DCW  'M/21233'
+  976          MCW  94,99                        DCW  'M094099'
+  983          NOP  1&X3                         DCW  'N0?1'
+  987          SAR  99                           DCW  'Q099'
+  991          BW   1003,2&X3                    DCW  'V|030?21'
+  999          B    983                          DCW  'B983'
+ 1003          MN   234                          DCW  'D234'
+ 1007          MN                                DCW  'D'
+ 1008          SAR  89                           DCW  'Q089'
+ 1012          SBR  99,1&X3                      DCW  'H0990?1'
+ 1019          MCW  0&X3,1122                    DCW  'M0?0/22'
+ 1026          SAR  99                           DCW  'Q099'
+ 1030          MCW  1122,2&X1                    DCW  'M/220|2'
+ 1037          SBR  89                           DCW  'H089'
+ 1041          BW   1053,1&X3                    DCW  'V|530?11'
+ 1049          B    1019                         DCW  'B|19'
+ 1053          W                                 DCW  '2'
+ 1054          BCV  1063                         DCW  'B|63@'
+ 1059          B    1065                         DCW  'B|65'
+ 1063          CC   1                            DCW  'F1'
+ 1065          MN   0&X2                         DCW  'D0!0'
+ 1069          SAR  94                           DCW  'Q094'
+ 1073          B    873                          DCW  'B873'
+ 1079          DCW  #3
+ 1088          DCW  @CONST ONE@
+ 1121          DCW  @ERROR 11 - UNREFERENCED VARIABLE @
+ 1122          DCW  #1
+ 1123          DCW  @}@
+               END

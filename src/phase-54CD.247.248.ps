@@ -1,0 +1,2332 @@
+%!PS-Adobe-3.0
+%%BoundingBox: 38 24 574 768
+%%Title: Enscript Output
+%%For: W. Van Snyder
+%%Creator: GNU enscript 1.6.4
+%%CreationDate: Tue Jul 15 00:12:03 2008
+%%Orientation: Landscape
+%%Pages: (atend)
+%%DocumentMedia: Letter 612 792 0 () ()
+%%DocumentNeededResources: (atend)
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset Enscript-Prolog 1.6 4
+%
+% Procedures.
+%
+
+/_S {	% save current state
+  /_s save def
+} def
+/_R {	% restore from saved state
+  _s restore
+} def
+
+/S {	% showpage protecting gstate
+  gsave
+  showpage
+  grestore
+} bind def
+
+/MF {	% fontname newfontname -> -	make a new encoded font
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  % insert only valid encoding vectors
+  encoding_vector length 256 eq {
+    newfont /Encoding encoding_vector put
+  } if
+
+  newfontname newfont definefont pop
+} def
+
+/MF_PS { % fontname newfontname -> -	make a new font preserving its enc
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  newfontname newfont definefont pop
+} def
+
+/SF { % fontname width height -> -	set a new font
+  /height exch def
+  /width exch def
+
+  findfont
+  [width 0 0 height 0 0] makefont setfont
+} def
+
+/SUF { % fontname width height -> -	set a new user font
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF
+  /F-gs-user-font width height SF
+} def
+
+/SUF_PS { % fontname width height -> -	set a new user font preserving its enc
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF_PS
+  /F-gs-user-font width height SF
+} def
+
+/M {moveto} bind def
+/s {show} bind def
+
+/Box {	% x y w h -> -			define box path
+  /d_h exch def /d_w exch def /d_y exch def /d_x exch def
+  d_x d_y  moveto
+  d_w 0 rlineto
+  0 d_h rlineto
+  d_w neg 0 rlineto
+  closepath
+} def
+
+/bgs {	% x y height blskip gray str -> -	show string with bg color
+  /str exch def
+  /gray exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    gray setgray
+    fill
+  grestore
+  x y M str s
+} def
+
+/bgcs { % x y height blskip red green blue str -> -  show string with bg color
+  /str exch def
+  /blue exch def
+  /green exch def
+  /red exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    red green blue setrgbcolor
+    fill
+  grestore
+  x y M str s
+} def
+
+% Highlight bars.
+/highlight_bars {	% nlines lineheight output_y_margin gray -> -
+  gsave
+    setgray
+    /ymarg exch def
+    /lineheight exch def
+    /nlines exch def
+
+    % This 2 is just a magic number to sync highlight lines to text.
+    0 d_header_y ymarg sub 2 sub translate
+
+    /cw d_output_w cols div def
+    /nrows d_output_h ymarg 2 mul sub lineheight div cvi def
+
+    % for each column
+    0 1 cols 1 sub {
+      cw mul /xp exch def
+
+      % for each rows
+      0 1 nrows 1 sub {
+        /rn exch def
+        rn lineheight mul neg /yp exch def
+        rn nlines idiv 2 mod 0 eq {
+	  % Draw highlight bar.  4 is just a magic indentation.
+	  xp 4 add yp cw 8 sub lineheight neg Box fill
+	} if
+      } for
+    } for
+
+  grestore
+} def
+
+% Line highlight bar.
+/line_highlight {	% x y width height gray -> -
+  gsave
+    /gray exch def
+    Box gray setgray fill
+  grestore
+} def
+
+% Column separator lines.
+/column_lines {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h translate
+    /cw d_output_w cols div def
+    1 1 cols 1 sub {
+      cw mul 0 moveto
+      0 d_output_h rlineto stroke
+    } for
+  grestore
+} def
+
+% Column borders.
+/column_borders {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h moveto
+    0 d_output_h rlineto
+    d_output_w 0 rlineto
+    0 d_output_h neg rlineto
+    closepath stroke
+  grestore
+} def
+
+% Do the actual underlay drawing
+/draw_underlay {
+  ul_style 0 eq {
+    ul_str true charpath stroke
+  } {
+    ul_str show
+  } ifelse
+} def
+
+% Underlay
+/underlay {	% - -> -
+  gsave
+    0 d_page_h translate
+    d_page_h neg d_page_w atan rotate
+
+    ul_gray setgray
+    ul_font setfont
+    /dw d_page_h dup mul d_page_w dup mul add sqrt def
+    ul_str stringwidth pop dw exch sub 2 div ul_h_ptsize -2 div moveto
+    draw_underlay
+  grestore
+} def
+
+/user_underlay {	% - -> -
+  gsave
+    ul_x ul_y translate
+    ul_angle rotate
+    ul_gray setgray
+    ul_font setfont
+    0 0 ul_h_ptsize 2 div sub moveto
+    draw_underlay
+  grestore
+} def
+
+% Page prefeed
+/page_prefeed {		% bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} def
+
+% Wrapped line markers
+/wrapped_line_mark {	% x y charwith charheight type -> -
+  /type exch def
+  /h exch def
+  /w exch def
+  /y exch def
+  /x exch def
+
+  type 2 eq {
+    % Black boxes (like TeX does)
+    gsave
+      0 setlinewidth
+      x w 4 div add y M
+      0 h rlineto w 2 div 0 rlineto 0 h neg rlineto
+      closepath fill
+    grestore
+  } {
+    type 3 eq {
+      % Small arrows
+      gsave
+        .2 setlinewidth
+        x w 2 div add y h 2 div add M
+        w 4 div 0 rlineto
+        x w 4 div add y lineto stroke
+
+        x w 4 div add w 8 div add y h 4 div add M
+        x w 4 div add y lineto
+	w 4 div h 8 div rlineto stroke
+      grestore
+    } {
+      % do nothing
+    } ifelse
+  } ifelse
+} def
+
+% EPSF import.
+
+/BeginEPSF {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack
+  userdict begin
+  /showpage { } def
+  0 setgray 0 setlinecap
+  1 setlinewidth 0 setlinejoin
+  10 setmiterlimit [ ] 0 setdash newpath
+  /languagelevel where {
+    pop languagelevel
+    1 ne {
+      false setstrokeadjust false setoverprint
+    } if
+  } if
+} bind def
+
+/EndEPSF {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+%%EndResource
+%%BeginResource: procset Enscript-Encoding-88591 1.6 4
+/encoding_vector [
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclam       	/quotedbl     	/numbersign   	
+/dollar       	/percent      	/ampersand    	/quoteright   	
+/parenleft    	/parenright   	/asterisk     	/plus         	
+/comma        	/hyphen       	/period       	/slash        	
+/zero         	/one          	/two          	/three        	
+/four         	/five         	/six          	/seven        	
+/eight        	/nine         	/colon        	/semicolon    	
+/less         	/equal        	/greater      	/question     	
+/at           	/A            	/B            	/C            	
+/D            	/E            	/F            	/G            	
+/H            	/I            	/J            	/K            	
+/L            	/M            	/N            	/O            	
+/P            	/Q            	/R            	/S            	
+/T            	/U            	/V            	/W            	
+/X            	/Y            	/Z            	/bracketleft  	
+/backslash    	/bracketright 	/asciicircum  	/underscore   	
+/quoteleft    	/a            	/b            	/c            	
+/d            	/e            	/f            	/g            	
+/h            	/i            	/j            	/k            	
+/l            	/m            	/n            	/o            	
+/p            	/q            	/r            	/s            	
+/t            	/u            	/v            	/w            	
+/x            	/y            	/z            	/braceleft    	
+/bar          	/braceright   	/tilde        	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclamdown   	/cent         	/sterling     	
+/currency     	/yen          	/brokenbar    	/section      	
+/dieresis     	/copyright    	/ordfeminine  	/guillemotleft	
+/logicalnot   	/hyphen       	/registered   	/macron       	
+/degree       	/plusminus    	/twosuperior  	/threesuperior	
+/acute        	/mu           	/paragraph    	/bullet       	
+/cedilla      	/onesuperior  	/ordmasculine 	/guillemotright	
+/onequarter   	/onehalf      	/threequarters	/questiondown 	
+/Agrave       	/Aacute       	/Acircumflex  	/Atilde       	
+/Adieresis    	/Aring        	/AE           	/Ccedilla     	
+/Egrave       	/Eacute       	/Ecircumflex  	/Edieresis    	
+/Igrave       	/Iacute       	/Icircumflex  	/Idieresis    	
+/Eth          	/Ntilde       	/Ograve       	/Oacute       	
+/Ocircumflex  	/Otilde       	/Odieresis    	/multiply     	
+/Oslash       	/Ugrave       	/Uacute       	/Ucircumflex  	
+/Udieresis    	/Yacute       	/Thorn        	/germandbls   	
+/agrave       	/aacute       	/acircumflex  	/atilde       	
+/adieresis    	/aring        	/ae           	/ccedilla     	
+/egrave       	/eacute       	/ecircumflex  	/edieresis    	
+/igrave       	/iacute       	/icircumflex  	/idieresis    	
+/eth          	/ntilde       	/ograve       	/oacute       	
+/ocircumflex  	/otilde       	/odieresis    	/divide       	
+/oslash       	/ugrave       	/uacute       	/ucircumflex  	
+/udieresis    	/yacute       	/thorn        	/ydieresis    	
+] def
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Courier
+/HFpt_w 10 def
+/HFpt_h 10 def
+/Courier-Bold /HF-gs-font MF
+/HF /HF-gs-font findfont [HFpt_w 0 0 HFpt_h 0 0] makefont def
+/Courier /F-gs-font MF
+/F-gs-font 7 7 SF
+/#copies 1 def
+% Pagedevice definitions:
+gs_languagelevel 1 gt {
+  <<
+    /PageSize [612 792] 
+  >> setpagedevice
+} if
+%%BeginResource: procset Enscript-Header-simple 1.6 4
+
+/do_header {	% print default simple header
+  gsave
+    d_header_x d_header_y HFpt_h 3 div add translate
+
+    HF setfont
+    user_header_p {
+      5 0 moveto user_header_left_str show
+
+      d_header_w user_header_center_str stringwidth pop sub 2 div
+      0 moveto user_header_center_str show
+
+      d_header_w user_header_right_str stringwidth pop sub 5 sub
+      0 moveto user_header_right_str show
+    } {
+      fname length fmodstr length add pagenumstr length add 95 6 idiv add d_header_w 6 idiv le{
+        5 0 moveto fname show
+        45 0 rmoveto fmodstr show
+        45 0 rmoveto pagenumstr show
+      } {
+        5 0 moveto fmodstr show
+        45 0 rmoveto pagenumstr show
+        fname length d_header_w 6 idiv idiv 1 add 10 mul 5 exch moveto
+        1 1 fname length d_header_w 6 idiv idiv
+        {
+          dup fname exch 1 sub d_header_w 6 idiv mul d_header_w 6 idiv getinterval show
+          5 exch 10 mul fname length d_header_w 6 idiv idiv 1 add 10 mul exch sub moveto
+        } for
+        5 10 moveto
+        fname fname length d_header_w 6 idiv idiv d_header_w 6 idiv mul dup fname length exch sub getinterval show
+      }ifelse
+    }ifelse
+
+  grestore
+} def
+%%EndResource
+/d_page_w 744 def
+/d_page_h 536 def
+/d_header_x 0 def
+/d_header_y 492 def
+/d_header_w 744 def
+/d_header_h 44 def
+/d_footer_x 0 def
+/d_footer_y 0 def
+/d_footer_w 744 def
+/d_footer_h 0 def
+/d_output_w 744 def
+/d_output_h 492 def
+/cols 1 def
+%%EndSetup
+%%Page: (1) 1
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 1 def
+/fname (phase-54CD.247.248.asc) def
+/fdir () def
+/ftail (phase-54CD.247.248.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (1) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 474 M
+(CLEAR STORAGE 1     ,008015,022026,030037,044,049,053053N000000N00001026                                         1) s
+5 466 M
+(CLEAR STORAGE 2     L068116,105106,110117B101/I9I#071029C029056B026/B001/0991,001/001117I0?                      2) s
+5 458 M
+(BOOTSTRAP           ,008015,022029,036040,047054,061068,072/061039              ,0010011040                      3) s
+5 442 M
+(                          FORTRAN COMPILER -- NORMAL FORMAT -- PHASE 54C                                 PAGE    1) s
+5 426 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 410 M
+( 101                JOB   FORTRAN COMPILER -- NORMAL FORMAT -- PHASE 54C) s
+5 402 M
+( 102                CTL   6611) s
+5 394 M
+( 103         *) s
+5 386 M
+( 104         * NORMAL FORMAT ROUTINE) s
+5 378 M
+( 105         *) s
+5 370 M
+( 106         * FOR EACH INPUT-OUTPUT STATEMENT, AN ENTRY TO THE FORMAT) s
+5 362 M
+( 107         * ROUTINE IS COMPILED.  FOLLOWING THIS APPEARS:) s
+5 354 M
+( 108         * 1. A CODE INDICATING THE APPROPRIATE I/O DEVICE;) s
+5 346 M
+( 109         *    & IS READ, - IS PUNCH, * IS PRINT, OTHERWISE DIGIT PART) s
+5 338 M
+( 110         *    IS TAPE NUMBER AND NO ZONE IS READ TAPE, A ZONE IS WRITE) s
+5 330 M
+( 111         *    TAPE, B ZONE IS READ INPUT TAPE, AB ZONE IS WRITE OUTPUT) s
+5 322 M
+( 112         *    TAPE;) s
+5 314 M
+( 113         * 2. THE ADDRESS OF A SERIES OF INSTRUCTIONS \(FORMAT STRING\)) s
+5 306 M
+( 114         *    WHICH DETERMINES THE ARRANGEMENT OF THE DATA \(COMPILED) s
+5 298 M
+( 115         *    FROM THE REFERENCED FORMAT STATEMENT\); AND) s
+5 290 M
+( 116         * 3. THE ADDRESS OF THE SPECIFIED LIST OF DATA \(LIST STRING\).) s
+5 282 M
+( 117         *) s
+5 274 M
+( 118         * THE FORMAT STRING CONSISTS OF) s
+5 266 M
+( 119         * 1. BRANCHES TO APPROPRIATE CLOSED SUBROUTINES OF THE FORMAT) s
+5 258 M
+( 120         *    ROUTINE,) s
+5 250 M
+( 121         * 2. PARAMETERS DESCRIBING THE DATA WHICH ARE NEEDED BY THESE) s
+5 242 M
+( 122         *    SUBROUTINES,) s
+5 234 M
+( 123         * 3. THE DATA ITSELF \(H-CONVERSION FIELDS\), AND) s
+5 226 M
+( 124         * 4. CERTAIN REGISTER-UPDATING INSTRUCTIONS.) s
+5 218 M
+( 125         *) s
+5 210 M
+( 126         X1     EQU   89                                                          0089) s
+5 202 M
+( 127         X2     EQU   94                                                          0094) s
+5 194 M
+( 128         X3     EQU   99                                                          0099) s
+5 186 M
+( 129         *) s
+5 178 M
+( 130         * ADDRESS IN FORMAT LOADER) s
+5 170 M
+( 131         *) s
+5 162 M
+( 132         NRET   EQU   982   RETURN HERE FROM NORMAL LOAD                          0982) s
+5 154 M
+( 133         *) s
+5 146 M
+( 134         * ADDRESS IN FUNCTION LOADER) s
+5 138 M
+( 135         *) s
+5 130 M
+( 136         LISENT EQU   912  I/O LIST PROCESSING CONTINUATION ADDRESS               0912) s
+5 122 M
+( 137         *) s
+5 114 M
+( 138         * RUNTIME ADDRESSES) s
+5 106 M
+( 139         *) s
+5 98 M
+( 140         SNAPSH EQU   333  ENTRY TO SNAPSHOT ROUTIE                               0333) s
+5 90 M
+( 141         MANWID EQU   837  MANTISSA WIDTH. IN ARITHMETIC INTERPRETER              0837) s
+5 82 M
+( 142         *) s
+5 74 M
+( 143                ORG   1697                                                               1697) s
+5 66 M
+( 144  1 697  BEGINN SBR   X1                                                       4  1697  H 089                4) s
+5 58 M
+( 145  1 701         MCW   0&X1,UNIT                                                7  1701  M 0|0 J36            4) s
+5 50 M
+( 146  1 708         MCW   *-6,TAPE  ASSUME TAPE I/O WITHOUT WORD MARKS             7  1708  M X08 D34            4) s
+5 42 M
+( 147  1 715         SBR   RELENT&3,7&X1                                            7  1715  H J35 0|7            4) s
+_R
+S
+%%Page: (2) 2
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 2 def
+/fname (phase-54CD.247.248.asc) def
+/fdir () def
+/ftail (phase-54CD.247.248.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (2) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- NORMAL FORMAT -- PHASE 54C                                 PAGE    2) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 148  1 722         MCW   6&X1,LSTPOS                                              7  1722  M 0|6 Z68            4) s
+5 442 M
+( 149  1 729         ZA    *-6,A12K                                                 7  1729  ? X29 L27            4) s
+5 434 M
+( 150  1 736         CW    RDFLAG    START BY ASSUMING WRITE                        4  1736  \) 23V                5) s
+5 426 M
+( 151  1 740         SW    GMWM                                                     4  1740  , 27Z                5) s
+5 418 M
+( 152  1 744         MCW   3&X1,X2                                                  7  1744  M 0|3 094            5) s
+5 410 M
+( 153  1 751         SBR   X3,200                                                   7  1751  H 099 200            5) s
+5 402 M
+( 154  1 758         SBR   ENDREC,334                                               7  1758  H 23Y 334            5) s
+5 394 M
+( 155  1 765         BCE   READCD,0&X1,&  READ CARD                                 8  1765  B E56 0|0 &          5) s
+5 386 M
+( 156  1 773         BCE   PUNCH,0&X1,-   PUNCH                                     8  1773  B E25 0|0 -          6) s
+5 378 M
+( 157  1 781         BCE   CLEARP,0&X1,*  PRINT                                     8  1781  B D71 0|0 *          6) s
+5 370 M
+( 158  1 789         BM    RDTAPE,0&X1    READ TAPE FORMATTED                       8  1789  V C12 0|0 K          6) s
+5 362 M
+( 159  1 797         BWZ   CLEARW,0&X1,B  WRITE TAPE FORMATTED                      8  1797  V C75 0|0 B          6) s
+5 354 M
+( 160  1 805         SBR   X2,GETWM                                                 7  1805  H 094 Z16            6) s
+5 346 M
+( 161  1 812         CS    332                                                      4  1812  / 332                7) s
+5 338 M
+( 162  1 816         CS                                                             1  1816  /                    7) s
+5 330 M
+( 163  1 817         CS                                                             1  1817  /                    7) s
+5 322 M
+( 164  1 818         SBR   X3,100                                                   7  1818  H 099 100            7) s
+5 314 M
+( 165  1 825         MCW   LCA,TAPE  TAPE I/O WITH WORD MARKS                       7  1825  M !79 D34            7) s
+5 306 M
+( 166  1 832         SW    0&X3                                                     4  1832  , 0?0                7) s
+5 298 M
+( 167  1 836         B     1943                                                     4  1836  B Z43                7) s
+5 290 M
+( 168  1 840         BWZ   RDTAPE,UNIT,2                                            8  1840  V C12 J36 2          8) s
+5 282 M
+( 169  1 848         SBR   RECPOS,100                                               7  1848  H 24/ 100            8) s
+5 274 M
+( 170         *) s
+5 266 M
+( 171         * FIND THE RIGHT-HAND \(HIGHER CORE ADDRESS\) OF A HOLLERITH) s
+5 258 M
+( 172         * FIELD WITH A LEFT-HAND END HAVING A WORD MARK, AS IT IS) s
+5 250 M
+( 173         * MOVED TO THE OUTPUT BUFFER.) s
+5 242 M
+( 174         *) s
+5 234 M
+( 175  1 855  CHARS  MCW   0&X1,0&X3                                                7  1855  M 0|0 0?0            8) s
+5 226 M
+( 176  1 862         SAR   X2                                                       4  1862  Q 094                8) s
+5 218 M
+( 177  1 866         B     INCX3                                                    4  1866  B J37                8) s
+5 210 M
+( 178  1 870         BW    *&5,1&X2                                                 8  1870  V Y82 0!1 1          8) s
+5 202 M
+( 179  1 878         B     CHARS                                                    4  1878  B Y55                9) s
+5 194 M
+( 180  1 882         B     CHKLEN                                                   4  1882  B Q08                9) s
+5 186 M
+( 181  1 886         SBR   2222,REDOIO                                              7  1886  H K22 C84            9) s
+5 178 M
+( 182  1 893         B     1832                                                     4  1893  B Y32                9) s
+5 170 M
+( 183         *) s
+5 162 M
+( 184         * MOVE A FIELD TO THE OUTPUT BUFFER) s
+5 154 M
+( 185         *) s
+5 146 M
+( 186  1 897  GOTWM  B     CHKLEN                                                   4  1897  B Q08                9) s
+5 138 M
+( 187  1 901         LCA   0&X3,0&X1                                                7  1901  L 0?0 0|0            9) s
+5 130 M
+( 188  1 908         B     1943                                                     4  1908  B Z43                9) s
+5 122 M
+( 189  1 912  GETWML B     INCX3      GET X3 UP TO                                  4  1912  B J37               10) s
+5 114 M
+( 190  1 916  GETWM  BW    GOTWM,1&X3   ONE BELOW NEXT WM                           8  1916  V Y97 0?1 1         10) s
+5 106 M
+( 191  1 924         B     GETWML                                                   4  1924  B Z12               10) s
+5 98 M
+( 192         *) s
+5 90 M
+( 193  1 928         SBR   2222                                                     4  1928  H K22               10) s
+5 82 M
+( 194  1 932         MCW   X3,RECPOS                                                7  1932  M 099 24/           10) s
+5 74 M
+( 195  1 939         B     0&X2                                                     4  1939  B 0!0               10) s
+5 66 M
+( 196         *) s
+5 58 M
+( 197  1 943         SBR   2006                                                     4  1943  H !06               10) s
+_R
+S
+%%Page: (3) 3
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 3 def
+/fname (phase-54CD.247.248.asc) def
+/fdir () def
+/ftail (phase-54CD.247.248.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (3) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- NORMAL FORMAT -- PHASE 54C                                 PAGE    3) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 198  1 947         MCW   X2,SX2&6                                                 7  1947  M 094 !02           11) s
+5 442 M
+( 199  1 954         BW    2031,FLAG                                                8  1954  V !31 23U 1         11) s
+5 434 M
+( 200  1 965            T  LISENT                                                   4  1962  T 912               11) s
+5 426 M
+( 201  1 968  LSTPOS DCW   #3  POSITION IN I/O LIST                                 3  1968                      11) s
+5 418 M
+( 202  1 969         SBR   X2                                                       4  1969  H 094               11) s
+5 410 M
+( 203  1 973         MZ    NOZONE,X1-1                                              7  1973  Y B62 088           11) s
+5 402 M
+( 204  1 980         BCE   2046,X1,.                                                8  1980  B !46 089 .         12) s
+5 394 M
+( 205  1 988         BCE   2007,X1,                                                 8  1988  B !07 089           12) s
+5 386 M
+( 206  1 996  SX2    SBR   X2,0                                                     7  1996  H 094 000           12) s
+5 378 M
+( 207  2 003         B     0                                                        4  2003  B 000               12) s
+5 370 M
+( 208         *) s
+5 362 M
+( 209  2 007         BW    RELENT,RDFLAG                                            8  2007  V J32 23V 1         12) s
+5 354 M
+( 210  2 015         C     RECPOS,X3                                                7  2015  C 24/ 099           13) s
+5 346 M
+( 211  2 022         BU    2208                                                     5  2022  B K08 /             13) s
+5 338 M
+( 212  2 027         B     RELENT                                                   4  2027  B J32               13) s
+5 330 M
+( 213  2 031         CW    FLAG                                                     4  2031  \) 23U               13) s
+5 322 M
+( 214  2 035         MCW   SX1,X1                                                   7  2035  M 24Z 089           13) s
+5 314 M
+( 215  2 042         B     1973                                                     4  2042  B Z73               13) s
+5 306 M
+( 216         *) s
+5 298 M
+( 217  2 046         MCW   2&X2,X3                                                  7  2046  M 0!2 099           13) s
+5 290 M
+( 218  2 053         MCW   5&X2,X1                                                  7  2053  M 0!5 089           14) s
+5 282 M
+( 219  2 060         MCW   1&X1,CH                                                  7  2060  M 0|1 24S           14) s
+5 274 M
+( 220  2 067         BW    LCA,1&X1                                                 8  2067  V !79 0|1 1         14) s
+5 266 M
+( 221  2 075         CW    WMFLAG                                                   4  2075  \) 24T               14) s
+5 258 M
+( 222  2 079  LCA    LCA   GMWM,1&X1                                                7  2079  L 27Z 0|1           14) s
+5 250 M
+( 223  2 086         B     INCX3                                                    4  2086  B J37               14) s
+5 242 M
+( 224  2 090         SBR   X2,*&13                                                  7  2090  H 094 J09           15) s
+5 234 M
+( 225  2 097         BWZ   RDTAPE,UNIT,2                                            8  2097  V C12 J36 2         15) s
+5 226 M
+( 226  2 105         B     REDOIO                                                   4  2105  B C84               15) s
+5 218 M
+( 227  2 109         MCW   CH,1&X1                                                  7  2109  M 24S 0|1           15) s
+5 210 M
+( 228  2 116         BW    RELENT,WMFLAG                                            8  2116  V J32 24T 1         15) s
+5 202 M
+( 229  2 124         CW    1&X1                                                     4  2124  \) 0|1               15) s
+5 194 M
+( 230  2 128         SW    WMFLAG                                                   4  2128  , 24T               16) s
+5 186 M
+( 231  2 132  RELENT B     0   ENTER HERE FROM RELOCATABLE FUNCTION TABLE           4  2132  B 000               16) s
+5 178 M
+( 232  2 136  UNIT   DCW   #1  TAPE UNIT NUMBER                                     1  2136                      16) s
+5 170 M
+( 233         *) s
+5 162 M
+( 234         * INCREMENT X3 BY 1.) s
+5 154 M
+( 235         *) s
+5 146 M
+( 236  2 137  INCX3  SBR   INCX3X&3                                                 4  2137  H J51               16) s
+5 138 M
+( 237  2 141         SBR   X3,1&X3                                                  7  2141  H 099 0?1           16) s
+5 130 M
+( 238  2 148  INCX3X B     0                                                        4  2148  B 000               16) s
+5 122 M
+( 239         *) s
+5 114 M
+( 240  2 152         SBR   X2                                                       4  2152  H 094               16) s
+5 106 M
+( 241  2 156         MN    0&X2                                                     4  2156  D 0!0               17) s
+5 98 M
+( 242  2 160         MN                                                             1  2160  D                   17) s
+5 90 M
+( 243  2 161         MN                                                             1  2161  D                   17) s
+5 82 M
+( 244  2 162         MN                                                             1  2162  D                   17) s
+5 74 M
+( 245  2 163         SAR   2309                                                     4  2163  Q L09               17) s
+5 66 M
+( 246  2 167         MCW   2&X2,COUNT                                               7  2167  M 0!2 24W           17) s
+5 58 M
+( 247  2 174         SBR   2207,3&X2                                                7  2174  H K07 0!3           17) s
+_R
+S
+%%Page: (4) 4
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 4 def
+/fname (phase-54CD.247.248.asc) def
+/fdir () def
+/ftail (phase-54CD.247.248.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (4) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- NORMAL FORMAT -- PHASE 54C                                 PAGE    4) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 248  2 181         B     *&5                                                      4  2181  B J89               18) s
+5 442 M
+( 249  2 185         SBR   X2                                                       4  2185  H 094               18) s
+5 434 M
+( 250  2 189         S     K1,COUNT                                                 7  2189  S E74 24W           18) s
+5 426 M
+( 251  2 196         BM    0&X2,COUNT                                               8  2196  V 0!0 24W K         18) s
+5 418 M
+( 252  2 204         B     0                                                        4  2204  B 000               18) s
+5 410 M
+( 253         *) s
+5 402 M
+( 254  2 208         SBR   X2                                                       4  2208  H 094               18) s
+5 394 M
+( 255  2 212         MCW   RECPOS,X3                                                7  2212  M 24/ 099           18) s
+5 386 M
+( 256  2 219         B     0                                                        4  2219  B 000               19) s
+5 378 M
+( 257         *) s
+5 370 M
+( 258  2 223         BW    *&13,RDFLAG                                              8  2223  V K43 23V 1         19) s
+5 362 M
+( 259  2 231         C     RECPOS,X3                                                7  2231  C 24/ 099           19) s
+5 354 M
+( 260  2 238         BU    2208                                                     5  2238  B K08 /             19) s
+5 346 M
+( 261  2 243         MCW   LSTPOS,*&7                                               7  2243  M Z68 K56           19) s
+5 338 M
+( 262  2 250         BCE   2298,0,,                                                 8  2250  B K98 000 ,         19) s
+5 330 M
+( 263  2 258         MCW   LSTPOS,LISTP2                                            7  2258  M Z68 K71           20) s
+5 322 M
+( 264  2 268            T  LISENT                                                   4  2265  T 912               20) s
+5 314 M
+( 265  2 271  LISTP2 DCW   #3                                                       3  2271                      20) s
+5 306 M
+( 266  2 272         BCE   RELENT,X1,                                               8  2272  B J32 089           20) s
+5 298 M
+( 267  2 280         MCW   LISTP2,LSTPOS                                            7  2280  M K71 Z68           20) s
+5 290 M
+( 268  2 287         MCW   X1,SX1                                                   7  2287  M 089 24Z           20) s
+5 282 M
+( 269  2 294         SW    FLAG                                                     4  2294  , 23U               21) s
+5 274 M
+( 270  2 298         BW    2208,RDFLAG                                              8  2298  V K08 23V 1         21) s
+5 266 M
+( 271  2 306         B     0                                                        4  2306  B 000               21) s
+5 258 M
+( 272         *) s
+5 250 M
+( 273  2 310         SBR   X2                                                       4  2310  H 094               21) s
+5 242 M
+( 274  2 314         ZA    2&X2,A12K                                                7  2314  ? 0!2 L27           21) s
+5 234 M
+( 275  2 321         B     3&X2                                                     4  2321  B 0!3               21) s
+5 226 M
+( 276         *) s
+5 218 M
+( 277  2 327  A12K   DSA   12000                                                    3  2327  00?                 21) s
+5 210 M
+( 278         *) s
+5 202 M
+( 279         * COPY THE ARGUMENT TO THE OUTPUT BUFFER) s
+5 194 M
+( 280         *) s
+5 186 M
+( 281  2 328         SBR   X2                                                       4  2328  H 094               22) s
+5 178 M
+( 282  2 332  CPARGL BW    *&8,RDFLAG                                               8  2332  V L47 23V 1         22) s
+5 170 M
+( 283  2 340         MCW   0&X2,0&X3                                                7  2340  M 0!0 0?0           22) s
+5 162 M
+( 284  2 347         MCW   0&X3,0&X2  WHY?                                          7  2347  M 0?0 0!0           22) s
+5 154 M
+( 285  2 354         B     INCX3                                                    4  2354  B J37               22) s
+5 146 M
+( 286  2 358         SBR   X2,1&X2                                                  7  2358  H 094 0!1           22) s
+5 138 M
+( 287  2 365         BW    *&5,0&X2                                                 8  2365  V L77 0!0 1         23) s
+5 130 M
+( 288  2 373         B     CPARGL                                                   4  2373  B L32               23) s
+5 122 M
+( 289  2 377         B     CHKLEN                                                   4  2377  B Q08               23) s
+5 114 M
+( 290  2 381         B     0&X2                                                     4  2381  B 0!0               23) s
+5 106 M
+( 291         *) s
+5 98 M
+( 292  2 385         SBR   X2                                                       4  2385  H 094               23) s
+5 90 M
+( 293  2 389         MCW   3&X2,COUNT2                                              7  2389  M 0!3 25S           23) s
+5 82 M
+( 294  2 396  DEC2   S     K1,COUNT2                                                7  2396  S E74 25S           23) s
+5 74 M
+( 295  2 403         BWZ   MORE,COUNT2,B  STILL POSITIVE?                           8  2403  V M31 25S B         24) s
+5 66 M
+( 296  2 411         BCE   7&X2,0&X2,I                                              8  2411  B 0!7 0!0 I         24) s
+5 58 M
+( 297  2 419         BCE   7&X2,0&X2,A                                              8  2419  B 0!7 0!0 A         24) s
+_R
+S
+%%Page: (5) 5
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 5 def
+/fname (phase-54CD.247.248.asc) def
+/fdir () def
+/ftail (phase-54CD.247.248.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (5) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- NORMAL FORMAT -- PHASE 54C                                 PAGE    5) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 298  2 427         B     10&X2                                                    4  2427  B 0J0               24) s
+5 442 M
+( 299  2 431  MORE   B     1943                                                     4  2431  B Z43               24) s
+5 434 M
+( 300  2 434         S                                                              1  2435  S                   24) s
+5 426 M
+( 301  2 438         DC    @_00@                                                    3  2438                      24) s
+5 418 M
+( 302  2 539         SW                                                             1  2439  ,                   24) s
+5 410 M
+( 303  2 442         DC    @;0J@                                                    3  2442                      25) s
+5 402 M
+( 304  2 443         BW    3651,RDFLAG                                              8  2443  V F51 23V 1         25) s
+5 394 M
+( 305  2 451         CS    24                                                       4  2451  / 024               25) s
+5 386 M
+( 306  2 455         SW    0&X3                                                     4  2455  , 0?0               25) s
+5 378 M
+( 307  2 459         MN                                                             1  2459  D                   25) s
+5 370 M
+( 308  2 460         SBR   X3                                                       4  2460  H 099               26) s
+5 362 M
+( 309  2 464         SBR   SW1&3,2&X3                                               7  2464  H Q97 0?2           26) s
+5 354 M
+( 310  2 471         SBR   CW2&3                                                    4  2471  H A49               26) s
+5 346 M
+( 311  2 475         SW    1                                                        4  2475  , 001               26) s
+5 338 M
+( 312  2 479         BCE   IFMT,0&X2,I                                              8  2479  B Q33 0!0 I         26) s
+5 330 M
+( 313  2 487         BCE   AFMT3,0&X2,A                                             8  2487  B 41Z 0!0 A         26) s
+5 322 M
+( 314  2 495         MCW   0&X1                                                     4  2495  M 0|0               26) s
+5 314 M
+( 315  2 501         DC    @;00@                                                    3  2501                      27) s
+5 306 M
+( 316  2 502         MCW                                                            1  2502  M                   27) s
+5 298 M
+( 317  2 503         SBR   X1                                                       4  2503  H 089               27) s
+5 290 M
+( 318  2 507         SW    0&X1                                                     4  2507  , 0|0               27) s
+5 282 M
+( 319  2 511         A     6&X2,X3                                                  7  2511  A 0!6 099           27) s
+5 274 M
+( 320  2 518         SBR   CW1&3,2&X3                                               7  2518  H A45 0?2           28) s
+5 266 M
+( 321  2 525         MCW   K0DOT0  0.0                                              4  2525  M 25V               28) s
+5 258 M
+( 322  2 529         SW    2&X3                                                     4  2529  , 0?2               28) s
+5 250 M
+( 323  2 533         BCE   *&9,1&X1,0                                               8  2533  B N49 0|1 0         28) s
+5 242 M
+( 324  2 541            V  2674                                                     4  2541  V O74               28) s
+5 234 M
+( 325  2 548         DC    @;0K2@                                                   4  2548                      28) s
+5 226 M
+( 326  2 549         BCE   EFMT,0&X2,E                                              8  2549  B N68 0!0 E         28) s
+5 218 M
+( 327  2 557         A     A12K  NOT E FORMAT                                       4  2557  A L27               29) s
+5 210 M
+( 328  2 563         DC    @;00@                                                    3  2563                      29) s
+5 202 M
+( 329  2 564         B     *&8                                                      4  2564  B N75               29) s
+5 194 M
+( 330  2 568  EFMT   S     A12K                                                     4  2568  S L27               29) s
+5 186 M
+( 331  2 574         DC    @;00@                                                    3  2574                      29) s
+5 178 M
+( 332  2 575         MN                                                             1  2575  D                   29) s
+5 170 M
+( 333  2 578         DC    @;00@                                                    3  2578                      29) s
+5 162 M
+( 334  2 581         DC    W2                                                       3  2581  F50                 29) s
+5 154 M
+( 335  2 582         MN                                                             1  2582  D                   29) s
+5 146 M
+( 336  2 583         MCW                                                            1  2583  M                   29) s
+5 138 M
+( 337  2 586         DC    @;00@                                                    3  2586                      29) s
+5 130 M
+( 338  2 587         BCE   FFMT1,0&X2,F                                             8  2587  B P04 0!0 F         29) s
+5 122 M
+( 339  2 595         C     W2,KZ4-2  TWO ZERO DIGITS                                7  2595  C F50 B64           30) s
+5 114 M
+( 340  2 602         BE    *&9                                                      5  2602  B O15 S             30) s
+5 106 M
+( 341  2 607         BM    *&8,SAVZON                                               8  2607  V O22 F48 K         30) s
+5 98 M
+( 342  2 615         MZ    NOZONE,SAVZON                                            7  2615  Y B62 F48           30) s
+5 90 M
+( 343  2 622         ZA    A12K                                                     4  2622  ? L27               30) s
+5 82 M
+( 344  2 628         DC    @;00@                                                    3  2628                      30) s
+5 74 M
+( 345  2 629         MN                                                             1  2629  D                   30) s
+5 66 M
+( 346  2 633         DC    @;00@                                                    3  2632                      30) s
+5 58 M
+( 347  2 635         DC    SBR&6                                                    3  2635  O43                 31) s
+_R
+S
+%%Page: (6) 6
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 6 def
+/fname (phase-54CD.247.248.asc) def
+/fdir () def
+/ftail (phase-54CD.247.248.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (6) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- NORMAL FORMAT -- PHASE 54C                                 PAGE    6) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 348  2 636         MN                                                             1  2636  D                   31) s
+5 442 M
+( 349  2 637  SBR    SBR   X1,0&X1                                                  7  2637  H 089 0|0           31) s
+5 434 M
+( 350  2 644         ZA    MANWID,W3  MANTISSA WIDTH IN ARITF                       7  2644  ? 837 23S           31) s
+5 426 M
+( 351  2 651         S     K2,W3        INCLUDES THE EXPONENT WIDTH                 7  2651  S E05 23S           31) s
+5 418 M
+( 352  2 658         C     W3                                                       4  2658  C 23S               32) s
+5 410 M
+( 353  2 664         DC    @;00@                                                    3  2664                      32) s
+5 402 M
+( 354  2 665         BH    2728                                                     5  2665  B P28 U             32) s
+5 394 M
+( 355  2 670         B     2797                                                     4  2670  B P97               32) s
+5 386 M
+( 356         *) s
+5 378 M
+( 357  2 674         MCW   KX,2&X3  BLANK X BLANK                                   7  2674  M 25Y 0?2           32) s
+5 370 M
+( 358  2 681         MCW            0.0                                             1  2681  M                   32) s
+5 362 M
+( 359  2 682         SBR   X3,2&X3                                                  7  2682  H 099 0?2           32) s
+5 354 M
+( 360  2 689         SBR   CW3&3                                                    4  2689  H A53               32) s
+5 346 M
+( 361  2 693         A     9&X2,X3                                                  7  2693  A 0!9 099           33) s
+5 338 M
+( 362  2 700         B     NOOVFL                                                   4  2700  B A38               33) s
+5 330 M
+( 363         *) s
+5 322 M
+( 364  2 704  FFMT1  BM    2766,SAVZON                                              8  2704  V P66 F48 K         33) s
+5 314 M
+( 365  2 712         C     6&X2,W2                                                  7  2712  C 0!6 F50           33) s
+5 306 M
+( 366  2 719         BL    2629                                                     5  2719  B O29 T             33) s
+5 298 M
+( 367  2 724         B     2674                                                     4  2724  B O74               33) s
+5 290 M
+( 368         *) s
+5 282 M
+( 369  2 728         S     23                                                       4  2728  S 023               33) s
+5 274 M
+( 370  2 732         MCM                                                            1  2732  P                   34) s
+5 266 M
+( 371  2 738         DC    @_0A001@                                                 6  2738                      34) s
+5 258 M
+( 372  2 739         MCW   KZ4                                                      4  2739  M B66               34) s
+5 250 M
+( 373  2 743         MZ          NOZONE                                             1  2743  Y                   34) s
+5 242 M
+( 374  2 744         MCW   W2,X1                                                    7  2744  M F50 089           34) s
+5 234 M
+( 375  2 751         MCW   KZ4-3  ONE ZERO DIGIT                                    4  2751  M B63               34) s
+5 226 M
+( 376  2 755         MCW   GMWM,3&X1                                                7  2755  M 27Z 0|3           34) s
+5 218 M
+( 377  2 762         B     2797                                                     4  2762  B P97               34) s
+5 210 M
+( 378  2 766         MZ    NOZONE,0&X1                                              7  2766  Y B62 0|0           35) s
+5 202 M
+( 379  2 773         C     9&X2,W2                                                  7  2773  C 0!9 F50           35) s
+5 194 M
+( 380  2 780         BU    *&8                                                      5  2780  B P92 /             35) s
+5 186 M
+( 381  2 785         C                                                              1  2785  C                   35) s
+5 178 M
+( 382  2 788         DC    @_0A@                                                    3  2788                      35) s
+5 170 M
+( 383  2 791         DC    K5                                                       3  2791  23T                 35) s
+5 162 M
+( 384  2 792         BH    IFMT2                                                    5  2792  B Q65 U             35) s
+5 154 M
+( 385  2 797         MZ                                                             1  2797  Y                   35) s
+5 146 M
+( 386  2 800         DC    @;0K@                                                    3  2800                      35) s
+5 138 M
+( 387  2 803         DC    @0|0@  0&X1                                              3  2803                      35) s
+5 130 M
+( 388  2 804         B     IFMT2                                                    4  2804  B Q65               36) s
+5 122 M
+( 389         *) s
+5 114 M
+( 390         * CHECK RECORD LENGTH) s
+5 106 M
+( 391         *) s
+5 98 M
+( 392  2 808  CHKLEN SBR   CHKLEX&3                                                 4  2808  H Q32               36) s
+5 90 M
+( 393  2 812         C     ENDREC,X3                                                7  2812  C 23Y 099           36) s
+5 82 M
+( 394  2 819         BL    CHKLEX                                                   5  2819  B Q29 T             36) s
+5 74 M
+( 395  2 824         NOP   3700  SNAPSHOT ROUTINE IS CLOBBERED                      4  2824  N G00               36) s
+5 66 M
+( 396  2 828         H                                                              1  2828  .                   36) s
+5 58 M
+( 397  2 829  CHKLEX B     0                                                        4  2829  B 000               36) s
+_R
+S
+%%Page: (7) 7
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 7 def
+/fname (phase-54CD.247.248.asc) def
+/fdir () def
+/ftail (phase-54CD.247.248.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (7) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- NORMAL FORMAT -- PHASE 54C                                 PAGE    7) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 398         *) s
+5 442 M
+( 399  2 833  IFMT   MCW   0&X1                                                     4  2833  M 0|0               37) s
+5 434 M
+( 400  2 839         DC    @_00@                                                    3  2839                      37) s
+5 426 M
+( 401  2 840         A     6&X2,X3                                                  7  2840  A 0!6 099           37) s
+5 418 M
+( 402  2 847         MCW   6&X2,X1                                                  7  2847  M 0!6 089           37) s
+5 410 M
+( 403  2 854         ZA                                                             1  2854  ?                   37) s
+5 402 M
+( 404  2 857         DC    @_00@                                                    3  2857                      37) s
+5 394 M
+( 405  2 860         DC    @0|0@  0&X1                                              3  2860                      37) s
+5 386 M
+( 406  2 861         B     INCX3                                                    4  2861  B J37               37) s
+5 378 M
+( 407  2 865  IFMT2  MCS   0&X1,0&X3                                                7  2865  Z 0|0 0?0           37) s
+5 370 M
+( 408  2 872         SBR   SX3&6                                                    4  2872  H R58               38) s
+5 362 M
+( 409  2 876         MN    0&X1,0&X3  AT LEAST SHOW THE LOW ORDER DIGIT             7  2876  D 0|0 0?0           38) s
+5 354 M
+( 410  2 883         SBR   MCS&3,0&X3                                               7  2883  H A90 0?0           38) s
+5 346 M
+( 411  2 890         SBR   CW3&3                                                    4  2890  H A53               38) s
+5 338 M
+( 412  2 894  SW1    SW    0                                                        4  2894  , 000               38) s
+5 330 M
+( 413  2 898         BM    *&5,0&X1                                                 8  2898  V R10 0|0 K         38) s
+5 322 M
+( 414  2 906         B     SX3                                                      4  2906  B R52               38) s
+5 314 M
+( 415  2 910  GETB   BCE   GOTB,0&X3,  FOUND A BLANK?                               8  2910  B R34 0?0           39) s
+5 306 M
+( 416  2 918         SBR   X3                                                       4  2918  H 099               39) s
+5 298 M
+( 417  2 922         BW    SX3,1&X3  END OF THE FIELD, NO SIGN                      8  2922  V R52 0?1 1         39) s
+5 290 M
+( 418  2 930         B     GETB                                                     4  2930  B R10               39) s
+5 282 M
+( 419  2 934  GOTB   MZ    BZONE,0&X3  SET THE SIGN                                 7  2934  Y G81 0?0           39) s
+5 274 M
+( 420  2 941         SW    1&X3                                                     4  2941  , 0?1               39) s
+5 266 M
+( 421  2 945         SBR   CW3&3,1&X3                                               7  2945  H A53 0?1           40) s
+5 258 M
+( 422  2 952  SX3    SBR   X3,111                                                   7  2952  H 099 111           40) s
+5 250 M
+( 423  2 959         BCE   CW2,0&X2,I                                               8  2959  B A46 0!0 I         40) s
+5 242 M
+( 424  2 967         A     9&X2,X3                                                  7  2967  A 0!9 099           40) s
+5 234 M
+( 425  2 974         BCE   FFMT2,0&X2,F                                             8  2974  B R93 0!0 F         40) s
+5 226 M
+( 426  2 982         MN    0&X3                                                     4  2982  D 0?0               41) s
+5 218 M
+( 427  2 986         MN                                                             1  2986  D                   41) s
+5 210 M
+( 428  2 987         MN                                                             1  2987  D                   41) s
+5 202 M
+( 429  2 988         MN                                                             1  2988  D                   41) s
+5 194 M
+( 430  2 989         SBR   X3                                                       4  2989  H 099               41) s
+5 186 M
+( 431  2 993  FFMT2  SBR   SX3A&6,1&X3                                              7  2993  H ?88 0?1           41) s
+5 178 M
+( 432  3 000         S     1&X3                                                     4  3000  S 0?1               41) s
+5 170 M
+( 433  3 004         MN                                                             1  3004  D                   42) s
+5 162 M
+( 434  3 005         SAR   X3                                                       4  3005  Q 099               42) s
+5 154 M
+( 435  3 009         BCE   FINDGM,0&X2,E                                            8  3009  B ?44 0!0 E         42) s
+5 146 M
+( 436  3 017         BWZ   FINDGM,SAVZON,B                                          8  3017  V ?44 F48 B         42) s
+5 138 M
+( 437  3 025         C     9&X2,W2                                                  7  3025  C 0!9 F50           42) s
+5 130 M
+( 438  3 032         BH    SX3A                                                     5  3032  B ?82 U             42) s
+5 122 M
+( 439  3 037         A     W2,X3                                                    7  3037  A F50 099           43) s
+5 114 M
+( 440  3 044  FINDGM BCE   SX3A,3&X1,}  GM                                          8  3044  B ?82 0|3 } GMARK   43) s
+5 106 M
+( 441  3 052         MN    1&X1,2&X3                                                7  3052  D 0|1 0?2           43) s
+5 98 M
+( 442  3 059         SBR   X1,1&X1                                                  7  3059  H 089 0|1           43) s
+5 90 M
+( 443  3 066         BWZ   SX3A,2&X3,B                                              8  3066  V ?82 0?2 B         43) s
+5 82 M
+( 444  3 074         SBR   X3                                                       4  3074  H 099               44) s
+5 74 M
+( 445  3 078         B     FINDGM                                                   4  3078  B ?44               44) s
+5 66 M
+( 446  3 082  SX3A   SBR   X3,0                                                     7  3082  H 099 000           44) s
+5 58 M
+( 447  3 089         BAV   *&1                                                      5  3089  B ?94 Z             44) s
+_R
+S
+%%Page: (8) 8
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 8 def
+/fname (phase-54CD.247.248.asc) def
+/fdir () def
+/ftail (phase-54CD.247.248.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (8) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- NORMAL FORMAT -- PHASE 54C                                 PAGE    8) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 448  3 094         A     KP5,0&X3                                                 7  3094  A F47 0?0           44) s
+5 442 M
+( 449  3 101         MCW   NOZONE,0&X3                                              7  3101  M B62 0?0           44) s
+5 434 M
+( 450  3 108         BCE   FFMT3,0&X2,F                                             8  3108  B A33 0!0 F         45) s
+5 426 M
+( 451  3 116         SBR   X3,4&X3                                                  7  3116  H 099 0?4           45) s
+5 418 M
+( 452  3 123         MN    0&X3                                                     4  3123  D 0?0               45) s
+5 410 M
+( 453  3 127         MCW   W2                                                       4  3127  M F50               45) s
+5 402 M
+( 454  3 131         MZ                                                             1  3131  Y                   45) s
+5 394 M
+( 455  3 132         MCW                                                            1  3132  M                   45) s
+5 386 M
+( 456  3 133  FFMT3  BAV   OVFL                                                     5  3133  B A66 Z             45) s
+5 378 M
+( 457  3 138  NOOVFL CW                                                             1  3138  \)                   46) s
+5 370 M
+( 458  3 141         DC    @_00@                                                    3  3141                      46) s
+5 362 M
+( 459  3 142  CW1    CW    0                                                        4  3142  \) 000               46) s
+5 354 M
+( 460  3 146  CW2    CW    0                                                        4  3146  \) 000               46) s
+5 346 M
+( 461  3 150  CW3    CW    0                                                        4  3150  \) 000               46) s
+5 338 M
+( 462  3 154  SW2    SW                                                             1  3154  ,                   46) s
+5 330 M
+( 463  3 157         DC    @_0A@                                                    3  3157                      46) s
+5 322 M
+( 464  3 158         B     CHKLEN                                                   4  3158  B Q08               46) s
+5 314 M
+( 465  3 162         B     DEC2                                                     4  3162  B L96               46) s
+5 306 M
+( 466         *) s
+5 298 M
+( 467  3 166  OVFL   MCW   CW1&3,X1                                                 7  3166  M A45 089           47) s
+5 290 M
+( 468  3 173         MZ    NOZONE,0&X1                                              7  3173  Y B62 0|0           47) s
+5 282 M
+( 469  3 180         MCW            DOT                                             1  3180  M                   47) s
+5 274 M
+( 470  3 181         A              ONE                                             1  3181  A                   47) s
+5 266 M
+( 471  3 182         BAV   *&9                                                      5  3182  B A95 Z             47) s
+5 258 M
+( 472  3 187  MCS    MCS   0                                                        4  3187  Z 000               47) s
+5 250 M
+( 473  3 191         B     NOOVFL                                                   4  3191  B A38               47) s
+5 242 M
+( 474  3 195         MN    0&X1                                                     4  3195  D 0|0               48) s
+5 234 M
+( 475  3 199         C                                                              1  3199  C                   48) s
+5 226 M
+( 476  3 200         MN                                                             1  3200  D                   48) s
+5 218 M
+( 477  3 201         SBR   X1                                                       4  3201  H 089               48) s
+5 210 M
+( 478  3 205         C     CW2&3,X1                                                 7  3205  C A49 089           48) s
+5 202 M
+( 479  3 212         BL    XXFLD                                                    5  3212  B B40 T             48) s
+5 194 M
+( 480  3 217         SW    0&X1                                                     4  3217  , 0|0               48) s
+5 186 M
+( 481  3 221         MCW   1&X1,0&X1                                                7  3221  M 0|1 0|0           49) s
+5 178 M
+( 482  3 228         CW                                                             1  3228  \)                   49) s
+5 170 M
+( 483  3 229         LCA   K10,2&X1                                       V3M4      7  3229  L 27Y 0|2           49) s
+5 162 M
+( 484  3 236         B     4269                                           V3M4      4  3236  B 26Z               49) s
+5 154 M
+( 485  3 240  XXFLD  MCW   1&X3,0&X3  CLEAR THE FIELD                               7  3240  M 0?1 0?0           49) s
+5 146 M
+( 486  3 247         MCW                                                            1  3247  M                   49) s
+5 138 M
+( 487  3 248         MCW                                                            1  3248  M                   49) s
+5 130 M
+( 488  3 249         MCW   KX,3&X1    THEN PUT BLANK X BLANK IN IT                  7  3249  M 25Y 0|3           50) s
+5 122 M
+( 489  3 256         B     NOOVFL                                                   4  3256  B A38               50) s
+5 114 M
+( 490         *) s
+5 106 M
+( 491  3 260         DCW   1                                                        1  3260                      50) s
+5 98 M
+( 492  3 261         DCW   @.@                                                      1  3261                      50) s
+5 90 M
+( 493  3 262  NOZONE DCW   #1                                                       1  3262                      50) s
+5 82 M
+( 494  3 266  KZ4    DCW   @0000@                                                   4  3266                      50) s
+5 74 M
+( 495         *) s
+5 66 M
+( 496  3 267  IFMT3  MCW   X1,X3                                                    7  3267  M 089 099           50) s
+5 58 M
+( 497  3 274         MZ    ZAS2,3288                                                7  3274  Y 06S B88           51) s
+_R
+S
+%%Page: (9) 9
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 9 def
+/fname (phase-54CD.247.248.asc) def
+/fdir () def
+/ftail (phase-54CD.247.248.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (9) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- NORMAL FORMAT -- PHASE 54C                                 PAGE    9) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 498  3 281         MN    0&X3                                                     4  3281  D 0?0               51) s
+5 442 M
+( 499  3 287         DC    @_0A@                                                    3  3287                      51) s
+5 434 M
+( 500  3 288         ZA                                                             1  3288  ?                   51) s
+5 426 M
+( 501  3 289         MCW   4146,X1                                                  7  3289  M 14W 089           51) s
+5 418 M
+( 502  3 296         LCA                                                            1  3296  L                   51) s
+5 410 M
+( 503  3 299         DC    @_00@                                                    3  3299                      51) s
+5 402 M
+( 504  3 302         DC    @0|0@  0&X1                                              3  3302                      51) s
+5 394 M
+( 505  3 303         B     4155                                                     4  3303  B 15V               51) s
+5 386 M
+( 506         *) s
+5 378 M
+( 507         * END OF FILE ON INPUT) s
+5 370 M
+( 508         *) s
+5 362 M
+( 509  3 307  EOFRD  NOP   4002                                                     4  3307  N 00S               51) s
+5 354 M
+( 510  3 311         H                                                              1  3311  .                   52) s
+5 346 M
+( 511         *) s
+5 338 M
+( 512         * TAPE READ) s
+5 330 M
+( 513         *) s
+5 322 M
+( 514  3 312  RDTAPE SW    RDFLAG                                                   4  3312  , 23V               52) s
+5 314 M
+( 515  3 316  CLEARR CS    332                                                      4  3316  / 332               52) s
+5 306 M
+( 516  3 320         CS                                                             1  3320  /                   52) s
+5 298 M
+( 517  3 321         B     REDOIO                                                   4  3321  B C84               52) s
+5 290 M
+( 518         *) s
+5 282 M
+( 519         * AFTER TAPE READ) s
+5 274 M
+( 520         *) s
+5 266 M
+( 521  3 325  ENDRD  BEF   EOFRD                                                    5  3325  B C07 K             52) s
+5 258 M
+( 522  3 330         BCE   REDOIO,12&X3,}  SHORT -- NOISE -- RECORD?                8  3330  B C84 0A2 } GMARK   52) s
+5 250 M
+( 523  3 338         CHAIN 12                                                                            MACRO) s
+5 242 M
+( 524                BCE                                                            1  3338  B           GEN     53) s
+5 234 M
+( 525                BCE                                                            1  3339  B           GEN     53) s
+5 226 M
+( 526                BCE                                                            1  3340  B           GEN     53) s
+5 218 M
+( 527                BCE                                                            1  3341  B           GEN     53) s
+5 210 M
+( 528                BCE                                                            1  3342  B           GEN     53) s
+5 202 M
+( 529                BCE                                                            1  3343  B           GEN     53) s
+5 194 M
+( 530                BCE                                                            1  3344  B           GEN     53) s
+5 186 M
+( 531                BCE                                                            1  3345  B           GEN     54) s
+5 178 M
+( 532                BCE                                                            1  3346  B           GEN     54) s
+5 170 M
+( 533                BCE                                                            1  3347  B           GEN     54) s
+5 162 M
+( 534                BCE                                                            1  3348  B           GEN     54) s
+5 154 M
+( 535                BCE                                                            1  3349  B           GEN     54) s
+5 146 M
+( 536  3 350         B     1928                                                     4  3350  B Z28               54) s
+5 138 M
+( 537  3 354         B     CLEARR                                                   4  3354  B C16               54) s
+5 130 M
+( 538         *) s
+5 122 M
+( 539         * END OF TAPE ON OUTPUT) s
+5 114 M
+( 540         *) s
+5 106 M
+( 541  3 358  EOFWR  MN    UNIT,*&4                                                 7  3358  D J36 C68           55) s
+5 98 M
+( 542  3 365         WTM   0                                                        5  3365  U %U0 M             55) s
+5 90 M
+( 543  3 370         NOP   4003                                                     4  3370  N 00T               55) s
+5 82 M
+( 544  3 374         H                                                              1  3374  .                   55) s
+5 74 M
+( 545         *) s
+5 66 M
+( 546         * WRITE TAPE) s
+5 58 M
+( 547         *) s
+_R
+S
+%%Page: (10) 10
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 10 def
+/fname (phase-54CD.247.248.asc) def
+/fdir () def
+/ftail (phase-54CD.247.248.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (10) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- NORMAL FORMAT -- PHASE 54C                                 PAGE   10) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 548  3 375  CLEARW CS    332                                                      4  3375  / 332               55) s
+5 442 M
+( 549  3 379         CS                                                             1  3379  /                   55) s
+5 434 M
+( 550  3 380         B     1928                                                     4  3380  B Z28               55) s
+5 426 M
+( 551  3 384  REDOIO MN    UNIT,TAPE&3                                              7  3384  D J36 D37           56) s
+5 418 M
+( 552  3 391         MCW   KR,TAPE&7  ASSUME IT'S READ, NOT WRITE                   7  3391  M 25Z D41           56) s
+5 410 M
+( 553  3 398         ZA    KR,W3      @R@ USED AS -9 HERE                           7  3398  ? 25Z 23S           56) s
+5 402 M
+( 554  3 405         BW    DOIO,RDFLAG                                              8  3405  V D27 23V 1         56) s
+5 394 M
+( 555  3 413         MCW   KW,TAPE&7  OOPS, IT'S WRITE                              7  3413  M 26| D41           56) s
+5 386 M
+( 556  3 420         A     KP41,W3                                                  7  3420  A 26S 23S           57) s
+5 378 M
+( 557  3 427  DOIO   LCA   GMWM,SNAPSH                                              7  3427  L 27Z 333           57) s
+5 370 M
+( 558  3 434  TAPE   RT    0,0&X3                                                   8  3434  M %U0 0?0 R         57) s
+5 362 M
+( 559  3 442         LCA   BEGINN,SNAPSH  UNCLOBBER                                 7  3442  L W97 333           57) s
+5 354 M
+( 560  3 449         BER   TAPERR                                                   5  3449  B E91 L             57) s
+5 346 M
+( 561  3 454         BCE   ENDRD,TAPE&7,R                                           8  3454  B C25 D41 R         58) s
+5 338 M
+( 562  3 462         BEF   EOFWR                                                    5  3462  B C58 K             58) s
+5 330 M
+( 563  3 467         B     CLEARW                                                   4  3467  B C75               58) s
+5 322 M
+( 564         *) s
+5 314 M
+( 565         * PRINT) s
+5 306 M
+( 566         *) s
+5 298 M
+( 567  3 471  CLEARP CS    SNAPSH                                                   4  3471  / 333               58) s
+5 290 M
+( 568  3 475         CS                                                             1  3475  /                   58) s
+5 282 M
+( 569  3 476         B     1928                                                     4  3476  B Z28               58) s
+5 274 M
+( 570  3 480         BCE   K2,200,     NO SPACING                                   8  3480  B E05 200           58) s
+5 266 M
+( 571  3 488         BCE   DBLE,200,0  DOUBLE SPACE?                                8  3488  B E20 200 0         59) s
+5 258 M
+( 572  3 496         MN    200,*&2     SET SKIP-TO CHANNEL                          7  3496  D 200 E04           59) s
+5 250 M
+( 573  3 503         CC    0                                                        2  3503  F 0                 59) s
+5 242 M
+( 574  3 505  K2     W                                                              1  3505  2                   59) s
+5 234 M
+( 575  3 506         BCV   *&5                                                      5  3506  B E15 @             59) s
+5 226 M
+( 576  3 511         B     CLEARP                                                   4  3511  B D71               59) s
+5 218 M
+( 577  3 515         CCB   CLEARP,1                                                 5  3515  F D71 1             59) s
+5 210 M
+( 578  3 520  DBLE   CCB   K2,J                                                     5  3520  F E05 J             60) s
+5 202 M
+( 579         *) s
+5 194 M
+( 580         * PUNCH) s
+5 186 M
+( 581         *) s
+5 178 M
+( 582  3 525  PUNCH  MCW   A281,ENDREC                                              7  3525  M 26V 23Y           60) s
+5 170 M
+( 583  3 532         CS    1928,285                                                 7  3532  / Z28 285           60) s
+5 162 M
+( 584  3 539         SW    200                                                      4  3539  , 200               60) s
+5 154 M
+( 585  3 543         LCA   279,180                                                  7  3543  L 279 180           60) s
+5 146 M
+( 586  3 550         P                                                              1  3550  4                   60) s
+5 138 M
+( 587  3 551         SSB   PUNCH,4                                                  5  3551  K E25 4             60) s
+5 130 M
+( 588         *) s
+5 122 M
+( 589         * READ A CARD) s
+5 114 M
+( 590         *) s
+5 106 M
+( 591  3 556  READCD CS    80                                                       4  3556  / 080               61) s
+5 98 M
+( 592  3 560         MCW   A281,ENDREC                                              7  3560  M 26V 23Y           61) s
+5 90 M
+( 593  3 567         SW    1,RDFLAG                                                 7  3567  , 001 23V           61) s
+5 82 M
+( 594  3 574  K1     R                                                              1  3574  1                   61) s
+5 74 M
+( 595  3 575         LCA   80,279                                                   7  3575  L 080 279           61) s
+5 66 M
+( 596  3 582         SSB   1928,1                                                   5  3582  K Z28 1             61) s
+5 58 M
+( 597  3 587         B     READCD                                                   4  3587  B E56               61) s
+_R
+S
+%%Page: (11) 11
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 11 def
+/fname (phase-54CD.247.248.asc) def
+/fdir () def
+/ftail (phase-54CD.247.248.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (11) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- NORMAL FORMAT -- PHASE 54C                                 PAGE   11) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 598         *) s
+5 442 M
+( 599         * TAPE I/O ERROR) s
+5 434 M
+( 600         *) s
+5 426 M
+( 601  3 591  TAPERR MN    UNIT,BSP&3                                               7  3591  D J36 F08           62) s
+5 418 M
+( 602  3 598         MN    UNIT,SKP&3                                               7  3598  D J36 F21           62) s
+5 410 M
+( 603  3 605  BSP    BSP   0                                                        5  3605  U %U0 B             62) s
+5 402 M
+( 604  3 610         BCE   *&6,TAPE&7,R                                             8  3610  B F23 D41 R         62) s
+5 394 M
+( 605  3 618  SKP    SKP   0                                                        5  3618  U %U0 E             62) s
+5 386 M
+( 606  3 623         S     K1,W3                                                    7  3623  S E74 23S           62) s
+5 378 M
+( 607  3 630         BWZ   DOIO,W3,B                                                8  3630  V D27 23S B         63) s
+5 370 M
+( 608  3 638         NOP   1111                                                     4  3638  N /11               63) s
+5 362 M
+( 609  3 642         H                                                              1  3642  .                   63) s
+5 354 M
+( 610  3 643         B     REDOIO                                                   4  3643  B C84               63) s
+5 346 M
+( 611         *) s
+5 338 M
+( 612  3 647  KP5    DCW   &5                                                       1  3647                      63) s
+5 330 M
+( 613  3 648  SAVZON DCW   #1                                                       1  3648                      63) s
+5 322 M
+( 614  3 650  W2     DCW   00                                                       2  3650                      63) s
+5 314 M
+( 615         *) s
+5 306 M
+( 616  3 651         SW    0&X3                                                     4  3651  , 0?0               64) s
+5 298 M
+( 617  3 655         MCW   X1,4146                                                  7  3655  M 089 14W           64) s
+5 290 M
+( 618  3 662         MCW   X3,X1                                                    7  3662  M 099 089           64) s
+5 282 M
+( 619  3 669         A     6&X2,X1                                                  7  3669  A 0!6 089           64) s
+5 274 M
+( 620  3 676         BCE   IFMT4,0&X2,I                                             8  3676  B F99 0!0 I         64) s
+5 266 M
+( 621  3 684         BCE   AFMT2,0&X2,A                                             8  3684  B 39| 0!0 A         65) s
+5 258 M
+( 622  3 692         A     9&X2,X1                                                  7  3692  A 0!9 089           65) s
+5 250 M
+( 623  3 699  IFMT4  SW    0&X1                                                     4  3699  , 0|0               65) s
+5 242 M
+( 624  3 703         SBR   CW4&3,0&X1                                               7  3703  H 15Y 0|0           65) s
+5 234 M
+( 625  3 710         S                                                              1  3710  S                   65) s
+5 226 M
+( 626  3 713         DC    @;00@                                                    3  3713                      65) s
+5 218 M
+( 627  3 714         S                                                              1  3714  S                   65) s
+5 210 M
+( 628  3 715         MZ    NOZONE                                         V3M4      4  3715  Y B62               65) s
+5 202 M
+( 629  3 721         DC    @;0K@                                          V3M4      3  3721                      65) s
+5 194 M
+( 630  3 722         MZ    ABZ2,ZAS2                                      V3M4      7  3722  Y G89 06S           66) s
+5 186 M
+( 631  3 729         BCE   3765,0&X3,                                     V3M4      8  3729  B G65 0?0           66) s
+5 178 M
+( 632  3 737         BCE   BZONE,0&X3,-                                   V3M4      8  3737  B G81 0?0 -         66) s
+5 170 M
+( 633  3 745         BCE   BZONE,0&X3,@                                   V3M4      8  3745  B G81 0?0 @         66) s
+5 162 M
+( 634  3 753         BCE   3785,0&X3,&                                    V3M4      8  3753  B G85 0?0 &         66) s
+5 154 M
+( 635  3 761         B     3793                                           V3M4      4  3761  B G93               67) s
+5 146 M
+( 636  3 765         BW    4132,1&X3                                      V3M4      8  3765  V 13S 0?1 1         67) s
+5 138 M
+( 637  3 773         B     INCX3                                          V3M4      4  3773  B J37               67) s
+5 130 M
+( 638  3 777         B     3722                                           V3M4      4  3777  B G22               67) s
+5 122 M
+( 639  3 781  BZONE  ZS    ZAS2                                           V3M4      4  3781  ! 06S               67) s
+5 114 M
+( 640  3 785         SW    1&X3                                           V3M4      4  3785  , 0?1               67) s
+5 106 M
+( 641  3 789  ABZ2   B     INCX3                                          V3M4      4  3789  B J37               67) s
+5 98 M
+( 642  3 793         BCE   IFMT3,0&X2,I                                   V3M4      8  3793  B B67 0!0 I         68) s
+5 90 M
+( 643  3 801         SBR   X1                                             V3M4      4  3801  H 089               68) s
+5 82 M
+( 644  3 807         DC    @_0J@                                          V3M4      3  3807                      68) s
+5 74 M
+( 645  3 808         CW    FLAG1,FLAG2                                              7  3808  \) 26W 26X           68) s
+5 66 M
+( 646  3 815         CW    FLAG3                                                    4  3815  \) 26Y               68) s
+5 58 M
+( 647  3 819         S     W3A                                                      4  3819  S 22T               68) s
+_R
+S
+%%Page: (12) 12
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 12 def
+/fname (phase-54CD.247.248.asc) def
+/fdir () def
+/ftail (phase-54CD.247.248.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (12) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- NORMAL FORMAT -- PHASE 54C                                 PAGE   12) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 648  3 823         BCE   AFMT1,0&X2,A                                             8  3823  B 28| 0!0 A         68) s
+5 442 M
+( 649  3 831         B     CHKCH1                                                   4  3831  B H81               69) s
+5 434 M
+( 650         *) s
+5 426 M
+( 651  3 835  DOT    SBR   W3,0&X3                                                  7  3835  H 23S 0?0           69) s
+5 418 M
+( 652  3 842         SW    FLAG3                                                    4  3842  , 26Y               69) s
+5 410 M
+( 653  3 846         BW    *&8,FLAG1                                                8  3846  V H61 26W 1         69) s
+5 402 M
+( 654  3 854         SBR   W3,1&X3                                                  7  3854  H 23S 0?1           69) s
+5 394 M
+( 655  3 861  NOTDOT BW    CKEFMT,1&X3                                              8  3861  V 04X 0?1 1         69) s
+5 386 M
+( 656  3 869         BCE   CKEFMT,1&X3,                                             8  3869  B 04X 0?1           70) s
+5 378 M
+( 657  3 877         B     INCX3                                                    4  3877  B J37               70) s
+5 370 M
+( 658  3 881  CHKCH1 BCE   DOT,0&X3,.                                               8  3881  B H35 0?0 .         70) s
+5 362 M
+( 659  3 889         C     0&X3,KZ4-3  ONE ZERO DIGIT                               7  3889  C 0?0 B63           70) s
+5 354 M
+( 660  3 896         BL    4163                                                     5  3896  B 16T T             70) s
+5 346 M
+( 661  3 901         BH    CHKCH2                                                   5  3901  B I18 U             70) s
+5 338 M
+( 662  3 906         BW    4163,FLAG1                                               8  3906  V 16T 26W 1         71) s
+5 330 M
+( 663  3 914         B     NOTDOT                                                   4  3914  B H61               71) s
+5 322 M
+( 664         *) s
+5 314 M
+( 665         * CHECK VALIDITY OF CHARACTER) s
+5 306 M
+( 666         *) s
+5 298 M
+( 667  3 918  CHKCH2 BCE   ER1121,0&X2,F  NO EXPONENT IF F FORMAT                   8  3918  B I71 0!0 F         71) s
+5 290 M
+( 668  3 926         SBR   W3B,4&X3                                                 7  3926  H 22W 0?4           71) s
+5 282 M
+( 669  3 933         MZ    ABZONE,ZAS                                               7  3933  Y I76 03W           71) s
+5 274 M
+( 670  3 940         BCE   EXP,0&X3,E                                               8  3940  B I80 0?0 E         72) s
+5 266 M
+( 671  3 948  CKSIGN MZ    0&X3,ZAS                                                 7  3948  Y 0?0 03W           72) s
+5 258 M
+( 672  3 955         BCE   SIGN,0&X3,&                                              8  3955  B 01S 0?0 &         72) s
+5 250 M
+( 673  3 963         BCE   SIGN,0&X3,-                                              8  3963  B 01S 0?0 -         72) s
+5 242 M
+( 674         *) s
+5 234 M
+( 675         * DATA AND FORMAT SPECIFICATIONS DISAGREE IN MODE OR) s
+5 226 M
+( 676         * ACCEPTABLE CHARACTERS.) s
+5 218 M
+( 677         *) s
+5 210 M
+( 678  3 971  ER1121 NOP   1121                                                     4  3971  N /21               72) s
+5 202 M
+( 679  3 975         H                                                              1  3975  .                   72) s
+5 194 M
+( 680  3 976  ABZONE B     ER1121                                                   4  3976  B I71               73) s
+5 186 M
+( 681         *) s
+5 178 M
+( 682  3 980  EXP    BWZ   *&9,1&X3,2                                               8  3980  V I96 0?1 2         73) s
+5 170 M
+( 683  3 988         B     INCX3                                                    4  3988  B J37               73) s
+5 162 M
+( 684  3 992         B     CKSIGN                                                   4  3992  B I48               73) s
+5 154 M
+( 685  3 996         BCE   *&5,1&X3,                                                8  3996  B 00Y 0?1           73) s
+5 146 M
+( 686  4 004         B     *&5                                                      4  4004  B 01S               73) s
+5 138 M
+( 687  4 008         B     INCX3                                                    4  4008  B J37               73) s
+5 130 M
+( 688  4 012  SIGN   SW    1&X3                                                     4  4012  , 0?1               74) s
+5 122 M
+( 689  4 016         BW    ZAS,2&X3                                                 8  4016  V 03W 0?2 1         74) s
+5 114 M
+( 690  4 024         BCE   ZAS,2&X3,                                                8  4024  B 03W 0?2           74) s
+5 106 M
+( 691  4 032         SBR   X3                                                       4  4032  H 099               74) s
+5 98 M
+( 692  4 036  ZAS    ZA    1&X3,W3A  SOMETIMES ZS                                   7  4036  ? 0?1 22T           74) s
+5 90 M
+( 693  4 043         B     *&16                                                     4  4043  B 06S               74) s
+5 82 M
+( 694  4 047  CKEFMT BCE   ER1121,0&X2,E  E FORMAT?                                 8  4047  B I71 0!0 E         75) s
+5 74 M
+( 695  4 055         SBR   W3B,1&X3                                                 7  4055  H 22W 0?1           75) s
+5 66 M
+( 696  4 062  ZAS2   ZA                                                             1  4062  ?                   75) s
+5 58 M
+( 697  4 065         DC    @;0K@                                                    3  4065                      75) s
+_R
+S
+%%Page: (13) 13
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 13 def
+/fname (phase-54CD.247.248.asc) def
+/fdir () def
+/ftail (phase-54CD.247.248.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (13) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- NORMAL FORMAT -- PHASE 54C                                 PAGE   13) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 698  4 066         BW    *&5,FLAG1                                                8  4066  V 07Y 26W 1         75) s
+5 442 M
+( 699  4 074         B     4140                                                     4  4074  B 14|               75) s
+5 434 M
+( 700  4 078         BW    *&15,FLAG3                                               8  4078  V 10| 26Y 1         75) s
+5 426 M
+( 701  4 086         S     9&X2,W3B                                                 7  4086  S 0!9 22W           76) s
+5 418 M
+( 702  4 093         ZA    W3B,W3                                                   7  4093  ? 22W 23S           76) s
+5 410 M
+( 703  4 100         S     W3,W3C                                                   7  4100  S 23S 22Z           76) s
+5 402 M
+( 704  4 107         A     A12K,W3A                                                 7  4107  A L27 22T           76) s
+5 394 M
+( 705  4 114         ZS    W3C                                                      4  4114  ! 22Z               76) s
+5 386 M
+( 706  4 118         A     W3C,W3A                                                  7  4118  A 22Z 22T           76) s
+5 378 M
+( 707  4 125         ZA    W3A                                                      4  4125  ? 22T               77) s
+5 370 M
+( 708  4 131         DC    @;00@                                                    3  4131                      77) s
+5 362 M
+( 709  4 132         BCE   IFMT3,0&X2,I                                             8  4132  B B67 0!0 I         77) s
+5 354 M
+( 710  4 140         MCW                                                            1  4140  M                   77) s
+5 346 M
+( 711  4 143         DC    @;00@                                                    3  4143                      77) s
+5 338 M
+( 712  4 146         DC    000                                                      3  4146                      77) s
+5 330 M
+( 713  4 147         LCA                                                            1  4147  L                   77) s
+5 322 M
+( 714  4 148         MCW   *&4,X3                                                   7  4148  M 15Y 099           77) s
+5 314 M
+( 715  4 155  CW4    CW    0                                                        4  4155  \) 000               77) s
+5 306 M
+( 716  4 159         B     SW2                                                      4  4159  B A54               77) s
+5 298 M
+( 717         *) s
+5 290 M
+( 718  4 163         BW    *&12,FLAG1                                               8  4163  V 18S 26W 1         78) s
+5 282 M
+( 719  4 171         SBR   W3C,0&X3                                                 7  4171  H 22Z 0?0           78) s
+5 274 M
+( 720  4 178         SW    FLAG1                                                    4  4178  , 26W               78) s
+5 266 M
+( 721  4 182         BW    NOTDOT,FLAG2                                             8  4182  V H61 26X 1         78) s
+5 258 M
+( 722  4 190         MN    0&X3,2&X1                                                7  4190  D 0?0 0|2           78) s
+5 250 M
+( 723  4 197         SBR   X1                                                       4  4197  H 089               78) s
+5 242 M
+( 724  4 201         SW    FLAG2                                                    4  4201  , 26X               79) s
+5 234 M
+( 725  4 205         BCE   NOTDOT,4&X1,}  GM                                        8  4205  B H61 0|4 } GMARK   79) s
+5 226 M
+( 726  4 213         CW    FLAG2                                                    4  4213  \) 26X               79) s
+5 218 M
+( 727  4 217         B     NOTDOT                                                   4  4217  B H61               79) s
+5 210 M
+( 728         *) s
+5 202 M
+( 729  4 223  W3A    DCW   #3                                                       3  4223                      79) s
+5 194 M
+( 730  4 226  W3B    DCW   #3                                                       3  4226                      79) s
+5 186 M
+( 731  4 229  W3C    DCW   #3                                                       3  4229                      79) s
+5 178 M
+( 732  4 232  W3     DCW   #3                                                       3  4232                      80) s
+5 170 M
+( 733  4 233  K5     DCW   @5@                                                      1  4233                      80) s
+5 162 M
+( 734  4 234  FLAG   DC    #1                                                       1  4234                      80) s
+5 154 M
+( 735  4 235  RDFLAG DCW   #1  READ IF WM, WRITE IF NO WM                           1  4235                      80) s
+5 146 M
+( 736  4 238  ENDREC DCW   #3  ADDRESS OF END OF RECORD, EITHER 334 OR 281          3  4238                      80) s
+5 138 M
+( 737  4 241  RECPOS DCW   #3                                                       3  4241                      80) s
+5 130 M
+( 738  4 242  CH     DCW   #1                                                       1  4242                      80) s
+5 122 M
+( 739  4 243  WMFLAG DCW   #1  WM IF CHAR BEING COPIED HAS A WM                     1  4243                      80) s
+5 114 M
+( 740  4 246  COUNT  DCW   #3                                                       3  4246                      81) s
+5 106 M
+( 741  4 249  SX1    DCW   #3                                                       3  4249                      81) s
+5 98 M
+( 742  4 252  COUNT2 DCW   #3                                                       3  4252                      81) s
+5 90 M
+( 743  4 255  K0DOT0 DCW   @0.0@                                                    3  4255                      81) s
+5 82 M
+( 744  4 258  KX     DCW   @ X @                                                    3  4258                      81) s
+5 74 M
+( 745  4 259  KR     DCW   @R@                                                      1  4259                      81) s
+5 66 M
+( 746  4 260  KW     DCW   @W@                                                      1  4260                      81) s
+5 58 M
+( 747  4 262  KP41   DCW   &41                                                      2  4262                      82) s
+_R
+S
+%%Page: (14) 14
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 14 def
+/fname (phase-54CD.247.248.asc) def
+/fdir () def
+/ftail (phase-54CD.247.248.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (14) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- NORMAL FORMAT -- PHASE 54C                                 PAGE   14) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 748  4 265  A281   DSA   281                                                      3  4265  281                 82) s
+5 442 M
+( 749  4 266  FLAG1  DCW   #1                                                       1  4266                      82) s
+5 434 M
+( 750  4 267  FLAG2  DCW   #1                                                       1  4267                      82) s
+5 426 M
+( 751  4 268  FLAG3  DCW   #1                                                       1  4268                      82) s
+5 418 M
+( 752  4 269         CW    1&X1                                           V3M4      4  4269  \) 0|1               82) s
+5 410 M
+( 753  4 273         B     NOOVFL                                         V3M4      4  4273  B A38               82) s
+5 402 M
+( 754  4 278  K10    DCW   10                                             V3M4      2  4278                      83) s
+5 394 M
+( 755  4 279  GMWM   DCW   @}@                                            V3M4      1  4279              GMARK   83) s
+5 386 M
+( 756                EX    NRET                                                              B 982               84) s
+_R
+S
+%%Page: (15) 15
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 15 def
+/fname (phase-54CD.247.248.asc) def
+/fdir () def
+/ftail (phase-54CD.247.248.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (15) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- A CONVERSION -- PHASE 54D                                  PAGE   15) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 757                JOB   FORTRAN COMPILER -- A CONVERSION -- PHASE 54D) s
+5 442 M
+( 758                ORG   4280                                                               4280) s
+5 434 M
+( 759  4 280  AFMT1  BW    *&12,FLAG1                                               8  4280  V 29Z 26W 1         87) s
+5 426 M
+( 760  4 288         SBR   W3C,0&X3                                                 7  4288  H 22Z 0?0           87) s
+5 418 M
+( 761  4 295         SW    FLAG1                                                    4  4295  , 26W               87) s
+5 410 M
+( 762  4 299         BW    ATEST,FLAG2                                              8  4299  V 34/ 26X 1         87) s
+5 402 M
+( 763  4 307         MN    0&X3,2&X1                                                7  4307  D 0?0 0|2           87) s
+5 394 M
+( 764  4 314         MZ    0&X3,2&X1                                                7  4314  Y 0?0 0|2           88) s
+5 386 M
+( 765  4 321         SBR   X1                                                       4  4321  H 089               88) s
+5 378 M
+( 766  4 325         SW    FLAG2                                                    4  4325  , 26X               88) s
+5 370 M
+( 767  4 329         BCE   ATEST,4&X1,}  GM                                         8  4329  B 34/ 0|4 } GMARK   88) s
+5 362 M
+( 768  4 337         CW    FLAG2                                                    4  4337  \) 26X               88) s
+5 354 M
+( 769  4 341  ATEST  BW    *&9,1&X3  END OF SOURCE FIELD?                           8  4341  V 35X 0?1 1         88) s
+5 346 M
+( 770  4 349         B     INCX3                                                    4  4349  B J37               88) s
+5 338 M
+( 771  4 353         B     AFMT1                                                    4  4353  B 28|               89) s
+5 330 M
+( 772  4 357         SBR   W3B,1&X3                                                 7  4357  H 22W 0?1           89) s
+5 322 M
+( 773  4 364         MCW   4146,*&7                                                 7  4364  M 14W 37X           89) s
+5 314 M
+( 774  4 371         MCW   0,0                                                      7  4371  M 000 000           89) s
+5 306 M
+( 775  4 378         LCA                                                            1  4378  L                   89) s
+5 298 M
+( 776  4 379         MCW   CW4&3,X3                                                 7  4379  M 15Y 099           89) s
+5 290 M
+( 777  4 386         B     SW2                                                      4  4386  B A54               89) s
+5 282 M
+( 778  4 390  AFMT2  MCW   K3B                                                      4  4390  M 57X               90) s
+5 274 M
+( 779  4 396         DC    @;00@                                                    3  4396                      90) s
+5 266 M
+( 780  4 397         MCW   W20                                                      4  4397  M 59X               90) s
+5 258 M
+( 781  4 403         DC    @;0K@                                                    3  4403                      90) s
+5 250 M
+( 782  4 404         SW    0&X1                                                     4  4404  , 0|0               90) s
+5 242 M
+( 783  4 408         SBR   CW4&3,0&X1                                               7  4408  H 15Y 0|0           90) s
+5 234 M
+( 784  4 415         B     3793                                           V3M4      4  4415  B G93               90) s
+5 226 M
+( 785         *) s
+5 218 M
+( 786         * MOVE DATA TO A FORMAT FIELD) s
+5 210 M
+( 787         *) s
+5 202 M
+( 788  4 419  AFMT3  MCW   2501,*&7                                                 7  4419  M N01 43S           90) s
+5 194 M
+( 789  4 426  AMCW   MCW   0,0                                                      7  4426  M 000 000           91) s
+5 186 M
+( 790  4 433         MCW                                                            1  4433  M                   91) s
+5 178 M
+( 791  4 434         SBR   X1                                                       4  4434  H 089               91) s
+5 170 M
+( 792  4 438         SBR   SRC,1&X1                                                 7  4438  H 60T 0|1           91) s
+5 162 M
+( 793  4 445         SBR   TRGEND,0&X3                                              7  4445  H 60W 0?0           91) s
+5 154 M
+( 794  4 452         MA    6&X2,TRGEND                                              7  4452  # 0!6 60W           91) s
+5 146 M
+( 795  4 459         SBR   TARGET,1&X3                                              7  4459  H 60| 0?1           92) s
+5 138 M
+( 796  4 466         MCW   AMCW&6,SRCEND                                            7  4466  M 43S 60Z           92) s
+5 130 M
+( 797  4 473         MA    AM2,SRCEND                                               7  4473  # 61S 60Z           92) s
+5 122 M
+( 798  4 480  ALOOP  MN    1&X1,2&X3                                                7  4480  D 0|1 0?2           92) s
+5 114 M
+( 799  4 487         MZ    1&X1,2&X3                                                7  4487  Y 0|1 0?2           92) s
+5 106 M
+( 800  4 494         C     TARGET,TRGEND                                            7  4494  C 60| 60W           93) s
+5 98 M
+( 801  4 501         BE    AEND                                                     5  4501  B 55| S             93) s
+5 90 M
+( 802  4 506         C     SRC,SRCEND                                               7  4506  C 60T 60Z           93) s
+5 82 M
+( 803  4 513         BE    AEND                                                     5  4513  B 55| S             93) s
+5 74 M
+( 804  4 518         MA    A001,SRC                                                 7  4518  # 61V 60T           93) s
+5 66 M
+( 805  4 525         MA    A001,TARGET                                              7  4525  # 61V 60|           93) s
+5 58 M
+( 806  4 532         SBR   X1,1&X1                                                  7  4532  H 089 0|1           94) s
+_R
+S
+%%Page: (16) 16
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 16 def
+/fname (phase-54CD.247.248.asc) def
+/fdir () def
+/ftail (phase-54CD.247.248.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (16) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- A CONVERSION -- PHASE 54D                                  PAGE   16) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 807  4 539         SBR   X3,1&X3                                                  7  4539  H 099 0?1           94) s
+5 442 M
+( 808  4 546         B     ALOOP                                                    4  4546  B 48|               94) s
+5 434 M
+( 809  4 550  AEND   SBR   CW3&3,0&X3                                               7  4550  H A53 0?0           94) s
+5 426 M
+( 810  4 557         MCW   TRGEND,X3                                                7  4557  M 60W 099           94) s
+5 418 M
+( 811  4 564         SBR   X3,2&X3                                                  7  4564  H 099 0?2           94) s
+5 410 M
+( 812  4 571         B     CW2                                                      4  4571  B A46               95) s
+5 402 M
+( 813         *) s
+5 394 M
+( 814  4 577  K3B    DCW   #3                                                       3  4577                      95) s
+5 386 M
+( 815  4 597  W20    DCW   #20                                                     20  4597                      95) s
+5 378 M
+( 816  4 600  TARGET DCW   #3                                                       3  4600                      95) s
+5 370 M
+( 817  4 603  SRC    DCW   #3                                                       3  4603                      95) s
+5 362 M
+( 818  4 606  TRGEND DCW   #3                                                       3  4606                      95) s
+5 354 M
+( 819  4 609  SRCEND DCW   #3                                                       3  4609                      95) s
+5 346 M
+( 820  4 612  AM2    DSA   15998  -2 = 16000 - 2 = 15998                            3  4612  I9H                 96) s
+5 338 M
+( 821  4 615  A001   DSA   1                                                        3  4615  001                 96) s
+5 330 M
+( 822  4 616         DCW   @}@                                                      1  4616              GMARK   96) s
+5 322 M
+( 823                EX    NRET                                                              B 982               97) s
+5 314 M
+( 824                END                                                                     / 000 080) s
+_R
+S
+%%Page: (17) 17
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 17 def
+/fname (phase-54CD.247.248.asc) def
+/fdir () def
+/ftail (phase-54CD.247.248.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (17) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- A CONVERSION -- PHASE 54D                                  PAGE   17) s
+5 466 M
+(SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  ) s
+5 458 M
+(A001     4615    A12K     2327    A281     4265    ABZ2     3789    ABZONE   3976    AEND     4550    AFMT1    4280   ) s
+5 450 M
+(AFMT2    4390    AFMT3    4419    ALOOP    4480    AM2      4612    AMCW     4426    ATEST    4341    BEGINN   1697   ) s
+5 442 M
+(BSP      3605    BZONE    3781    CH       4242    CHARS    1855    CHKCH1   3881    CHKCH2   3918    CHKLEN   2808   ) s
+5 434 M
+(CHKLEX   2829    CKEFMT   4047    CKSIGN   3948    CLEARP   3471    CLEARR   3316    CLEARW   3375    COUNT    4246   ) s
+5 426 M
+(COUNT2   4252    CPARGL   2332    CW1      3142    CW2      3146    CW3      3150    CW4      4155    DBLE     3520   ) s
+5 418 M
+(DEC2     2396    DOIO     3427    DOT      3835    EFMT     2568    ENDRD    3325    ENDREC   4238    EOFRD    3307   ) s
+5 410 M
+(EOFWR    3358    ER1121   3971    EXP      3980    FFMT1    2704    FFMT2    2993    FFMT3    3133    FINDGM   3044   ) s
+5 402 M
+(FLAG     4234    FLAG1    4266    FLAG2    4267    FLAG3    4268    GETB     2910    GETWM    1916    GETWML   1912   ) s
+5 394 M
+(GMWM     4279    GOTB     2934    GOTWM    1897    IFMT     2833    IFMT2    2865    IFMT3    3267    IFMT4    3699   ) s
+5 386 M
+(INCX3    2137    INCX3X   2148    K0DOT0   4255    K1       3574    K10      4278    K2       3505    K3B      4577   ) s
+5 378 M
+(K5       4233    KP41     4262    KP5      3647    KR       4259    KW       4260    KX       4258    KZ4      3266   ) s
+5 370 M
+(LCA      2079    LISENT    912    LISTP2   2271    LSTPOS   1968    MANWID    837    MCS      3187    MORE     2431   ) s
+5 362 M
+(NOOVFL   3138    NOTDOT   3861    NOZONE   3262    NRET      982    OVFL     3166    PUNCH    3525    RDFLAG   4235   ) s
+5 354 M
+(RDTAPE   3312    READCD   3556    RECPOS   4241    REDOIO   3384    RELENT   2132    SAVZON   3648    SBR      2637   ) s
+5 346 M
+(SIGN     4012    SKP      3618    SNAPSH    333    SRC      4603    SRCEND   4609    SW1      2894    SW2      3154   ) s
+5 338 M
+(SX1      4249    SX2      1996    SX3      2952    SX3A     3082    TAPE     3434    TAPERR   3591    TARGET   4600   ) s
+5 330 M
+(TRGEND   4606    UNIT     2136    W2       3650    W20      4597    W3       4232    W3A      4223    W3B      4226   ) s
+5 322 M
+(W3C      4229    WMFLAG   4243    X1         89    X2         94    X3         99    XXFLD    3240    ZAS      4036   ) s
+5 314 M
+(ZAS2     4062   ) s
+_R
+S
+%%Trailer
+%%Pages: 17
+%%DocumentNeededResources: font Courier-Bold Courier 
+%%EOF

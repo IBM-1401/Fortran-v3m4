@@ -1,0 +1,988 @@
+%!PS-Adobe-3.0
+%%BoundingBox: 38 24 574 768
+%%Title: Enscript Output
+%%For: W. Van Snyder
+%%Creator: GNU enscript 1.6.4
+%%CreationDate: Tue Jul 15 00:12:03 2008
+%%Orientation: Landscape
+%%Pages: (atend)
+%%DocumentMedia: Letter 612 792 0 () ()
+%%DocumentNeededResources: (atend)
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset Enscript-Prolog 1.6 4
+%
+% Procedures.
+%
+
+/_S {	% save current state
+  /_s save def
+} def
+/_R {	% restore from saved state
+  _s restore
+} def
+
+/S {	% showpage protecting gstate
+  gsave
+  showpage
+  grestore
+} bind def
+
+/MF {	% fontname newfontname -> -	make a new encoded font
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  % insert only valid encoding vectors
+  encoding_vector length 256 eq {
+    newfont /Encoding encoding_vector put
+  } if
+
+  newfontname newfont definefont pop
+} def
+
+/MF_PS { % fontname newfontname -> -	make a new font preserving its enc
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  newfontname newfont definefont pop
+} def
+
+/SF { % fontname width height -> -	set a new font
+  /height exch def
+  /width exch def
+
+  findfont
+  [width 0 0 height 0 0] makefont setfont
+} def
+
+/SUF { % fontname width height -> -	set a new user font
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF
+  /F-gs-user-font width height SF
+} def
+
+/SUF_PS { % fontname width height -> -	set a new user font preserving its enc
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF_PS
+  /F-gs-user-font width height SF
+} def
+
+/M {moveto} bind def
+/s {show} bind def
+
+/Box {	% x y w h -> -			define box path
+  /d_h exch def /d_w exch def /d_y exch def /d_x exch def
+  d_x d_y  moveto
+  d_w 0 rlineto
+  0 d_h rlineto
+  d_w neg 0 rlineto
+  closepath
+} def
+
+/bgs {	% x y height blskip gray str -> -	show string with bg color
+  /str exch def
+  /gray exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    gray setgray
+    fill
+  grestore
+  x y M str s
+} def
+
+/bgcs { % x y height blskip red green blue str -> -  show string with bg color
+  /str exch def
+  /blue exch def
+  /green exch def
+  /red exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    red green blue setrgbcolor
+    fill
+  grestore
+  x y M str s
+} def
+
+% Highlight bars.
+/highlight_bars {	% nlines lineheight output_y_margin gray -> -
+  gsave
+    setgray
+    /ymarg exch def
+    /lineheight exch def
+    /nlines exch def
+
+    % This 2 is just a magic number to sync highlight lines to text.
+    0 d_header_y ymarg sub 2 sub translate
+
+    /cw d_output_w cols div def
+    /nrows d_output_h ymarg 2 mul sub lineheight div cvi def
+
+    % for each column
+    0 1 cols 1 sub {
+      cw mul /xp exch def
+
+      % for each rows
+      0 1 nrows 1 sub {
+        /rn exch def
+        rn lineheight mul neg /yp exch def
+        rn nlines idiv 2 mod 0 eq {
+	  % Draw highlight bar.  4 is just a magic indentation.
+	  xp 4 add yp cw 8 sub lineheight neg Box fill
+	} if
+      } for
+    } for
+
+  grestore
+} def
+
+% Line highlight bar.
+/line_highlight {	% x y width height gray -> -
+  gsave
+    /gray exch def
+    Box gray setgray fill
+  grestore
+} def
+
+% Column separator lines.
+/column_lines {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h translate
+    /cw d_output_w cols div def
+    1 1 cols 1 sub {
+      cw mul 0 moveto
+      0 d_output_h rlineto stroke
+    } for
+  grestore
+} def
+
+% Column borders.
+/column_borders {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h moveto
+    0 d_output_h rlineto
+    d_output_w 0 rlineto
+    0 d_output_h neg rlineto
+    closepath stroke
+  grestore
+} def
+
+% Do the actual underlay drawing
+/draw_underlay {
+  ul_style 0 eq {
+    ul_str true charpath stroke
+  } {
+    ul_str show
+  } ifelse
+} def
+
+% Underlay
+/underlay {	% - -> -
+  gsave
+    0 d_page_h translate
+    d_page_h neg d_page_w atan rotate
+
+    ul_gray setgray
+    ul_font setfont
+    /dw d_page_h dup mul d_page_w dup mul add sqrt def
+    ul_str stringwidth pop dw exch sub 2 div ul_h_ptsize -2 div moveto
+    draw_underlay
+  grestore
+} def
+
+/user_underlay {	% - -> -
+  gsave
+    ul_x ul_y translate
+    ul_angle rotate
+    ul_gray setgray
+    ul_font setfont
+    0 0 ul_h_ptsize 2 div sub moveto
+    draw_underlay
+  grestore
+} def
+
+% Page prefeed
+/page_prefeed {		% bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} def
+
+% Wrapped line markers
+/wrapped_line_mark {	% x y charwith charheight type -> -
+  /type exch def
+  /h exch def
+  /w exch def
+  /y exch def
+  /x exch def
+
+  type 2 eq {
+    % Black boxes (like TeX does)
+    gsave
+      0 setlinewidth
+      x w 4 div add y M
+      0 h rlineto w 2 div 0 rlineto 0 h neg rlineto
+      closepath fill
+    grestore
+  } {
+    type 3 eq {
+      % Small arrows
+      gsave
+        .2 setlinewidth
+        x w 2 div add y h 2 div add M
+        w 4 div 0 rlineto
+        x w 4 div add y lineto stroke
+
+        x w 4 div add w 8 div add y h 4 div add M
+        x w 4 div add y lineto
+	w 4 div h 8 div rlineto stroke
+      grestore
+    } {
+      % do nothing
+    } ifelse
+  } ifelse
+} def
+
+% EPSF import.
+
+/BeginEPSF {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack
+  userdict begin
+  /showpage { } def
+  0 setgray 0 setlinecap
+  1 setlinewidth 0 setlinejoin
+  10 setmiterlimit [ ] 0 setdash newpath
+  /languagelevel where {
+    pop languagelevel
+    1 ne {
+      false setstrokeadjust false setoverprint
+    } if
+  } if
+} bind def
+
+/EndEPSF {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+%%EndResource
+%%BeginResource: procset Enscript-Encoding-88591 1.6 4
+/encoding_vector [
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclam       	/quotedbl     	/numbersign   	
+/dollar       	/percent      	/ampersand    	/quoteright   	
+/parenleft    	/parenright   	/asterisk     	/plus         	
+/comma        	/hyphen       	/period       	/slash        	
+/zero         	/one          	/two          	/three        	
+/four         	/five         	/six          	/seven        	
+/eight        	/nine         	/colon        	/semicolon    	
+/less         	/equal        	/greater      	/question     	
+/at           	/A            	/B            	/C            	
+/D            	/E            	/F            	/G            	
+/H            	/I            	/J            	/K            	
+/L            	/M            	/N            	/O            	
+/P            	/Q            	/R            	/S            	
+/T            	/U            	/V            	/W            	
+/X            	/Y            	/Z            	/bracketleft  	
+/backslash    	/bracketright 	/asciicircum  	/underscore   	
+/quoteleft    	/a            	/b            	/c            	
+/d            	/e            	/f            	/g            	
+/h            	/i            	/j            	/k            	
+/l            	/m            	/n            	/o            	
+/p            	/q            	/r            	/s            	
+/t            	/u            	/v            	/w            	
+/x            	/y            	/z            	/braceleft    	
+/bar          	/braceright   	/tilde        	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclamdown   	/cent         	/sterling     	
+/currency     	/yen          	/brokenbar    	/section      	
+/dieresis     	/copyright    	/ordfeminine  	/guillemotleft	
+/logicalnot   	/hyphen       	/registered   	/macron       	
+/degree       	/plusminus    	/twosuperior  	/threesuperior	
+/acute        	/mu           	/paragraph    	/bullet       	
+/cedilla      	/onesuperior  	/ordmasculine 	/guillemotright	
+/onequarter   	/onehalf      	/threequarters	/questiondown 	
+/Agrave       	/Aacute       	/Acircumflex  	/Atilde       	
+/Adieresis    	/Aring        	/AE           	/Ccedilla     	
+/Egrave       	/Eacute       	/Ecircumflex  	/Edieresis    	
+/Igrave       	/Iacute       	/Icircumflex  	/Idieresis    	
+/Eth          	/Ntilde       	/Ograve       	/Oacute       	
+/Ocircumflex  	/Otilde       	/Odieresis    	/multiply     	
+/Oslash       	/Ugrave       	/Uacute       	/Ucircumflex  	
+/Udieresis    	/Yacute       	/Thorn        	/germandbls   	
+/agrave       	/aacute       	/acircumflex  	/atilde       	
+/adieresis    	/aring        	/ae           	/ccedilla     	
+/egrave       	/eacute       	/ecircumflex  	/edieresis    	
+/igrave       	/iacute       	/icircumflex  	/idieresis    	
+/eth          	/ntilde       	/ograve       	/oacute       	
+/ocircumflex  	/otilde       	/odieresis    	/divide       	
+/oslash       	/ugrave       	/uacute       	/ucircumflex  	
+/udieresis    	/yacute       	/thorn        	/ydieresis    	
+] def
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Courier
+/HFpt_w 10 def
+/HFpt_h 10 def
+/Courier-Bold /HF-gs-font MF
+/HF /HF-gs-font findfont [HFpt_w 0 0 HFpt_h 0 0] makefont def
+/Courier /F-gs-font MF
+/F-gs-font 7 7 SF
+/#copies 1 def
+% Pagedevice definitions:
+gs_languagelevel 1 gt {
+  <<
+    /PageSize [612 792] 
+  >> setpagedevice
+} if
+%%BeginResource: procset Enscript-Header-simple 1.6 4
+
+/do_header {	% print default simple header
+  gsave
+    d_header_x d_header_y HFpt_h 3 div add translate
+
+    HF setfont
+    user_header_p {
+      5 0 moveto user_header_left_str show
+
+      d_header_w user_header_center_str stringwidth pop sub 2 div
+      0 moveto user_header_center_str show
+
+      d_header_w user_header_right_str stringwidth pop sub 5 sub
+      0 moveto user_header_right_str show
+    } {
+      fname length fmodstr length add pagenumstr length add 95 6 idiv add d_header_w 6 idiv le{
+        5 0 moveto fname show
+        45 0 rmoveto fmodstr show
+        45 0 rmoveto pagenumstr show
+      } {
+        5 0 moveto fmodstr show
+        45 0 rmoveto pagenumstr show
+        fname length d_header_w 6 idiv idiv 1 add 10 mul 5 exch moveto
+        1 1 fname length d_header_w 6 idiv idiv
+        {
+          dup fname exch 1 sub d_header_w 6 idiv mul d_header_w 6 idiv getinterval show
+          5 exch 10 mul fname length d_header_w 6 idiv idiv 1 add 10 mul exch sub moveto
+        } for
+        5 10 moveto
+        fname fname length d_header_w 6 idiv idiv d_header_w 6 idiv mul dup fname length exch sub getinterval show
+      }ifelse
+    }ifelse
+
+  grestore
+} def
+%%EndResource
+/d_page_w 744 def
+/d_page_h 536 def
+/d_header_x 0 def
+/d_header_y 492 def
+/d_header_w 744 def
+/d_header_h 44 def
+/d_footer_x 0 def
+/d_footer_y 0 def
+/d_footer_w 744 def
+/d_footer_h 0 def
+/d_output_w 744 def
+/d_output_h 492 def
+/cols 1 def
+%%EndSetup
+%%Page: (1) 1
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 1 def
+/fname (phase-58.252.asc) def
+/fdir () def
+/ftail (phase-58.252.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:51 2008) def
+/pagenumstr (1) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 474 M
+(CLEAR STORAGE 1     ,008015,022026,030037,044,049,053053N000000N00001026                                         1) s
+5 466 M
+(CLEAR STORAGE 2     L068116,105106,110117B101/I9I#071029C029056B026/B001/0991,001/001117I0?                      2) s
+5 458 M
+(BOOTSTRAP           ,008015,022029,036040,047054,061068,072/061039              ,0010011040                      3) s
+5 442 M
+(                          FORTRAN COMPILER -- CONDENSED DECK PHASE 2 -- 58                               PAGE    1) s
+5 426 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 410 M
+( 101                JOB   FORTRAN COMPILER -- CONDENSED DECK PHASE 2 -- 58) s
+5 402 M
+( 102                CTL   6611) s
+5 394 M
+( 103         *) s
+5 386 M
+( 104         * THIS PHASE PUNCHES CARDS THAT WILL INITIALIZE THE INDEX) s
+5 378 M
+( 105         * REGISTERS AND SENSE LIGHTS, THE SNAPSHOT OR THE LINKAGE) s
+5 370 M
+( 106         * ROUTINE, THE ARITHMETIC ROUTINE, AND CERTAIN FINAL) s
+5 362 M
+( 107         * ADDRESSES AND CONSTANTS.) s
+5 354 M
+( 108         *) s
+5 346 M
+( 109         * STUFF IN THE RESIDENT AREA) s
+5 338 M
+( 110         *) s
+5 330 M
+( 111         GLOBER EQU   184  GLOBAL ERROR FLAG -- WM MEANS ERROR                    0184) s
+5 322 M
+( 112         GOTXL  EQU   185  XLINKF WAS REFERENCED IF NO WM                         0185) s
+5 314 M
+( 113         RELTAB EQU   188  RELOCATABLE FUNCTION TABLE ENTRY ADDRESSES             0188) s
+5 306 M
+( 114         SUBENT EQU   191  ENTRY TO SUBSCRIPT ROUTINE                             0191) s
+5 298 M
+( 115         SNAPSH EQU   333  CORE DUMP SNAPSHOT                                     0333) s
+5 290 M
+( 116         IMOD   EQU   690  INTEGER MODULUS -- NUMBER OF DIGITS                    0690) s
+5 282 M
+( 117         MANTIS EQU   692  FLOATING POINT MANTISSA DIGITS & 2                     0692) s
+5 274 M
+( 118         CONDNS EQU   693  P FOR CONDENSED DECK                                   0693) s
+5 266 M
+( 119         LOADNX EQU   700  LOAD NEXT OVERLAY                                      0700) s
+5 258 M
+( 120         CLEARL EQU   707  CS AT START OF OVERLAY LOADER                          0707) s
+5 250 M
+( 121         CDOVLY EQU   769  1 IF RUNNING FROM CARDS, N IF FROM TAPE                0769) s
+5 242 M
+( 122         TPREAD EQU   780  TAPE READ INSTRUCTION IN OVERLAY LOADER                0780) s
+5 234 M
+( 123         LOADXX EQU   793  EXIT FROM OVERLAY LOADER                               0793) s
+5 226 M
+( 124         CLRBOT EQU   833  BOTTOM OF CORE TO CLEAR IN OVERLAY LOADER              0833) s
+5 218 M
+( 125         *) s
+5 210 M
+( 126         * ADDRESS IN PHASE 57) s
+5 202 M
+( 127         *) s
+5 194 M
+( 128         PUNCH  EQU   838  PUNCH A CARD AND MAYBE PRINT IT TOO                    0838) s
+5 186 M
+( 129         *) s
+5 178 M
+( 130         * ADDRESSES IN ARITF) s
+5 170 M
+( 131         *) s
+5 162 M
+( 132         SETFP  EQU   831   PUT MANTISSA WIDTH INTO B                             0831) s
+5 154 M
+( 133         QFUNCT EQU   1327  BRANCH TO FUNCTION SELECTOR                           1327) s
+5 146 M
+( 134         DOSUB  EQU   1206  BRANCH TO SUBSCRIPT ROUTINE                           1206) s
+5 138 M
+( 135         ARITI  EQU   1530  PUT INTEGER SIZE IN B                                 1530) s
+5 130 M
+( 136         *) s
+5 122 M
+( 137                ORG   884                                                                0884) s
+5 114 M
+( 138    884  BEGINN MCW   CDOVLY,R2                                                7  0884  M 769 |74            4) s
+5 106 M
+( 139    891         BW    SKIPX1,GOTXL  NEED XLINKF IF NO WM, SKIP IF WM           8  0891  V 984 185 1          4) s
+5 98 M
+( 140         *) s
+5 90 M
+( 141         * SKIP SNAPSHOT) s
+5 82 M
+( 142         *) s
+5 74 M
+( 143    899         MCW   CDOVLY,R1  READ OR NOP                                   7  0899  M 769 920            4) s
+5 66 M
+( 144    906         SBR   TSTCNT&3,RT1                                             7  0906  H /17 931            4) s
+5 58 M
+( 145    913         SBR   TAPERX&3,RESET1                                          7  0913  H /30 924            4) s
+5 50 M
+( 146    920  R1     R     TEST1                                                    4  0920  1 944                5) s
+5 42 M
+( 147    924  RESET1 MCW   KP9,ERRCNT                                               7  0924  M V36 V85            5) s
+_R
+S
+%%Page: (2) 2
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 2 def
+/fname (phase-58.252.asc) def
+/fdir () def
+/ftail (phase-58.252.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:51 2008) def
+/pagenumstr (2) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- CONDENSED DECK PHASE 2 -- 58                               PAGE    2) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 148    931  RT1    RT    1,1                                                      8  0931  M %U1 001 R          5) s
+5 442 M
+( 149    939         BER   TAPERR                                                   5  0939  B /02 L              5) s
+5 434 M
+( 150    944  TEST1  BCE   *&5,68,B                                                 8  0944  B 956 068 B          5) s
+5 426 M
+( 151    952         B     R1                                                       4  0952  B 920                5) s
+5 418 M
+( 152         *) s
+5 410 M
+( 153         * SETUP SECOND READER TO PUNCH) s
+5 402 M
+( 154         *) s
+5 394 M
+( 155    956         SBR   SWICH2&3,TEST2                                           7  0956  H /01 /31            6) s
+5 386 M
+( 156    963         SBR   TSTCNT&3,RT2                                             7  0963  H /17 |85            6) s
+5 378 M
+( 157    970         SBR   TAPERX&3,RESET2                                          7  0970  H /30 |78            6) s
+5 370 M
+( 158    977         A     KP1,W1                                                   7  0977  A V37 V86            6) s
+5 362 M
+( 159    984  SKIPX1 BCE   *&5,CONDNS,P                                             8  0984  B 996 693 P          6) s
+5 354 M
+( 160    992         B     R2                                                       4  0992  B |74                7) s
+5 346 M
+( 161    996         BW    ERRMSG,GLOBER                                            8  0996  V /66 184 1          7) s
+5 338 M
+( 162         *) s
+5 330 M
+( 163         * SET INDEX REGISTERS AND SENSE LIGHTS WITH ZEROES) s
+5 322 M
+( 164         * PART OF ARITF DECK NOW) s
+5 314 M
+( 165         *) s
+5 306 M
+( 166  1 004         MCW   R40&3,171                                                7  1004  M V41 171            7) s
+5 298 M
+( 167  1 011         MCW   LOAD1  TO SET INDEX REGISTERS AND SENSE LIGHTS           4  1011  M V69                7) s
+5 290 M
+( 168  1 015         CS                                                             1  1015  /                    7) s
+5 282 M
+( 169  1 016         LCA   KZ14,114  ZEROES                                         7  1016  L V83 114            7) s
+5 274 M
+( 170  1 023         MCW   BRANCH,SWICH1                                            7  1023  M V84 |70            7) s
+5 266 M
+( 171  1 030         B     PUNCH  WHY BOTHER; IT'S IN ARITF DECK ???                4  1030  B 838                8) s
+5 258 M
+( 172         *) s
+5 250 M
+( 173         * LOAD TOPCOR, IMOD, MANTIS, GMWM) s
+5 242 M
+( 174         *) s
+5 234 M
+( 175  1 034         MCW   R40&3,171                                                7  1034  M V41 171            8) s
+5 226 M
+( 176  1 041         MCW   LOAD                                                     4  1041  M V34                8) s
+5 218 M
+( 177  1 045         CS                                                             1  1045  /                    8) s
+5 210 M
+( 178  1 046         MCW   LOAD2,157  LOAD MANTIS, IMOD, TOPCOR                     7  1046  M U63 157            8) s
+5 202 M
+( 179  1 053         SW    GMWM                                                     4  1053  , W12                8) s
+5 194 M
+( 180  1 057         MCW   GMWM,108                                                 7  1057  M W12 108            8) s
+5 186 M
+( 181  1 064         MCW   MANTIS  FP SIZE                                          4  1064  M 692                9) s
+5 178 M
+( 182  1 068         MCW           INTEGER SIZE                                     1  1068  M                    9) s
+5 170 M
+( 183  1 069         LCA           TOPCOR                                           1  1069  L                    9) s
+5 162 M
+( 184  1 070  SWICH1 NOP   PUNCH   SOMETIMES BRANCH                                 4  1070  N 838                9) s
+5 154 M
+( 185         *) s
+5 146 M
+( 186         * COPY OR SKIP A DECK) s
+5 138 M
+( 187         *) s
+5 130 M
+( 188  1 074  R2     R     SWICH2                                                   4  1074  1 |98                9) s
+5 122 M
+( 189  1 078  RESET2 MCW   KP9,ERRCNT                                               7  1078  M V36 V85            9) s
+5 114 M
+( 190  1 085  RT2    RT    1,1                                                      8  1085  M %U1 001 R          9) s
+5 106 M
+( 191  1 093         BER   TAPERR                                                   5  1093  B /02 L             10) s
+5 98 M
+( 192  1 098  SWICH2 B     CHG2  SOMETIMES TEST2, SOMETIMES ENDEKS                  4  1098  B /55               10) s
+5 90 M
+( 193  1 102  TAPERR BSP   1                                                        5  1102  U %U1 B             10) s
+5 82 M
+( 194  1 107         S     KP1,ERRCNT                                               7  1107  S V37 V85           10) s
+5 74 M
+( 195  1 114  TSTCNT BWZ   RT2,ERRCNT,B                                             8  1114  V |85 V85 B         10) s
+5 66 M
+( 196  1 122         NOP   3333                                                     4  1122  N C33               10) s
+5 58 M
+( 197  1 126         H                                                              1  1126  .                   10) s
+_R
+S
+%%Page: (3) 3
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 3 def
+/fname (phase-58.252.asc) def
+/fdir () def
+/ftail (phase-58.252.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:51 2008) def
+/pagenumstr (3) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- CONDENSED DECK PHASE 2 -- 58                               PAGE    3) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 198  1 127  TAPERX B     RESET2                                                   4  1127  B |78               11) s
+5 442 M
+( 199  1 131  TEST2  BCE   END2,68,B                                                8  1131  B /85 068 B         11) s
+5 434 M
+( 200  1 139         MCW   71,171                                                   7  1139  M 071 171           11) s
+5 426 M
+( 201  1 146         CHAIN 5                                                                             MACRO) s
+5 418 M
+( 202                MCW                                                            1  1146  M           GEN     11) s
+5 410 M
+( 203                MCW                                                            1  1147  M           GEN     11) s
+5 402 M
+( 204                MCW                                                            1  1148  M           GEN     11) s
+5 394 M
+( 205                MCW                                                            1  1149  M           GEN     11) s
+5 386 M
+( 206                MCW                                                            1  1150  M           GEN     12) s
+5 378 M
+( 207  1 151         B     SWICH1                                                   4  1151  B |70               12) s
+5 370 M
+( 208  1 155  CHG2   SBR   SWICH2&3,TEST2  SKIP FIRST CARD, PUNCH THE REST          7  1155  H /01 /31           12) s
+5 362 M
+( 209  1 162         B     R2                                                       4  1162  B |74               12) s
+5 354 M
+( 210         *) s
+5 346 M
+( 211         * ERRORS PREVENT CONDENSED DECK) s
+5 338 M
+( 212         *) s
+5 330 M
+( 213  1 166  ERRMSG CS    332                                                      4  1166  / 332               12) s
+5 322 M
+( 214  1 170         CS                                                             1  1170  /                   12) s
+5 314 M
+( 215  1 171         MCW   ERRORS,243                                               7  1171  M V06 243           12) s
+5 306 M
+( 216  1 178         W                                                              1  1178  2                   13) s
+5 298 M
+( 217  1 179         CC    J                                                        2  1179  F J                 13) s
+5 290 M
+( 218  1 181         B     R2                                                       4  1181  B |74               13) s
+5 282 M
+( 219         *) s
+5 274 M
+( 220         * COPY ANOTHER DECK) s
+5 266 M
+( 221         *) s
+5 258 M
+( 222  1 185  END2   A     KP1,W1                                                   7  1185  A V37 V86           13) s
+5 250 M
+( 223  1 192         BCE   ENDECK,W1,3                                              8  1192  B S95 V86 3         13) s
+5 242 M
+( 224  1 200         BCE   R2,W1,2                                                  8  1200  B |74 V86 2         13) s
+5 234 M
+( 225  1 208         BW    *&5,GOTXL  SKIP XLINKF IF WM                             8  1208  V S20 185 1         13) s
+5 226 M
+( 226  1 216         B     R2         GET XLINKF IF NO WM                           4  1216  B |74               14) s
+5 218 M
+( 227  1 220         MCW   CDOVLY,R3                                                7  1220  M 769 S41           14) s
+5 210 M
+( 228  1 227         SBR   TSTCNT&3,RT3                                             7  1227  H /17 S52           14) s
+5 202 M
+( 229  1 234         SBR   TAPERX&3,RESET3                                          7  1234  H /30 S45           14) s
+5 194 M
+( 230         *) s
+5 186 M
+( 231         * SKIP A DECK) s
+5 178 M
+( 232         *) s
+5 170 M
+( 233  1 241  R3     R     TEST3                                                    4  1241  1 S65               14) s
+5 162 M
+( 234  1 245  RESET3 MCW   KP9,ERRCNT                                               7  1245  M V36 V85           14) s
+5 154 M
+( 235  1 252  RT3    RT    1,1                                                      8  1252  M %U1 001 R         15) s
+5 146 M
+( 236  1 260         BER   TAPERR                                                   5  1260  B /02 L             15) s
+5 138 M
+( 237  1 265  TEST3  BCE   *&5,68,B                                                 8  1265  B S77 068 B         15) s
+5 130 M
+( 238  1 273         B     R3                                                       4  1273  B S41               15) s
+5 122 M
+( 239  1 277         SBR   TSTCNT&3,RT2                                             7  1277  H /17 |85           15) s
+5 114 M
+( 240  1 284         SBR   TAPERX&3,RESET2                                          7  1284  H /30 |78           15) s
+5 106 M
+( 241  1 291         B     END2                                                     4  1291  B /85               16) s
+5 98 M
+( 242  1 295  ENDECK SBR   SWICH2&3,ENDEKS                                          7  1295  H /01 T06           16) s
+5 90 M
+( 243  1 302         B     R2                                                       4  1302  B |74               16) s
+5 82 M
+( 244  1 306  ENDEKS BCE   DONE,SWICH1,N                                            8  1306  B U05 |70 N         16) s
+5 74 M
+( 245         *) s
+5 66 M
+( 246         * IMOD, MANTIS, RELTAB, SUBENT TO ARITF) s
+5 58 M
+( 247         *) s
+_R
+S
+%%Page: (4) 4
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 4 def
+/fname (phase-58.252.asc) def
+/fdir () def
+/ftail (phase-58.252.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:51 2008) def
+/pagenumstr (4) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- CONDENSED DECK PHASE 2 -- 58                               PAGE    4) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 248  1 314         CS    171                                                      4  1314  / 171               16) s
+5 442 M
+( 249  1 318         SW    101                                                      4  1318  , 101               16) s
+5 434 M
+( 250  1 322         MCW   R40&3,171                                                7  1322  M V41 171           16) s
+5 426 M
+( 251  1 329         MCW   LOAD                                                     4  1329  M V34               17) s
+5 418 M
+( 252  1 333         MCW   MVIMOD&6,146  TO PUT IMOD INTO ARITF                     7  1333  M V93 146           17) s
+5 410 M
+( 253  1 340         MCW   IMOD,102                                                 7  1340  M 690 102           17) s
+5 402 M
+( 254  1 347         B     PUNCH                                                    4  1347  B 838               17) s
+5 394 M
+( 255  1 351         MCW   WHERE,146     TO PUT MANTIS INTO ARITF                   7  1351  M V96 146           17) s
+5 386 M
+( 256  1 358         MCW   MANTIS,102                                               7  1358  M 692 102           17) s
+5 378 M
+( 257  1 365         B     PUNCH                                                    4  1365  B 838               18) s
+5 370 M
+( 258  1 369         MCW   FUNCE&3,146   MCW 3,QFUNC&3                              7  1369  M W00 146           18) s
+5 362 M
+( 259  1 376         MCW   RELTAB,103    RELOCATABLE FUNCTION TABLE ADDRESS         7  1376  M 188 103           18) s
+5 354 M
+( 260  1 383         B     PUNCH                                                    4  1383  B 838               18) s
+5 346 M
+( 261  1 387         MCW   SUBE,146                                                 7  1387  M W03 146           18) s
+5 338 M
+( 262  1 394         MCW   SUBENT,103                                               7  1394  M 191 103           18) s
+5 330 M
+( 263  1 401         B     PUNCH                                                    4  1401  B 838               19) s
+5 322 M
+( 264         *) s
+5 314 M
+( 265  1 405  DONE   BSS   SNAPSH,C                                                 5  1405  B 333 C             19) s
+5 306 M
+( 266  1 410         SBR   TPREAD&6,838                                             7  1410  H 786 838           19) s
+5 298 M
+( 267  1 417         SBR   CLRBOT                                                   4  1417  H 833               19) s
+5 290 M
+( 268  1 421         SBR   LOADXX&3,838                                             7  1421  H 796 838           19) s
+5 282 M
+( 269  1 428         SBR   CLEARL&3,GMWM                                            7  1428  H 710 W12           19) s
+5 274 M
+( 270  1 435         LCA   CONDEK,110                                               7  1435  L W11 110           20) s
+5 266 M
+( 271  1 442         B     LOADNX                                                   4  1442  B 700               20) s
+5 258 M
+( 272         *) s
+5 250 M
+( 273         * DATA) s
+5 242 M
+( 274         *) s
+5 234 M
+( 275  1 463  LOAD2  DCW   @L008693,689691,693@  TOPCOR IMOD MANTIS GMWM           18  1463                      20) s
+5 226 M
+( 276  1 506  ERRORS DCW   @CONDENSED DECK DEFERRED DUE TO INPUT ERRORS@           43  1506                      22) s
+5 218 M
+( 277  1 534  LOAD   DCW   @L039000,040040,040040,040040@                          28  1534                      22) s
+5 210 M
+( 278  1 535         DC    @$@                                                      1  1535                      22) s
+5 202 M
+( 279  1 536  KP9    DCW   &9                                                       1  1536                      22) s
+5 194 M
+( 280  1 537  KP1    DCW   &1                                                       1  1537                      22) s
+5 186 M
+( 281  1 538  R40    R     40                                                       4  1538  1 040               22) s
+5 178 M
+( 282  1 569  LOAD1  DCW   @L014100,092097,081082,083084@                          28  1569                      23) s
+5 170 M
+( 283  1 583  KZ14   DCW   @00000000000000@                                        14  1583                      24) s
+5 162 M
+( 284  1 584  BRANCH B                                                              1  1584  B                   24) s
+5 154 M
+( 285  1 585  ERRCNT DCW   #1  TAPE ERROR COUNT                                     1  1585                      24) s
+5 146 M
+( 286  1 586  W1     DCW   #1                                                       1  1586                      24) s
+5 138 M
+( 287  1 587  MVIMOD MCW   2,ARITI&6  INTEGER SIZE TO ARITHMETIC ROUTINE            7  1587  M 002 V36           24) s
+5 130 M
+( 288  1 596  WHERE  DSA   SETFP&6    WHERE TO PUT FP SIZE                          3  1596  837                 24) s
+5 122 M
+( 289  1 597  FUNCE  WR    QFUNCT&3   USED TO CREATE  MCW  3,QFUNCT&3               4  1597  3 T30               24) s
+5 114 M
+( 290  1 603  SUBE   DSA   DOSUB&3                                                  3  1603  S09                 25) s
+5 106 M
+( 291  1 611  CONDEK DCW   @CONDECK3@                                               8  1611                      25) s
+5 98 M
+( 292  1 612  GMWM   DCW   @}@                                                      1  1612              GMARK   25) s
+5 90 M
+( 293                EX    BEGINN                                                            B 884               26) s
+5 82 M
+( 294                END                                                                     / 000 080) s
+_R
+S
+%%Page: (5) 5
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 5 def
+/fname (phase-58.252.asc) def
+/fdir () def
+/ftail (phase-58.252.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:51 2008) def
+/pagenumstr (5) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- CONDENSED DECK PHASE 2 -- 58                               PAGE    5) s
+5 466 M
+(SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  ) s
+5 458 M
+(ARITI    1530    BEGINN    884    BRANCH   1584    CDOVLY    769    CHG2     1155    CLEARL    707    CLRBOT    833   ) s
+5 450 M
+(CONDEK   1611    CONDNS    693    DONE     1405    DOSUB    1206    END2     1185    ENDECK   1295    ENDEKS   1306   ) s
+5 442 M
+(ERRCNT   1585    ERRMSG   1166    ERRORS   1506    FUNCE    1597    GLOBER    184    GMWM     1612    GOTXL     185   ) s
+5 434 M
+(IMOD      690    KP1      1537    KP9      1536    KZ14     1583    LOAD     1534    LOAD1    1569    LOAD2    1463   ) s
+5 426 M
+(LOADNX    700    LOADXX    793    MANTIS    692    MVIMOD   1587    PUNCH     838    QFUNCT   1327    R1        920   ) s
+5 418 M
+(R2       1074    R3       1241    R40      1538    RELTAB    188    RESET1    924    RESET2   1078    RESET3   1245   ) s
+5 410 M
+(RT1       931    RT2      1085    RT3      1252    SETFP     831    SKIPX1    984    SNAPSH    333    SUBE     1603   ) s
+5 402 M
+(SUBENT    191    SWICH1   1070    SWICH2   1098    TAPERR   1102    TAPERX   1127    TEST1     944    TEST2    1131   ) s
+5 394 M
+(TEST3    1265    TPREAD    780    TSTCNT   1114    W1       1586    WHERE    1596   ) s
+_R
+S
+%%Trailer
+%%Pages: 5
+%%DocumentNeededResources: font Courier-Bold Courier 
+%%EOF

@@ -1,0 +1,526 @@
+               JOB
+               CTL  6611
+               ORG  1
+    1          BER  10                           DCW  'B010L'
+    6          B    838                          DCW  'B838'
+   10          H    10                           DCW  '.010'
+   39          DCW  @0                         @
+   40          NOP  0,0                          DCW  'N000000'
+   47          SW   40,40                        DCW  ',040040'
+   54          SW   40,40                        DCW  ',040040'
+   61          SW   40,40                        DCW  ',040040'
+   68          B    838                          DCW  'B838'
+   86          DCW  @009750023      @
+   91          DCW  @00000@
+   96          DCW  @00000@
+  104          DCW  @0000    @
+  110          DCW  @LOADER@
+  111          DCW  #1
+  112          DCW  #1
+  113          DCW  #1
+  114          DCW  #1
+  115          DCW  #1
+  116          DCW  #1
+  117          DCW  #1
+  118          DCW  #1
+  119          DCW  #1
+  120          DCW  #1
+  121          DCW  #1
+  122          DCW  #1
+  123          DCW  #1
+  124          DCW  #1
+  125          DCW  #1
+  126          DCW  #1
+  127          DCW  #1
+  128          DCW  #1
+  129          DCW  #1
+  130          DCW  #1
+  131          DCW  #1
+  132          DCW  #1
+  133          DCW  #1
+  134          DCW  #1
+  135          DCW  #1
+  136          DCW  #1
+  137          DCW  #1
+  138          DCW  #1
+  139          DCW  #1
+  142          DCW  #3
+  145          DCW  #3
+  148          DCW  #3
+  151          DCW  #3
+  154          DCW  #3
+  157          DCW  #3
+  160          DCW  #3
+  180          DCW  #20
+  184          DCW  #4
+  185          DCW  #1
+  188          DCW  #3
+  191          DCW  #3
+  195          DCW  #4
+  245          DCW  @V3M4                                              @
+               ORG  333
+  333          SBR  567                          DCW  'H567'
+  337          SBR  408                          DCW  'H408'
+  341          MCW  661,656                      DCW  'M661656'
+  348          MCW  99,415                       DCW  'M099415'
+  355          MCW  89,422                       DCW  'M089422'
+  362          SBR  89,1                         DCW  'H089001'
+  369          SBR  99,202                       DCW  'H099202'
+  376          CS   332                          DCW  '/332'
+  380          CS                                DCW  '/'
+  381          MCW  110,210                      DCW  'M110210'
+  388          BSS  621,F                        DCW  'B621F'
+  393          CC   1                            DCW  'F1'
+  395          MCW  94,250                       DCW  'M094250'
+  402          SBR  216,0                        DCW  'H216000'
+  409          SBR  256,0                        DCW  'H256000'
+  416          SBR  244,0                        DCW  'H244000'
+  423          W                                 DCW  '2'
+  424          CC   K                            DCW  'FK'
+  426          ZA   662,664                      DCW  '?662664'
+  433          CS   332                          DCW  '/332'
+  437          CS                                DCW  '/'
+  438          CC   J                            DCW  'FJ'
+  440          MCW  658,306                      DCW  'M658306'
+  447          MCW                               DCW  'M'
+  448          SBR  465                          DCW  'H465'
+  452          MCW  665,668                      DCW  'M665668'
+  459          MCW  668,0                        DCW  'M668000'
+  466          MCW  651                          DCW  'M651'
+  470          SBR  465                          DCW  'H465'
+  474          A    667,669                      DCW  'A667669'
+  481          BWZ  459,668,2                    DCW  'V4596682'
+  489          A    670,656                      DCW  'A670656'
+  496          W                                 DCW  '2'
+  497          SW   0&X3                         DCW  ',0?0'
+  501          MCW  0&X1,0&X3                    DCW  'M0|00?0'
+  508          BW   520,0&X1                     DCW  'V5200|01'
+  516          CW   0&X3                         DCW  ')0?0'
+  520          C    89,688                       DCW  'C089688'
+  527          BU   568                          DCW  'B568/'
+  532          W                                 DCW  '2'
+  533          WM                                DCW  '2)'
+  535          MCW  422,89                       DCW  'M422089'
+  542          MCW  415,99                       DCW  'M415099'
+  549          CS   332                          DCW  '/332'
+  553          CS                                DCW  '/'
+  554          BSS  563,G                        DCW  'B563G'
+  559          B    564                          DCW  'B564'
+  563          H                                 DCW  '.'
+  564          B    0                            DCW  'B000'
+  568          SBR  89,1&X1                      DCW  'H0890|1'
+  575          BCE  632,97,2                     DCW  'B6320972'
+  583          SBR  99,201                       DCW  'H099201'
+  590          W                                 DCW  '2'
+  591          WM                                DCW  '2)'
+  593          A    670,664                      DCW  'A670664'
+  600          C    664,672                      DCW  'C664672'
+  607          BU   433                          DCW  'B433/'
+  612          S    664                          DCW  'S664'
+  616          CCB  433,1                        DCW  'F4331'
+  621          MCW  680,220                      DCW  'M680220'
+  628          W    535                          DCW  '2535'
+  632          A    670,99                       DCW  'A670099'
+  639          B    497                          DCW  'B497'
+  651          DCW  @9........@
+  653          DCW  @9-@
+  658          DCW  @00000@
+  661          DSA  0                            DCW  '000'
+  662          B                                 DCW  'B'
+  664          DCW  #2
+  665          SPF                               DCW  '9'
+  667          DCW  @I0@
+  669          DCW  #2
+  670          A                                 DCW  'A'
+  672          DCW  @1E@
+  680          DCW  @EXECUTED@
+  699          DCW  #19
+  700          MCW  831,828                      DCW  'M831828'
+  707          CS   0                            DCW  '/000'
+  711          SBR  710                          DCW  'H710'
+  715          C    710,830                      DCW  'C710830'
+  722          BU   707                          DCW  'B707/'
+  727          SW   758                          DCW  ',758'
+  731          MCW  710,760                      DCW  'M710760'
+  738          CW   758                          DCW  ')758'
+  742          C    760,833                      DCW  'C760833'
+  749          BE   769                          DCW  'B769S'
+  754          LCA  834,0                        DCW  'L834000'
+  761          SBR  760                          DCW  'H760'
+  765          B    742                          DCW  'B742'
+  769          R    40                           DCW  '1040'
+  773          MCW  835,837                      DCW  'M835837'
+  780          RTW  1,838                        DCW  'L%U1838R'
+  788          BER  797                          DCW  'B797L'
+  793          B    838                          DCW  'B838'
+  797          BSP  1                            DCW  'U%U1B'
+  802          S    836,837                      DCW  'S836837'
+  809          BWZ  780,837,B                    DCW  'V780837B'
+  817          H    3333,3333                    DCW  '.C33C33'
+  824          B    773                          DCW  'B773'
+  830          DSA  999                          DCW  '999'
+  833          DCW  #3
+  834          DCW  #1
+  835          DCW  @I@
+  836          A                                 DCW  'A'
+  837          DCW  #1
+  838          BCE  853,1,                       DCW  'B853001 '
+  846          MCW  2549,769                     DCW  'MN49769'
+  853          CS   80                           DCW  '/080'
+  857          SW   1,2529                       DCW  ',001N29'
+  864          SW   81,84                        DCW  ',081084'
+  871          CS   332                          DCW  '/332'
+  875          CS                                DCW  '/'
+  876          R                                 DCW  '1'
+  877          LCA  19,699                       DCW  'L019699'
+  884          C    685,2554                     DCW  'C685N54'
+  891          BU   2324                         DCW  'BL24/'
+  896          SW   73                           DCW  ',073'
+  900          SW   6,7                          DCW  ',006007'
+  907          SW   686                          DCW  ',686'
+  911          MCW  80,685                       DCW  'M080685'
+  918          CS   0                            DCW  '/000'
+  922          SBR  2557                         DCW  'HN57'
+  926          MCW  688,2560                     DCW  'M688N60'
+  933          B    1876                         DCW  'BY76'
+  937          MCW  2565,2653                    DCW  'MN65O53'
+  944          MCW  2557,2560                    DCW  'MN57N60'
+  951          B    1876                         DCW  'BY76'
+  955          MCW  2565,2648                    DCW  'MN65O48'
+  962          A    2566,2653                    DCW  'AN66O53'
+  969          A    2566,2648                    DCW  'AN66O48'
+  976          CS   332                          DCW  '/332'
+  980          CS                                DCW  '/'
+  981          CC   1                            DCW  'F1'
+  983          CS   332                          DCW  '/332'
+  987          CS                                DCW  '/'
+  988          MCW  2594,228                     DCW  'MN94228'
+  995          W                                 DCW  '2'
+  996          CC   J                            DCW  'FJ'
+  998          MCW  2653,231                     DCW  'MO53231'
+ 1005          MCW  2620                         DCW  'MO20'
+ 1009          W                                 DCW  '2'
+ 1010          CS   235                          DCW  '/235'
+ 1014          MCW  2648,228                     DCW  'MO48228'
+ 1021          MCW  2643                         DCW  'MO43'
+ 1025          BCE  1096,695,T                   DCW  'B|96695T'
+ 1033          W                                 DCW  '2'
+ 1034          C    2648,2653                    DCW  'CO48O53'
+ 1041          BH   1077                         DCW  'B|77U'
+ 1046          C    2653,2658                    DCW  'CO53O58'
+ 1053          BL   1096                         DCW  'B|96T'
+ 1058          CC   J                            DCW  'FJ'
+ 1060          CS   332                          DCW  '/332'
+ 1064          CS                                DCW  '/'
+ 1065          MCW  2676,218                     DCW  'MO76218'
+ 1072          W                                 DCW  '2'
+ 1073          B    1089                         DCW  'B|89'
+ 1077          MCW  2722,267                     DCW  'MP22267'
+ 1084          MCW  2743                         DCW  'MP43'
+ 1088          W                                 DCW  '2'
+ 1089          MCW  2557,688                     DCW  'MN57688'
+ 1096          MCW  688,1106                     DCW  'M688/06'
+ 1103          CS   0                            DCW  '/000'
+ 1107          SBR  1106                         DCW  'H/06'
+ 1111          C    1106,2746                    DCW  'C/06P46'
+ 1118          BU   1103                         DCW  'B/03/'
+ 1123          R                                 DCW  '1'
+ 1124          MZ   1124,2501                    DCW  'Y/24N01'
+ 1131          MZ   1131,1707                    DCW  'Y/31X07'
+ 1138          MZ   1138,1980                    DCW  'Y/38Z80'
+ 1145          MZ   1145,2387                    DCW  'Y/45L87'
+ 1152          MCW  2533,2428                    DCW  'MN33M28'
+ 1159          MCW  688,1169                     DCW  'M688/69'
+ 1166          CW   0                            DCW  ')000'
+ 1170          SBR  1370                         DCW  'HT70'
+ 1174          BW   1211,2828                    DCW  'VS11Q281'
+ 1182          BCE  2070,1,:                     DCW  'B!70001:'
+ 1190          CC   1                            DCW  'F1'
+ 1192          CS   332                          DCW  '/332'
+ 1196          CS                                DCW  '/'
+ 1197          MCW  2787,270                     DCW  'MP87270'
+ 1204          W                                 DCW  '2'
+ 1205          CC   1                            DCW  'F1'
+ 1207          H    1207                         DCW  '.S07'
+ 1211          MCW  72,2500                      DCW  'M072N00'
+ 1218          MCW                               DCW  'M'
+ 1219          MCW                               DCW  'M'
+ 1220          BCE  2070,2429,:                  DCW  'B!70M29:'
+ 1228          BIN  2267,                        DCW  'BK67 '
+ 1233          CS   300                          DCW  '/300'
+ 1237          CS                                DCW  '/'
+ 1238          MCW  72,283                       DCW  'M072283'
+ 1245          MCW  6,215                        DCW  'M006215'
+ 1252          BCE  2358,2429,C                  DCW  'BL58M29C'
+ 1260          B    1546                         DCW  'BV46'
+ 1264          BCE  1546,2434,0                  DCW  'BV46M340'
+ 1272          BCE  1546,2434,                   DCW  'BV46M34 '
+ 1280          A    2566,2824                    DCW  'AN66Q24'
+ 1287          BCE  1302,2823,0                  DCW  'BT02Q230'
+ 1295          MCW  2802,300                     DCW  'MQ02300'
+ 1302          W                                 DCW  '2'
+ 1303          MCW  2506,1313                    DCW  'MN06T13'
+ 1310          MCW  0,2831                       DCW  'M000Q31'
+ 1317          SW   1311                         DCW  ',T11'
+ 1321          A    2510,1313                    DCW  'AN10T13'
+ 1328          CW   1311                         DCW  ')T11'
+ 1332          NOP  1973                         DCW  'NZ73'
+ 1336          BCE  1310,2831,                   DCW  'BT10Q31 '
+ 1344          MCW  2831,1358                    DCW  'MQ31T58'
+ 1351          BCE  1700,2388,0                  DCW  'BX00L880'
+ 1359          B                                 DCW  'B'
+ 1360          B                                 DCW  'B'
+ 1361          B                                 DCW  'B'
+ 1362          B                                 DCW  'B'
+ 1363          B                                 DCW  'B'
+ 1364          MCW  2831,0                       DCW  'MQ31000'
+ 1371          SBR  1370                         DCW  'HT70'
+ 1375          A    2566,2807                    DCW  'AN66Q07'
+ 1382          C    1370,2810                    DCW  'CT70Q10'
+ 1389          BE   2233                         DCW  'BK33S'
+ 1394          BCE  1751,2831,H                  DCW  'BX51Q31H'
+ 1402          NOP  2811,1394                    DCW  'NQ11T94'
+ 1409          C    1313,2506                    DCW  'CT13N06'
+ 1416          BU   1310                         DCW  'BT10/'
+ 1421          SW   1368                         DCW  ',T68'
+ 1425          MCW  1370,94                      DCW  'MT70094'
+ 1432          CW   1368                         DCW  ')T68'
+ 1436          MCW  2528,1425                    DCW  'MN28U25'
+ 1443          MCW  2528,1416                    DCW  'MN28U16'
+ 1450          A    2536,2503                    DCW  'AN36N03'
+ 1457          BCE  1669,2502,5                  DCW  'BW69N025'
+ 1465          SW   2828                         DCW  ',Q28'
+ 1469          BWZ  1310,2502,2                  DCW  'VT10N022'
+ 1477          MCW  2511,1416                    DCW  'MN11U16'
+ 1484          MCW  0&X2,2520                    DCW  'M0!0N20'
+ 1491          C    2527,2520                    DCW  'CN27N20'
+ 1498          BU   1310                         DCW  'BT10/'
+ 1503          MCW  2811,1394                    DCW  'MQ11T94'
+ 1510          MCW  0&X3,2817                    DCW  'M0?0Q17'
+ 1517          MCW  2818,2814                    DCW  'MQ18Q14'
+ 1524          MCW  2817,0&X3                    DCW  'MQ170?0'
+ 1531          B    1310                         DCW  'BT10'
+ 1535          MCW  2819,2831                    DCW  'MQ19Q31'
+ 1542          B    1364                         DCW  'BT64'
+ 1546          MCW  2549,1260                    DCW  'MN49S60'
+ 1553          A    2566,2822                    DCW  'AN66Q22'
+ 1560          MCW  2549,1394                    DCW  'MN49T94'
+ 1567          MCW  2549,1402                    DCW  'MN49U02'
+ 1574          MCW  5,211                        DCW  'M005211'
+ 1581          S    2824                         DCW  'SQ24'
+ 1585          MCW  2549,1332                    DCW  'MN49T32'
+ 1592          MCS  2822,203                     DCW  'ZQ22203'
+ 1599          W                                 DCW  '2'
+ 1600          SW   1368                         DCW  ',T68'
+ 1604          MCW  1370,1628                    DCW  'MT70W28'
+ 1611          CW   1368                         DCW  ')T68'
+ 1615          MCW  2537,1425                    DCW  'MN37U25'
+ 1622          LCA  2529,0                       DCW  'LN29000'
+ 1629          SBR  99                           DCW  'H099'
+ 1633          SBR  1370                         DCW  'HT70'
+ 1637          MCW  2534,2434                    DCW  'MN34M34'
+ 1644          MCW  2511,1416                    DCW  'MN11U16'
+ 1651          MCW  2513,2503                    DCW  'MN13N03'
+ 1658          MCW  2509,1313                    DCW  'MN09T13'
+ 1665          B    1310                         DCW  'BT10'
+ 1669          C    0&X2,2827                    DCW  'C0!0Q27'
+ 1676          BU   1310                         DCW  'BT10/'
+ 1681          CW   2828                         DCW  ')Q28'
+ 1685          B    1310                         DCW  'BT10'
+ 1689          MCW  2829,2831                    DCW  'MQ29Q31'
+ 1696          B    1364                         DCW  'BT64'
+ 1700          BCE  2373,2831,                   DCW  'BL73Q31 '
+ 1708          BCE  2373,2831,|                  DCW  'BL73Q31|'
+ 1716          BCE  1535,2831,/                  DCW  'BV35Q31/'
+ 1724          BCE  1689,2831,@                  DCW  'BW89Q31@'
+ 1732          MCW  2830,300                     DCW  'MQ30300'
+ 1739          MCW  2548                         DCW  'MN48'
+ 1743          MCW  2831                         DCW  'MQ31'
+ 1747          B    1364                         DCW  'BT64'
+ 1751          MCW  1370,89                      DCW  'MT70089'
+ 1758          MCW  2549,1394                    DCW  'MN49T94'
+ 1765          MCW  2549,1402                    DCW  'MN49U02'
+ 1772          MCW  2811,1332                    DCW  'MQ11T32'
+ 1779          MCW  4&X1,2834                    DCW  'M0|4Q34'
+ 1786          BCE  1802,2833,@                  DCW  'BY02Q33@'
+ 1794          BWZ  1817,2833,2                  DCW  'VY17Q332'
+ 1802          MCW  2832,2834                    DCW  'MQ32Q34'
+ 1809          MCW  2836                         DCW  'MQ36'
+ 1813          B    1409                         DCW  'BU09'
+ 1817          BCE  1833,2834,@                  DCW  'BY33Q34@'
+ 1825          BWZ  1851,2834,2                  DCW  'VY51Q342'
+ 1833          MCW  2832,2834                    DCW  'MQ32Q34'
+ 1840          MCW  2837,2832                    DCW  'MQ37Q32'
+ 1847          B    1409                         DCW  'BU09'
+ 1851          MCW  2834,2838                    DCW  'MQ34Q38'
+ 1858          MCW  2832,2834                    DCW  'MQ32Q34'
+ 1865          MCW  2838,2832                    DCW  'MQ38Q32'
+ 1872          B    1409                         DCW  'BU09'
+ 1876          SBR  1972                         DCW  'HZ72'
+ 1880          S    2840                         DCW  'SQ40'
+ 1884          S    2842                         DCW  'SQ42'
+ 1888          MZ   2560,2839                    DCW  'YN60Q39'
+ 1895          MZ   2558,2841                    DCW  'YN58Q41'
+ 1902          BWZ  1921,2841,2                  DCW  'VZ21Q412'
+ 1910          A    2844,2842                    DCW  'AQ44Q42'
+ 1917          B    1902                         DCW  'BZ02'
+ 1921          BWZ  1940,2839,2                  DCW  'VZ40Q392'
+ 1929          A    2846,2840                    DCW  'AQ46Q40'
+ 1936          B    1921                         DCW  'BZ21'
+ 1940          A    2841,2840                    DCW  'AQ41Q40'
+ 1947          MCW  2560,2565                    DCW  'MN60N65'
+ 1954          MCW  2840                         DCW  'MQ40'
+ 1958          ZA   2565                         DCW  '?N65'
+ 1962          MZ   1964,2565                    DCW  'YZ64N65'
+ 1969          B    0                            DCW  'B000'
+ 1973          BCE  2373,2831,                   DCW  'BL73Q31 '
+ 1981          S    2566,2834                    DCW  'SN66Q34'
+ 1988          C    2834,2849                    DCW  'CQ34Q49'
+ 1995          BU   1364                         DCW  'BT64/'
+ 2000          MCW  2850,1402                    DCW  'MQ50U02'
+ 2007          MCW  2528,1332                    DCW  'MN28T32'
+ 2014          MCW  1313,89                      DCW  'MT13089'
+ 2021          C    0&X1,2851                    DCW  'C0|0Q51'
+ 2028          BE   1364                         DCW  'BT64S'
+ 2033          MCW  1370,2046                    DCW  'MT70!46'
+ 2040          MCW  0,0                          DCW  'M000000'
+ 2047          MCW  2851                         DCW  'MQ51'
+ 2051          SBR  1370                         DCW  'HT70'
+ 2055          A    2566,2807                    DCW  'AN66Q07'
+ 2062          B    1375                         DCW  'BT75'
+ 2066          B    1364                         DCW  'BT64'
+ 2070          MCW  1370,89                      DCW  'MT70089'
+ 2077          LCA  2529,0&X1                    DCW  'LN290|0'
+ 2084          SBR  89                           DCW  'H089'
+ 2088          CC   1                            DCW  'F1'
+ 2090          CS   332                          DCW  '/332'
+ 2094          CS                                DCW  '/'
+ 2095          MCS  2807,205                     DCW  'ZQ07205'
+ 2102          MCW  2867,222                     DCW  'MQ67222'
+ 2109          W                                 DCW  '2'
+ 2110          CC   J                            DCW  'FJ'
+ 2112          MCW  2822,183                     DCW  'MQ22183'
+ 2119          LCA  2878,0&X1                    DCW  'LQ780|0'
+ 2126          SBR  89                           DCW  'H089'
+ 2130          SW   2&X1                         DCW  ',0|2'
+ 2134          A    2566,183                     DCW  'AN66183'
+ 2141          BCE  2153,3000,                   DCW  'BJ53?00 '
+ 2149          B    2233                         DCW  'BK33'
+ 2153          SBR  710,2999                     DCW  'H710R99'
+ 2160          SBR  833,838                      DCW  'H833838'
+ 2167          BSS  333,C                        DCW  'B333C'
+ 2172          LCA  2885,110                     DCW  'LQ85110'
+ 2179          CS   80                           DCW  '/080'
+ 2183          SW   1,40                         DCW  ',001040'
+ 2190          SW   47,54                        DCW  ',047054'
+ 2197          SW   61,68                        DCW  ',061068'
+ 2204          SW   72                           DCW  ',072'
+ 2208          BCE  700,769,N                    DCW  'B700769N'
+ 2216          R                                 DCW  '1'
+ 2217          C    7,2892                       DCW  'C007Q92'
+ 2224          BE   700                          DCW  'B700S'
+ 2229          B    1190                         DCW  'B/90'
+ 2233          CS   332                          DCW  '/332'
+ 2237          CS                                DCW  '/'
+ 2238          CC   1                            DCW  'F1'
+ 2240          MCW  2928,270                     DCW  'MR28270'
+ 2247          W                                 DCW  '2'
+ 2248          CC   1                            DCW  'F1'
+ 2250          BCE  2263,769,1                   DCW  'BK637691'
+ 2258          RWD  1                            DCW  'U%U1R'
+ 2263          H    2263                         DCW  '.K63'
+ 2267          CC   1                            DCW  'F1'
+ 2269          MCW  2819,1232                    DCW  'MQ19S32'
+ 2276          CS   299                          DCW  '/299'
+ 2280          A    2510,2931                    DCW  'AN10R31'
+ 2287          MCS  2931,299                     DCW  'ZR31299'
+ 2294          MCW  2939,295                     DCW  'MR39295'
+ 2301          MCW  80                           DCW  'M080'
+ 2305          W                                 DCW  '2'
+ 2306          CS   299                          DCW  '/299'
+ 2310          MCW  2423,234                     DCW  'MM23234'
+ 2317          W                                 DCW  '2'
+ 2318          CC   J                            DCW  'FJ'
+ 2320          B    1233                         DCW  'BS33'
+ 2324          CC   1                            DCW  'F1'
+ 2326          CS   332                          DCW  '/332'
+ 2330          CS                                DCW  '/'
+ 2331          MCW  2968,270                     DCW  'MR68270'
+ 2338          W                                 DCW  '2'
+ 2339          CC   1                            DCW  'F1'
+ 2341          BCE  2354,769,1                   DCW  'BL547691'
+ 2349          RWD  1                            DCW  'U%U1R'
+ 2354          H    2354                         DCW  '.L54'
+ 2358          MCW  2971,203                     DCW  'MR71203'
+ 2365          MCW  5,211                        DCW  'M005211'
+ 2372          W                                 DCW  '2'
+ 2373          BLC  2070                         DCW  'B!70A'
+ 2378          R                                 DCW  '1'
+ 2379          B    1174                         DCW  'B/74'
+ 2388          DCW  @$@/|  @
+ 2423          DCW  @ SEQ   STMNT      FORTRAN STATEMENT@
+ 2473          DCW  @                                                  @
+               ORG  2502
+ 2503          DCW  #2
+ 2506          DSA  2435                         DCW  'M35'
+ 2509          DSA  2425                         DCW  'M25'
+ 2510          R    3220                         DCW  '1B20'
+ 2520          DCW  #7
+ 2529          DCW  @%TAMROFN}@
+ 2533          DCW  @000R@
+ 2534          DCW  @:@
+ 2537          DSA  8104                         DCW  '10M'
+ 2548          DCW  @ PROCESSED @
+ 2549          NOP                               DCW  'N'
+ 2554          DCW  @PARAM@
+ 2557          DCW  #3
+ 2560          DCW  #3
+ 2565          DCW  #5
+ 2566          A                                 DCW  'A'
+ 2594          DCW  @START OF FORTRAN COMPILATION@
+ 2620          DCW  @MACHINE SIZE SPECIFIED IS @
+ 2643          DCW  @ACTUAL MACHINE SIZE IS @
+ 2648          DCW  #5
+ 2653          DCW  #5
+ 2658          DCW  @03900@
+ 2676          DCW  @MACHINE SIZE ERROR@
+ 2722          DCW  @SPECIFIED IS GREATER THAN ACTUAL MACHINE SIZE.@
+ 2743          DCW  @ERROR - MACHINE SIZE @
+ 2746          DSA  2999                         DCW  'R99'
+ 2787          DCW  @MESSAGE 1-SYSTEM DOES NOT FOLLOW END CARD@
+ 2802          DCW  @CONTINUE CD ERR@
+ 2807          DCW  #5
+ 2810          DSA  3000                         DCW  '?00'
+ 2811          B                                 DCW  'B'
+ 2817          DCW  #6
+ 2818          DCW  @F@
+ 2819          M                                 DCW  '@'
+ 2822          DCW  #3
+ 2824          DCW  #2
+ 2827          DSA  15455&X2                     DCW  'DNE'
+ 2828          DCW  #1
+ 2829          DCW  @-@
+ 2830          DCW  @*@
+ 2831          DCW  #1
+ 2834          DCW  #3
+ 2836          DCW  @00@
+ 2837          DCW  @0@
+ 2838          DCW  #1
+ 2840          DCW  #2
+ 2842          DCW  #2
+ 2844          DCW  @A0@
+ 2846          DCW  @?4@
+ 2849          DSA  12000                        DCW  '00?'
+ 2850          MCW                               DCW  'M'
+ 2851          SW                                DCW  ','
+ 2867          DCW  @INPUT CHARACTERS@
+ 2878          DCW  @ }POTS:R000@
+ 2879          S    11315&X3,10559&X3            DCW  'SCANNER'
+ 2886          S    11315&X3,10559&X3            DCW  'SCANNER'
+ 2928          DCW  @MESSAGE 2 - OBJECT PROGRAM TOO LARGE@
+ 2931          DCW  #3
+ 2939          DCW  @   PAGE @
+ 2968          DCW  @MESSAGE 3 - NO PARAMETER CARD@
+ 2998          DCW  #30
+ 2999          DCW  @}@
+               END

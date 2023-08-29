@@ -1,0 +1,25 @@
+               JOB
+               CTL  6611
+               ORG  934
+  934          B    1000                         DCW  'B|00'
+  938          MCW  990,680                      DCW  'M990680'
+  945          CW   680                          DCW  ')680'
+  949          BSS  333,C                        DCW  'B333C'
+  954          SBR  786,934                      DCW  'H786934'
+  961          SBR  833                          DCW  'H833'
+  965          SBR  796,934                      DCW  'H796934'
+  972          SBR  710,1696                     DCW  'H710W96'
+  979          LCA  999,110                      DCW  'L999110'
+  986          B    700                          DCW  'B700'
+  990          MN                                DCW  'D'
+  999          DCW  @FORMATPAK@
+ 1000          SBR  786,333                      DCW  'H786333'
+ 1007          SBR  833,1000                     DCW  'H833|00'
+ 1014          SBR  796,938                      DCW  'H796938'
+ 1021          SBR  710,1696                     DCW  'H710W96'
+ 1028          LCA  1048,110                     DCW  'L|48110'
+ 1035          B    700                          DCW  'B700'
+ 1088          DCW  @SNAPSHOT53                                        @
+               ORG  1696
+ 1696          DCW  @}@
+               END

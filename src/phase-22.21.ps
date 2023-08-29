@@ -1,0 +1,1322 @@
+%!PS-Adobe-3.0
+%%BoundingBox: 38 24 574 768
+%%Title: Enscript Output
+%%For: W. Van Snyder
+%%Creator: GNU enscript 1.6.4
+%%CreationDate: Tue Jul 15 00:12:03 2008
+%%Orientation: Landscape
+%%Pages: (atend)
+%%DocumentMedia: Letter 612 792 0 () ()
+%%DocumentNeededResources: (atend)
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset Enscript-Prolog 1.6 4
+%
+% Procedures.
+%
+
+/_S {	% save current state
+  /_s save def
+} def
+/_R {	% restore from saved state
+  _s restore
+} def
+
+/S {	% showpage protecting gstate
+  gsave
+  showpage
+  grestore
+} bind def
+
+/MF {	% fontname newfontname -> -	make a new encoded font
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  % insert only valid encoding vectors
+  encoding_vector length 256 eq {
+    newfont /Encoding encoding_vector put
+  } if
+
+  newfontname newfont definefont pop
+} def
+
+/MF_PS { % fontname newfontname -> -	make a new font preserving its enc
+  /newfontname exch def
+  /fontname exch def
+
+  /fontdict fontname findfont def
+  /newfont fontdict maxlength dict def
+
+  fontdict {
+    exch
+    dup /FID eq {
+      % skip FID pair
+      pop pop
+    } {
+      % copy to the new font dictionary
+      exch newfont 3 1 roll put
+    } ifelse
+  } forall
+
+  newfont /FontName newfontname put
+
+  newfontname newfont definefont pop
+} def
+
+/SF { % fontname width height -> -	set a new font
+  /height exch def
+  /width exch def
+
+  findfont
+  [width 0 0 height 0 0] makefont setfont
+} def
+
+/SUF { % fontname width height -> -	set a new user font
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF
+  /F-gs-user-font width height SF
+} def
+
+/SUF_PS { % fontname width height -> -	set a new user font preserving its enc
+  /height exch def
+  /width exch def
+
+  /F-gs-user-font MF_PS
+  /F-gs-user-font width height SF
+} def
+
+/M {moveto} bind def
+/s {show} bind def
+
+/Box {	% x y w h -> -			define box path
+  /d_h exch def /d_w exch def /d_y exch def /d_x exch def
+  d_x d_y  moveto
+  d_w 0 rlineto
+  0 d_h rlineto
+  d_w neg 0 rlineto
+  closepath
+} def
+
+/bgs {	% x y height blskip gray str -> -	show string with bg color
+  /str exch def
+  /gray exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    gray setgray
+    fill
+  grestore
+  x y M str s
+} def
+
+/bgcs { % x y height blskip red green blue str -> -  show string with bg color
+  /str exch def
+  /blue exch def
+  /green exch def
+  /red exch def
+  /blskip exch def
+  /height exch def
+  /y exch def
+  /x exch def
+
+  gsave
+    x y blskip sub str stringwidth pop height Box
+    red green blue setrgbcolor
+    fill
+  grestore
+  x y M str s
+} def
+
+% Highlight bars.
+/highlight_bars {	% nlines lineheight output_y_margin gray -> -
+  gsave
+    setgray
+    /ymarg exch def
+    /lineheight exch def
+    /nlines exch def
+
+    % This 2 is just a magic number to sync highlight lines to text.
+    0 d_header_y ymarg sub 2 sub translate
+
+    /cw d_output_w cols div def
+    /nrows d_output_h ymarg 2 mul sub lineheight div cvi def
+
+    % for each column
+    0 1 cols 1 sub {
+      cw mul /xp exch def
+
+      % for each rows
+      0 1 nrows 1 sub {
+        /rn exch def
+        rn lineheight mul neg /yp exch def
+        rn nlines idiv 2 mod 0 eq {
+	  % Draw highlight bar.  4 is just a magic indentation.
+	  xp 4 add yp cw 8 sub lineheight neg Box fill
+	} if
+      } for
+    } for
+
+  grestore
+} def
+
+% Line highlight bar.
+/line_highlight {	% x y width height gray -> -
+  gsave
+    /gray exch def
+    Box gray setgray fill
+  grestore
+} def
+
+% Column separator lines.
+/column_lines {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h translate
+    /cw d_output_w cols div def
+    1 1 cols 1 sub {
+      cw mul 0 moveto
+      0 d_output_h rlineto stroke
+    } for
+  grestore
+} def
+
+% Column borders.
+/column_borders {
+  gsave
+    .1 setlinewidth
+    0 d_footer_h moveto
+    0 d_output_h rlineto
+    d_output_w 0 rlineto
+    0 d_output_h neg rlineto
+    closepath stroke
+  grestore
+} def
+
+% Do the actual underlay drawing
+/draw_underlay {
+  ul_style 0 eq {
+    ul_str true charpath stroke
+  } {
+    ul_str show
+  } ifelse
+} def
+
+% Underlay
+/underlay {	% - -> -
+  gsave
+    0 d_page_h translate
+    d_page_h neg d_page_w atan rotate
+
+    ul_gray setgray
+    ul_font setfont
+    /dw d_page_h dup mul d_page_w dup mul add sqrt def
+    ul_str stringwidth pop dw exch sub 2 div ul_h_ptsize -2 div moveto
+    draw_underlay
+  grestore
+} def
+
+/user_underlay {	% - -> -
+  gsave
+    ul_x ul_y translate
+    ul_angle rotate
+    ul_gray setgray
+    ul_font setfont
+    0 0 ul_h_ptsize 2 div sub moveto
+    draw_underlay
+  grestore
+} def
+
+% Page prefeed
+/page_prefeed {		% bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} def
+
+% Wrapped line markers
+/wrapped_line_mark {	% x y charwith charheight type -> -
+  /type exch def
+  /h exch def
+  /w exch def
+  /y exch def
+  /x exch def
+
+  type 2 eq {
+    % Black boxes (like TeX does)
+    gsave
+      0 setlinewidth
+      x w 4 div add y M
+      0 h rlineto w 2 div 0 rlineto 0 h neg rlineto
+      closepath fill
+    grestore
+  } {
+    type 3 eq {
+      % Small arrows
+      gsave
+        .2 setlinewidth
+        x w 2 div add y h 2 div add M
+        w 4 div 0 rlineto
+        x w 4 div add y lineto stroke
+
+        x w 4 div add w 8 div add y h 4 div add M
+        x w 4 div add y lineto
+	w 4 div h 8 div rlineto stroke
+      grestore
+    } {
+      % do nothing
+    } ifelse
+  } ifelse
+} def
+
+% EPSF import.
+
+/BeginEPSF {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack
+  userdict begin
+  /showpage { } def
+  0 setgray 0 setlinecap
+  1 setlinewidth 0 setlinejoin
+  10 setmiterlimit [ ] 0 setdash newpath
+  /languagelevel where {
+    pop languagelevel
+    1 ne {
+      false setstrokeadjust false setoverprint
+    } if
+  } if
+} bind def
+
+/EndEPSF {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+%%EndResource
+%%BeginResource: procset Enscript-Encoding-88591 1.6 4
+/encoding_vector [
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclam       	/quotedbl     	/numbersign   	
+/dollar       	/percent      	/ampersand    	/quoteright   	
+/parenleft    	/parenright   	/asterisk     	/plus         	
+/comma        	/hyphen       	/period       	/slash        	
+/zero         	/one          	/two          	/three        	
+/four         	/five         	/six          	/seven        	
+/eight        	/nine         	/colon        	/semicolon    	
+/less         	/equal        	/greater      	/question     	
+/at           	/A            	/B            	/C            	
+/D            	/E            	/F            	/G            	
+/H            	/I            	/J            	/K            	
+/L            	/M            	/N            	/O            	
+/P            	/Q            	/R            	/S            	
+/T            	/U            	/V            	/W            	
+/X            	/Y            	/Z            	/bracketleft  	
+/backslash    	/bracketright 	/asciicircum  	/underscore   	
+/quoteleft    	/a            	/b            	/c            	
+/d            	/e            	/f            	/g            	
+/h            	/i            	/j            	/k            	
+/l            	/m            	/n            	/o            	
+/p            	/q            	/r            	/s            	
+/t            	/u            	/v            	/w            	
+/x            	/y            	/z            	/braceleft    	
+/bar          	/braceright   	/tilde        	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/.notdef      	/.notdef      	/.notdef      	/.notdef      	
+/space        	/exclamdown   	/cent         	/sterling     	
+/currency     	/yen          	/brokenbar    	/section      	
+/dieresis     	/copyright    	/ordfeminine  	/guillemotleft	
+/logicalnot   	/hyphen       	/registered   	/macron       	
+/degree       	/plusminus    	/twosuperior  	/threesuperior	
+/acute        	/mu           	/paragraph    	/bullet       	
+/cedilla      	/onesuperior  	/ordmasculine 	/guillemotright	
+/onequarter   	/onehalf      	/threequarters	/questiondown 	
+/Agrave       	/Aacute       	/Acircumflex  	/Atilde       	
+/Adieresis    	/Aring        	/AE           	/Ccedilla     	
+/Egrave       	/Eacute       	/Ecircumflex  	/Edieresis    	
+/Igrave       	/Iacute       	/Icircumflex  	/Idieresis    	
+/Eth          	/Ntilde       	/Ograve       	/Oacute       	
+/Ocircumflex  	/Otilde       	/Odieresis    	/multiply     	
+/Oslash       	/Ugrave       	/Uacute       	/Ucircumflex  	
+/Udieresis    	/Yacute       	/Thorn        	/germandbls   	
+/agrave       	/aacute       	/acircumflex  	/atilde       	
+/adieresis    	/aring        	/ae           	/ccedilla     	
+/egrave       	/eacute       	/ecircumflex  	/edieresis    	
+/igrave       	/iacute       	/icircumflex  	/idieresis    	
+/eth          	/ntilde       	/ograve       	/oacute       	
+/ocircumflex  	/otilde       	/odieresis    	/divide       	
+/oslash       	/ugrave       	/uacute       	/ucircumflex  	
+/udieresis    	/yacute       	/thorn        	/ydieresis    	
+] def
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Courier
+/HFpt_w 10 def
+/HFpt_h 10 def
+/Courier-Bold /HF-gs-font MF
+/HF /HF-gs-font findfont [HFpt_w 0 0 HFpt_h 0 0] makefont def
+/Courier /F-gs-font MF
+/F-gs-font 7 7 SF
+/#copies 1 def
+% Pagedevice definitions:
+gs_languagelevel 1 gt {
+  <<
+    /PageSize [612 792] 
+  >> setpagedevice
+} if
+%%BeginResource: procset Enscript-Header-simple 1.6 4
+
+/do_header {	% print default simple header
+  gsave
+    d_header_x d_header_y HFpt_h 3 div add translate
+
+    HF setfont
+    user_header_p {
+      5 0 moveto user_header_left_str show
+
+      d_header_w user_header_center_str stringwidth pop sub 2 div
+      0 moveto user_header_center_str show
+
+      d_header_w user_header_right_str stringwidth pop sub 5 sub
+      0 moveto user_header_right_str show
+    } {
+      fname length fmodstr length add pagenumstr length add 95 6 idiv add d_header_w 6 idiv le{
+        5 0 moveto fname show
+        45 0 rmoveto fmodstr show
+        45 0 rmoveto pagenumstr show
+      } {
+        5 0 moveto fmodstr show
+        45 0 rmoveto pagenumstr show
+        fname length d_header_w 6 idiv idiv 1 add 10 mul 5 exch moveto
+        1 1 fname length d_header_w 6 idiv idiv
+        {
+          dup fname exch 1 sub d_header_w 6 idiv mul d_header_w 6 idiv getinterval show
+          5 exch 10 mul fname length d_header_w 6 idiv idiv 1 add 10 mul exch sub moveto
+        } for
+        5 10 moveto
+        fname fname length d_header_w 6 idiv idiv d_header_w 6 idiv mul dup fname length exch sub getinterval show
+      }ifelse
+    }ifelse
+
+  grestore
+} def
+%%EndResource
+/d_page_w 744 def
+/d_page_h 536 def
+/d_header_x 0 def
+/d_header_y 492 def
+/d_header_w 744 def
+/d_header_h 44 def
+/d_footer_x 0 def
+/d_footer_y 0 def
+/d_footer_w 744 def
+/d_footer_h 0 def
+/d_output_w 744 def
+/d_output_h 492 def
+/cols 1 def
+%%EndSetup
+%%Page: (1) 1
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 1 def
+/fname (phase-22.21.asc) def
+/fdir () def
+/ftail (phase-22.21.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (1) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 474 M
+(CLEAR STORAGE 1     ,008015,022026,030037,044,049,053053N000000N00001026                                         1) s
+5 466 M
+(CLEAR STORAGE 2     L068116,105106,110117B101/I9I#071029C029056B026/B001/0991,001/001117I0?                      2) s
+5 458 M
+(BOOTSTRAP           ,008015,022029,036040,047054,061068,072/061039              ,0010011040                      3) s
+5 442 M
+(                          FORTRAN COMPILER -- STATEMENT NUMBERS PHASE -- 22                              PAGE    1) s
+5 426 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 410 M
+( 101                JOB   FORTRAN COMPILER -- STATEMENT NUMBERS PHASE -- 22) s
+5 402 M
+( 102                CTL   6611) s
+5 394 M
+( 103         *) s
+5 386 M
+( 104         * ALL STATEMENT NUMBERS THAT APPEAR IN THE PROGRAM ARE REDUCED) s
+5 378 M
+( 105         * TO A UNIQUE THREE-CHARACTER REPRESENTATION.  STATEMENT NUMBERS) s
+5 370 M
+( 106         * WITHIN THE STATEMENT ARE MOVED TO THE BEGINNING OF EACH SOURCE-) s
+5 362 M
+( 107         * PROGRAM STATEMENT \(RIGHTMOST END OF STATEMENT IN STORAGE\) THAT) s
+5 354 M
+( 108         * CONTAINS THOSE ELEMENTS.) s
+5 346 M
+( 109         *) s
+5 338 M
+( 110         * ON ENTRY, X1 IS THE TOP OF THE PREFIX OF THE TOP STATEMENT,) s
+5 330 M
+( 111         * X2 IS ONE BELOW THE BOTTOM STATEMENT, AND 81-83 IS ONE BELOW) s
+5 322 M
+( 112         * THE BOTTOM OF THE NUMBER TABLE.) s
+5 314 M
+( 113         *) s
+5 306 M
+( 114         X1     EQU   89                                                          0089) s
+5 298 M
+( 115         X2     EQU   94                                                          0094) s
+5 290 M
+( 116         X3     EQU   99                                                          0099) s
+5 282 M
+( 117         *) s
+5 274 M
+( 118         * STUFF IN THE RESIDENT AREA) s
+5 266 M
+( 119         *) s
+5 258 M
+( 120         PHASID EQU   110  PHASE ID, FOR SNAPSHOT DUMPS                           0110) s
+5 250 M
+( 121         GLOBER EQU   184  GLOBAL ERROR FLAG -- WM MEANS ERROR                    0184) s
+5 242 M
+( 122         SNAPSH EQU   333  CORE DUMP SNAPSHOT                                     0333) s
+5 234 M
+( 123         LOADNX EQU   700  LOAD NEXT OVERLAY                                      0700) s
+5 226 M
+( 124         CLEARL EQU   707  CS AT START OF OVERLAY LOADER                          0707) s
+5 218 M
+( 125         LOADXX EQU   793  EXIT FROM OVERLAY LOADER                               0793) s
+5 210 M
+( 126         *) s
+5 202 M
+( 127                ORG   838                                                                0838) s
+5 194 M
+( 128    838  BEGINN CS    0&X2   CLEAR BELOW BOTTOM OF STATEMENTS                  4  0838  / 0!0                4) s
+5 186 M
+( 129    842         MCW   83,X2  BELOW NUMBER TABLE                                7  0842  M 083 094            4) s
+5 178 M
+( 130    849         SW    GM                                                       4  0849  , Y83                4) s
+5 170 M
+( 131    853         LCA   GM,0&X2                                                  7  0853  L Y83 0!0            4) s
+5 162 M
+( 132    860         SBR   X2                                                       4  0860  H 094                4) s
+5 154 M
+( 133    864  LOOP   BCE   DONE,0&X1,                                               8  0864  B Y52 0|0            4) s
+5 146 M
+( 134    872         LCA   0&X1,PREFIX                                              7  0872  L 0|0 Z62            5) s
+5 138 M
+( 135    879         SAR   X1                                                       4  0879  Q 089                5) s
+5 130 M
+( 136    883         CW    1&X1                                                     4  0883  \) 0|1                5) s
+5 122 M
+( 137    887         SW    PREFIX-3                                                 4  0887  , Z59                5) s
+5 114 M
+( 138    891         LCA   PREFIX,0&X2  MOVE UP ONLY SEQ NUMBER AND CODE            7  0891  L Z62 0!0            5) s
+5 106 M
+( 139    898         SBR   X2                                                       4  0898  H 094                5) s
+5 98 M
+( 140    902         CW    1&X2                                                     4  0902  \) 0!1                5) s
+5 90 M
+( 141    906         BWZ   LBLDEF,PREFIX-4,2                                        8  0906  V |03 Z58 2          6) s
+5 82 M
+( 142    914  NOLABL LCA   GM,0&X2                                                  7  0914  L Y83 0!0            6) s
+5 74 M
+( 143    921         SBR   X2                                                       4  0921  H 094                6) s
+5 66 M
+( 144    925         MCW   PREFIX-3,*&8                                             7  0925  M Z59 939            6) s
+5 58 M
+( 145    932         BCE   LBLREF,STMTS,0  DOES STATEMENT HAVE LABEL REFS?          8  0932  B |26 Z73 0          6) s
+5 50 M
+( 146    940         CHAIN 10                                                                            MACRO) s
+5 42 M
+( 147                BCE                                                            1  0940  B           GEN      6) s
+_R
+S
+%%Page: (2) 2
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 2 def
+/fname (phase-22.21.asc) def
+/fdir () def
+/ftail (phase-22.21.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (2) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- STATEMENT NUMBERS PHASE -- 22                              PAGE    2) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 148                BCE                                                            1  0941  B           GEN      6) s
+5 442 M
+( 149                BCE                                                            1  0942  B           GEN      7) s
+5 434 M
+( 150                BCE                                                            1  0943  B           GEN      7) s
+5 426 M
+( 151                BCE                                                            1  0944  B           GEN      7) s
+5 418 M
+( 152                BCE                                                            1  0945  B           GEN      7) s
+5 410 M
+( 153                BCE                                                            1  0946  B           GEN      7) s
+5 402 M
+( 154                BCE                                                            1  0947  B           GEN      7) s
+5 394 M
+( 155                BCE                                                            1  0948  B           GEN      7) s
+5 386 M
+( 156                BCE                                                            1  0949  B           GEN      8) s
+5 378 M
+( 157    950         BCE   ENDSTM,PREFIX-3,/                                        8  0950  B 981 Z59 /          8) s
+5 370 M
+( 158    958  MOVEUP LCA   0&X1,0&X2  MOVE \(REST OF\) STATEMENT UP                   7  0958  L 0|0 0!0            8) s
+5 362 M
+( 159    965         SAR   X1                                                       4  0965  Q 089                8) s
+5 354 M
+( 160    969         C     0&X2                                                     4  0969  C 0!0                8) s
+5 346 M
+( 161    973         SAR   X2                                                       4  0973  Q 094                8) s
+5 338 M
+( 162    977         B     LOOP                                                     4  0977  B 864                8) s
+5 330 M
+( 163         *) s
+5 322 M
+( 164         * END STATEMENT) s
+5 314 M
+( 165         *) s
+5 306 M
+( 166    981  ENDSTM C     0&X1                                                     4  0981  C 0|0                9) s
+5 298 M
+( 167    985         SAR   X1                                                       4  0985  Q 089                9) s
+5 290 M
+( 168    989         MCM   4&X2                                                     4  0989  P 0!4                9) s
+5 282 M
+( 169    993         MN                                                             1  0993  D                    9) s
+5 274 M
+( 170    994         MN                                                             1  0994  D                    9) s
+5 266 M
+( 171    995         SAR   X2                                                       4  0995  Q 094                9) s
+5 258 M
+( 172    999         B     LOOP                                                     4  0999  B 864                9) s
+5 250 M
+( 173         *) s
+5 242 M
+( 174         * GOT A STATEMENT LABEL DEFINITION) s
+5 234 M
+( 175         *) s
+5 226 M
+( 176  1 003  LBLDEF LCA   PREFIX-4,LABEL                                           7  1003  L Z58 Z79           10) s
+5 218 M
+( 177  1 010         SBR   X3                                                       4  1010  H 099               10) s
+5 210 M
+( 178  1 014         SW    2&X3                                                     4  1014  , 0?2               10) s
+5 202 M
+( 179  1 018         B     CONV50                                                   4  1018  B V63               10) s
+5 194 M
+( 180  1 022         B     NOLABL                                                   4  1022  B 914               10) s
+5 186 M
+( 181         *) s
+5 178 M
+( 182         * STATEMENT IS ONE THAT CONTAINS LABEL REFERENCES) s
+5 170 M
+( 183         *) s
+5 162 M
+( 184  1 026  LBLREF BCE   IF,PREFIX-3,E    IF STATEMENT                            8  1026  B T62 Z59 E         10) s
+5 154 M
+( 185  1 034         BCE   DO,PREFIX-3,D    DO STATEMENT                            8  1034  B S76 Z59 D         10) s
+5 146 M
+( 186  1 042         BCE   TAPE,PREFIX-3,5  READ INPUT TAPE STATEMENT               8  1042  B /30 Z59 5         11) s
+5 138 M
+( 187  1 050         BCE   TAPE,PREFIX-3,6  WRITE OUTPUT TAPE STATEMENT             8  1050  B /30 Z59 6         11) s
+5 130 M
+( 188  1 058         BCE   CGO,PREFIX-3,T   COMPUTED GO TO STATEMENT                8  1058  B |90 Z59 T         11) s
+5 122 M
+( 189  1 066         BCE   IFSS,PREFIX-3,W  IF \( SENSE SWITCH ... \)                 8  1066  B /93 Z59 W         11) s
+5 114 M
+( 190  1 074         BCE   IFSS,PREFIX-3,K  IF \( SENSE LIGHT ... \)                  8  1074  B /93 Z59 K         12) s
+5 106 M
+( 191  1 082         B     SAVLAB  PUNCH, PRINT, READ, GOTO                         4  1082  B U73               12) s
+5 98 M
+( 192  1 086         B     MOVEUP                                                   4  1086  B 958               12) s
+5 90 M
+( 193         *) s
+5 82 M
+( 194         * COMPUTED GO TO STATEMENT) s
+5 74 M
+( 195         *) s
+5 66 M
+( 196  1 090  CGO    B     SAVLAB                                                   4  1090  B U73               12) s
+5 58 M
+( 197  1 094         BCE   CGOFIN,0&X1,\)                                            8  1094  B /18 0|0 \)         12) s
+_R
+S
+%%Page: (3) 3
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 3 def
+/fname (phase-22.21.asc) def
+/fdir () def
+/ftail (phase-22.21.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (3) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- STATEMENT NUMBERS PHASE -- 22                              PAGE    3) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 198  1 102         BCE   SYNTAX,0&X1,}                                            8  1102  B X55 0|0 } GMARK   12) s
+5 442 M
+( 199  1 110         SBR   X1                                                       4  1110  H 089               13) s
+5 434 M
+( 200  1 114         B     CGO                                                      4  1114  B |90               13) s
+5 426 M
+( 201  1 118  CGOFIN MN    0&X1                                                     4  1118  D 0|0               13) s
+5 418 M
+( 202  1 122         SAR   X1                                                       4  1122  Q 089               13) s
+5 410 M
+( 203  1 126         B     MOVEUP                                                   4  1126  B 958               13) s
+5 402 M
+( 204         *) s
+5 394 M
+( 205         * READ INPUT TAPE OR WRITE OUTPUT TAPE STATEMENT) s
+5 386 M
+( 206         *) s
+5 378 M
+( 207  1 130  TAPE   MCW   X1,STMFIN&3                                              7  1130  M 089 /77           13) s
+5 370 M
+( 208  1 137  GETCOM BCE   GOTCOM,0&X1,,  GET                                       8  1137  B /61 0|0 ,         13) s
+5 362 M
+( 209  1 145         BCE   SYNTAX,0&X1,}    DOWN                                    8  1145  B X55 0|0 } GMARK   14) s
+5 354 M
+( 210  1 153         SBR   X1                 TO                                    4  1153  H 089               14) s
+5 346 M
+( 211  1 157         B     GETCOM               COMMA                               4  1157  B /37               14) s
+5 338 M
+( 212  1 161  GOTCOM SW    1&X1                                                     4  1161  , 0|1               14) s
+5 330 M
+( 213  1 165         MN                                                             1  1165  D                   14) s
+5 322 M
+( 214  1 166         SAR   X1                                                       4  1166  Q 089               14) s
+5 314 M
+( 215  1 170         B     SAVLAB                                                   4  1170  B U73               14) s
+5 306 M
+( 216         *) s
+5 298 M
+( 217  1 174  STMFIN LCA   0,0&X2                                                   7  1174  L 000 0!0           15) s
+5 290 M
+( 218  1 181         SBR   X2                                                       4  1181  H 094               15) s
+5 282 M
+( 219  1 185         CW    1&X2                                                     4  1185  \) 0!1               15) s
+5 274 M
+( 220  1 189         B     MOVEUP                                                   4  1189  B 958               15) s
+5 266 M
+( 221         *) s
+5 258 M
+( 222         * IF \( SENSE SWITCH ... \) OR IF \( SENSE LIGHT ... \) STATEMENT) s
+5 250 M
+( 223         *) s
+5 242 M
+( 224  1 193  IFSS   MCW   X1,STMFIN&3                                              7  1193  M 089 /77           15) s
+5 234 M
+( 225  1 200  GETRP  BCE   GOTRP,0&X1,\)  GET                                        8  1200  B S24 0|0 \)         15) s
+5 226 M
+( 226  1 208         BCE   SYNTAX,0&X1,}   DOWN                                     8  1208  B X55 0|0 } GMARK   16) s
+5 218 M
+( 227  1 216         SBR   X1                TO RIGHT                               4  1216  H 089               16) s
+5 210 M
+( 228  1 220         B     GETRP               PARENTHESIS                          4  1220  B S00               16) s
+5 202 M
+( 229  1 224  GOTRP  SW    1&X1                                                     4  1224  , 0|1               16) s
+5 194 M
+( 230  1 228         MN                                                             1  1228  D                   16) s
+5 186 M
+( 231  1 229         SAR   X1                                                       4  1229  Q 089               16) s
+5 178 M
+( 232  1 233         B     SAVLAB                                                   4  1233  B U73               16) s
+5 170 M
+( 233  1 237         MN    0&X1                                                     4  1237  D 0|0               17) s
+5 162 M
+( 234  1 241         SAR   X1                                                       4  1241  Q 089               17) s
+5 154 M
+( 235  1 245         BCE   SYNTAX,0&X1,}                                            8  1245  B X55 0|0 } GMARK   17) s
+5 146 M
+( 236  1 253         B     SAVLAB                                                   4  1253  B U73               17) s
+5 138 M
+( 237  1 257  SETCOM LCA   COMMA,0&X2                                               7  1257  L Z80 0!0           17) s
+5 130 M
+( 238  1 264         SBR   X2                                                       4  1264  H 094               17) s
+5 122 M
+( 239  1 268         CW    1&X2                                                     4  1268  \) 0!1               17) s
+5 114 M
+( 240  1 272         B     STMFIN                                                   4  1272  B /74               18) s
+5 106 M
+( 241         *) s
+5 98 M
+( 242         * DO STATEMENT) s
+5 90 M
+( 243         *) s
+5 82 M
+( 244  1 276  DO     MCW   X1,X3                                                    7  1276  M 089 099           18) s
+5 74 M
+( 245  1 283  GETEQ  BCE   GOTEQ,0&X3,#  FIND THE                                   8  1283  B S99 0?0 #         18) s
+5 66 M
+( 246  1 291         SBR   X3              EQUAL SIGN                               4  1291  H 099               18) s
+5 58 M
+( 247  1 295         B     GETEQ                                                    4  1295  B S83               18) s
+_R
+S
+%%Page: (4) 4
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 4 def
+/fname (phase-22.21.asc) def
+/fdir () def
+/ftail (phase-22.21.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (4) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- STATEMENT NUMBERS PHASE -- 22                              PAGE    4) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 248  1 299  GOTEQ  MCW   3&X3,CH2                                                 7  1299  M 0?3 Z81           18) s
+5 442 M
+( 249  1 306         MCW   COMMA,3&X3                                               7  1306  M Z80 0?3           19) s
+5 434 M
+( 250  1 313         SBR   W3,3&X3                                                  7  1313  H Z84 0?3           19) s
+5 426 M
+( 251  1 320         B     SAVLAB                                                   4  1320  B U73               19) s
+5 418 M
+( 252  1 324         C     W3,X1                                                    7  1324  C Z84 089           19) s
+5 410 M
+( 253  1 331         BU    SYNTAX                                                   5  1331  B X55 /             19) s
+5 402 M
+( 254  1 336         MCW   CH2,0&X1                                                 7  1336  M Z81 0|0           19) s
+5 394 M
+( 255  1 343         LCA   COMMA,0&X2                                               7  1343  L Z80 0!0           20) s
+5 386 M
+( 256  1 350         SBR   X2                                                       4  1350  H 094               20) s
+5 378 M
+( 257  1 354         CW    1&X2                                                     4  1354  \) 0!1               20) s
+5 370 M
+( 258  1 358         B     MOVEUP                                                   4  1358  B 958               20) s
+5 362 M
+( 259         *) s
+5 354 M
+( 260         * IF STATEMENT) s
+5 346 M
+( 261         *) s
+5 338 M
+( 262  1 362  IF     MCW   X1,STMFIN&3                                              7  1362  M 089 /77           20) s
+5 330 M
+( 263  1 369  IFLOOP BCE   IFRP,0&X1,\)    GET DOWN TO RIGHT PARENTHESIS             8  1369  B T93 0|0 \)         20) s
+5 322 M
+( 264  1 377         BCE   SYNTAX,0&X1,}                                            8  1377  B X55 0|0 } GMARK   21) s
+5 314 M
+( 265  1 385         SBR   X1                                                       4  1385  H 089               21) s
+5 306 M
+( 266  1 389         B     IFLOOP                                                   4  1389  B T69               21) s
+5 298 M
+( 267  1 393  IFRP   MN    0&X1                                                     4  1393  D 0|0               21) s
+5 290 M
+( 268  1 397         SAR   X1                                                       4  1397  Q 089               21) s
+5 282 M
+( 269  1 401         BWZ   *&5,0&X1,2  FOLLOWED BY A DIGIT                          8  1401  V U13 0|0 2         21) s
+5 274 M
+( 270  1 409         B     IFLOOP                                                   4  1409  B T69               21) s
+5 266 M
+( 271  1 413         BCE   IFLOOP,0&X1,@                                            8  1413  B T69 0|0 @         22) s
+5 258 M
+( 272  1 421         SW    1&X1                                                     4  1421  , 0|1               22) s
+5 250 M
+( 273  1 425         B     SAVLAB                                                   4  1425  B U73               22) s
+5 242 M
+( 274  1 429         BCE   SYNTX2,0&X1,}                                  V3M4      8  1429  B Y01 0|0 } GMARK   22) s
+5 234 M
+( 275  1 437         MN    0&X1                                           V3M4      4  1437  D 0|0               22) s
+5 226 M
+( 276  1 441         SAR   X1                                             V3M4      4  1441  Q 089               22) s
+5 218 M
+( 277  1 445         B     SAVLAB                                                   4  1445  B U73               22) s
+5 210 M
+( 278  1 449         BCE   SYNTX2,0&X1,}                                  V3M4      8  1449  B Y01 0|0 } GMARK   23) s
+5 202 M
+( 279  1 457         MN    0&X1                                           V3M4      4  1457  D 0|0               23) s
+5 194 M
+( 280  1 461         SAR   X1                                             V3M4      4  1461  Q 089               23) s
+5 186 M
+( 281  1 465         B     SAVLAB                                                   4  1465  B U73               23) s
+5 178 M
+( 282  1 469         B     SETCOM                                                   4  1469  B S57               23) s
+5 170 M
+( 283         *) s
+5 162 M
+( 284         * MOVE THE LABEL TO THE LABEL WORK AREA) s
+5 154 M
+( 285         *) s
+5 146 M
+( 286  1 473  SAVLAB SBR   SAVLBX&3                                                 4  1473  H V62               23) s
+5 138 M
+( 287  1 477         MCW   X1,LABMOV&3                                              7  1477  M 089 V47           23) s
+5 130 M
+( 288  1 484         BWZ   *&5,0&X1,2                                               8  1484  V U96 0|0 2         24) s
+5 122 M
+( 289  1 492         B     SYNTX2                                                   4  1492  B Y01               24) s
+5 114 M
+( 290  1 496  SAVLL  MN    0&X1                                                     4  1496  D 0|0               24) s
+5 106 M
+( 291  1 500         SAR   X1                                                       4  1500  Q 089               24) s
+5 98 M
+( 292  1 504         BWZ   SAVLL,0&X1,2                                             8  1504  V U96 0|0 2         24) s
+5 90 M
+( 293  1 512         BCE   ENDLAB,0&X1,,                                            8  1512  B V40 0|0 ,         24) s
+5 82 M
+( 294  1 520         BCE   ENDLAB,0&X1,}                                            8  1520  B V40 0|0 } GMARK   25) s
+5 74 M
+( 295  1 528         BCE   ENDLAB,0&X1,\)                                            8  1528  B V40 0|0 \)         25) s
+5 66 M
+( 296  1 536         B     SYNTX2                                                   4  1536  B Y01               25) s
+5 58 M
+( 297  1 540  ENDLAB B     2059                                           V3M4      4  1540  B !59               25) s
+_R
+S
+%%Page: (5) 5
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 5 def
+/fname (phase-22.21.asc) def
+/fdir () def
+/ftail (phase-22.21.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (5) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- STATEMENT NUMBERS PHASE -- 22                              PAGE    5) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 298  1 544  LABMOV LCA   0,LABEL                                                  7  1544  L 000 Z79           25) s
+5 442 M
+( 299  1 551         CW    1&X1                                                     4  1551  \) 0|1               25) s
+5 434 M
+( 300  1 555         B     CONV50                                                   4  1555  B V63               25) s
+5 426 M
+( 301  1 559  SAVLBX B     0                                                        4  1559  B 000               26) s
+5 418 M
+( 302         *) s
+5 410 M
+( 303         * CONVERT LABELS TO BASE 50) s
+5 402 M
+( 304         *) s
+5 394 M
+( 305  1 563  CONV50 SBR   CONV5X&3                                                 4  1563  H X54               26) s
+5 386 M
+( 306  1 567         LCA   KZ6,LBLWRK                                               7  1567  L Z52 Y90           26) s
+5 378 M
+( 307  1 574         C     KZ6,LABEL                                                7  1574  C Z52 Z79           26) s
+5 370 M
+( 308  1 581         BU    *&5                                                      5  1581  B V90 /             26) s
+5 362 M
+( 309  1 586         B     ZLAB  LABEL IS ZERO                                      4  1586  B W24               26) s
+5 354 M
+( 310  1 590         SBR   X3,LABEL&1                                               7  1590  H 099 Z80           26) s
+5 346 M
+( 311  1 597  ZTRIM  MN    0&X3       TRIM                                          4  1597  D 0?0               27) s
+5 338 M
+( 312  1 601         SAR   X3           LEADING ZEROS                               4  1601  Q 099               27) s
+5 330 M
+( 313  1 605         BCE   ZTRIM,0&X3,0   FROM LABEL                                8  1605  B V97 0?0 0         27) s
+5 322 M
+( 314  1 613         MCW   0&X3,LBLWRK  NONZERO DIGITS OF LABEL                     7  1613  M 0?0 Y90           27) s
+5 314 M
+( 315  1 620         MCW   K1              AND 1                                    4  1620  M Z85               27) s
+5 306 M
+( 316  1 624  ZLAB   SW    LBLWRK-1                                                 4  1624  , Y89               27) s
+5 298 M
+( 317  1 628         CW                                                             1  1628  \)                   27) s
+5 290 M
+( 318  1 629         SW                                                             1  1629  ,                   28) s
+5 282 M
+( 319  1 630         CW                                                             1  1630  \)                   28) s
+5 274 M
+( 320  1 631         SW                                                             1  1631  ,                   28) s
+5 266 M
+( 321  1 632         S     K5050,LBLWRK                                             7  1632  S Z89 Y90           28) s
+5 258 M
+( 322  1 639         S                                                              1  1639  S                   28) s
+5 250 M
+( 323  1 640         BM    *&8,LBLWRK                                               8  1640  V W55 Y90 K         28) s
+5 242 M
+( 324  1 648         A     K1,LBLWRK-5                                              7  1648  A Z85 Y85           28) s
+5 234 M
+( 325  1 655         BM    *&8,LBLWRK-2                                             8  1655  V W70 Y88 K         29) s
+5 226 M
+( 326  1 663         A     K2,LBLWRK-5                                              7  1663  A Z90 Y85           29) s
+5 218 M
+( 327  1 670         MZ    X1TAGS,LBLWRK                                            7  1670  Y Z96 Y90           29) s
+5 210 M
+( 328  1 677         CHAIN 5                                                                             MACRO) s
+5 202 M
+( 329                MZ                                                             1  1677  Y           GEN     29) s
+5 194 M
+( 330                MZ                                                             1  1678  Y           GEN     29) s
+5 186 M
+( 331                MZ                                                             1  1679  Y           GEN     29) s
+5 178 M
+( 332                MZ                                                             1  1680  Y           GEN     29) s
+5 170 M
+( 333                MZ                                                             1  1681  Y           GEN     30) s
+5 162 M
+( 334  1 682         MCW   X1,SX1                                                   7  1682  M 089 Y94           30) s
+5 154 M
+( 335  1 689         MCW   ACHARS,X1                                                7  1689  M Z99 089           30) s
+5 146 M
+( 336  1 696         MCW   ALBLWK,X3                                                7  1696  M !02 099           30) s
+5 138 M
+( 337  1 703  CONV5L MCW   0&X3,*&8                                                 7  1703  M 0?0 X17           30) s
+5 130 M
+( 338  1 710         SAR   X3                                                       4  1710  Q 099               30) s
+5 122 M
+( 339  1 714         MCW   0-0,CH                                                   7  1714  M 000 Y91           31) s
+5 114 M
+( 340  1 721         LCA   CH,0&X2                                                  7  1721  L Y91 0!0           31) s
+5 106 M
+( 341  1 728         SBR   X2                                                       4  1728  H 094               31) s
+5 98 M
+( 342  1 732         CW    1&X2                                                     4  1732  \) 0!1               31) s
+5 90 M
+( 343  1 736         BWZ   CONV5L,0&X3,2                                            8  1736  V X03 0?0 2         31) s
+5 82 M
+( 344  1 744         MCW   SX1,X1                                                   7  1744  M Y94 089           31) s
+5 74 M
+( 345  1 751  CONV5X B     0                                                        4  1751  B 000               32) s
+5 66 M
+( 346         *) s
+5 58 M
+( 347         * STATEMENT NUMBER SYNTAX ERROR) s
+_R
+S
+%%Page: (6) 6
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 6 def
+/fname (phase-22.21.asc) def
+/fdir () def
+/ftail (phase-22.21.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (6) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- STATEMENT NUMBERS PHASE -- 22                              PAGE    6) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 348         *) s
+5 442 M
+( 349  1 755  SYNTAX CS    332                                                      4  1755  / 332               32) s
+5 434 M
+( 350  1 759         CS                                                             1  1759  /                   32) s
+5 426 M
+( 351  1 760         SW    GLOBER                                                   4  1760  , 184               32) s
+5 418 M
+( 352  1 764         MN    PREFIX,249                                               7  1764  D Z62 249           32) s
+5 410 M
+( 353  1 771         MN                                                             1  1771  D                   32) s
+5 402 M
+( 354  1 772         MN                                                             1  1772  D                   32) s
+5 394 M
+( 355  1 773         MCW   ERR13                                                    4  1773  M !48               33) s
+5 386 M
+( 356  1 777         W                                                              1  1777  2                   33) s
+5 378 M
+( 357  1 778         BCV   *&5                                                      5  1778  B X87 @             33) s
+5 370 M
+( 358  1 783         B     *&3                                                      4  1783  B X89               33) s
+5 362 M
+( 359  1 787         CC    1                                                        2  1787  F 1                 33) s
+5 354 M
+( 360  1 789         BW    MORE,FLAG                                                8  1789  V Y09 Y95 1         33) s
+5 346 M
+( 361  1 797         B     GETUP                                                    4  1797  B Y30               33) s
+5 338 M
+( 362  1 801  SYNTX2 SW    FLAG                                                     4  1801  , Y95               34) s
+5 330 M
+( 363  1 805         B     SYNTAX                                                   4  1805  B X55               34) s
+5 322 M
+( 364  1 809  MORE   MCM   1&X2                                                     4  1809  P 0!1               34) s
+5 314 M
+( 365  1 813         MN                                                             1  1813  D                   34) s
+5 306 M
+( 366  1 814         SAR   X2                                                       4  1814  Q 094               34) s
+5 298 M
+( 367  1 818         BCE   MORE,0&X2,|                                              8  1818  B Y09 0!0 |         34) s
+5 290 M
+( 368  1 826         CW    FLAG                                                     4  1826  \) Y95               34) s
+5 282 M
+( 369  1 830  GETUP  MCM   4&X2  MOVE X2 UP TO GMWM                                 4  1830  P 0!4               35) s
+5 274 M
+( 370  1 834         MN                                                             1  1834  D                   35) s
+5 266 M
+( 371  1 835         MN                                                             1  1835  D                   35) s
+5 258 M
+( 372  1 836         SAR   X2                                                       4  1836  Q 094               35) s
+5 250 M
+( 373  1 840         C     0&X1  GET X1 DOWN TO WM                                  4  1840  C 0|0               35) s
+5 242 M
+( 374  1 844         SAR   X1                                                       4  1844  Q 089               35) s
+5 234 M
+( 375  1 848         B     LOOP                                                     4  1848  B 864               35) s
+5 226 M
+( 376         *) s
+5 218 M
+( 377         * REACHED BOTTOM OF STATEMENTS) s
+5 210 M
+( 378         *) s
+5 202 M
+( 379  1 852  DONE   BSS   SNAPSH,C                                                 5  1852  B 333 C             36) s
+5 194 M
+( 380  1 857         SBR   LOADXX&3,980                                             7  1857  H 796 980           36) s
+5 186 M
+( 381  1 864         SBR   CLEARL&3,1599                                            7  1864  H 710 V99           36) s
+5 178 M
+( 382  1 871         LCA   FORMT1,PHASID                                            7  1871  L !58 110           36) s
+5 170 M
+( 383  1 878         B     LOADNX                                                   4  1878  B 700               36) s
+5 162 M
+( 384         *) s
+5 154 M
+( 385         * DONE) s
+5 146 M
+( 386         *) s
+5 138 M
+( 387  1 882         DCW   #1                                                       1  1882                      36) s
+5 130 M
+( 388  1 883  GM     DC    @}@                                                      1  1883              GMARK   36) s
+5 122 M
+( 389  1 884  DOT    DC    @.@                                                      1  1884                      36) s
+5 114 M
+( 390  1 890  LBLWRK DCW   #6                                                       6  1890                      36) s
+5 106 M
+( 391  1 891  CH     DCW   #1                                                       1  1891                      37) s
+5 98 M
+( 392  1 894  SX1    DCW   #3                                                       3  1894                      37) s
+5 90 M
+( 393  1 895  FLAG   DC    #1                                                       1  1895                      37) s
+5 82 M
+( 394         CHARS  EQU   *&1                                                         1896) s
+5 74 M
+( 395  1 941         DC    @."\)&$*-%#@?ABCDEFGHI!JKLMNOPQR_/STUVWXYZ012345@        46  1941                      39) s
+5 66 M
+( 396  1 946         DC    @6789.@                                                  5  1946                      39) s
+5 58 M
+( 397  1 952  KZ6    DCW   @000000@                                                 6  1952                      39) s
+_R
+S
+%%Page: (7) 7
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 7 def
+/fname (phase-22.21.asc) def
+/fdir () def
+/ftail (phase-22.21.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (7) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- STATEMENT NUMBERS PHASE -- 22                              PAGE    7) s
+5 466 M
+( SEQ PG LIN  LABEL  OP    OPERANDS                                            SFX CT  LOCN  INSTRUCTION TYPE  CARD) s
+5 450 M
+( 398  1 962  PREFIX DCW   #10                                                     10  1962                      39) s
+5 442 M
+( 399  1 973  STMTS  DCW   @WT65UPLDEGK@  CODES FOR STATEMENTS HAVING LABELS       11  1973                      39) s
+5 434 M
+( 400  1 979  LABEL  DCW   #6                                                       6  1979                      40) s
+5 426 M
+( 401  1 980  COMMA  DCW   @,@                                                      1  1980                      40) s
+5 418 M
+( 402  1 981  CH2    DCW   #1                                                       1  1981                      40) s
+5 410 M
+( 403  1 984  W3     DCW   #3                                                       3  1984                      40) s
+5 402 M
+( 404  1 985  K1     DCW   1                                                        1  1985                      40) s
+5 394 M
+( 405  1 989  K5050  DCW   5050                                                     4  1989                      40) s
+5 386 M
+( 406  1 990  K2     DCW   2                                                        1  1990                      40) s
+5 378 M
+( 407  1 996  X1TAGS DCW   @Z Z Z @                                                 6  1996                      41) s
+5 370 M
+( 408  1 999  ACHARS DSA   CHARS                                                    3  1999  Y96                 41) s
+5 362 M
+( 409  2 002  ALBLWK DSA   LBLWRK                                                   3  2002  Y90                 41) s
+5 354 M
+( 410  2 048  ERR13  DCW   @ERROR 13 - STATEMENT NUMBER SYNTAX, STATEMENT @        46  2048                      43) s
+5 346 M
+( 411  2 058  FORMT1 DCW   @TAMROF ONE@                                            10  2058                      43) s
+5 338 M
+( 412         *) s
+5 330 M
+( 413         * PATCH IN V3M4) s
+5 322 M
+( 414         *) s
+5 314 M
+( 415  2 059         SW    1&X1                                           V3M4      4  2059  , 0|1               43) s
+5 306 M
+( 416  2 063         SW    MOVTST&1                                       V3M4      4  2063  , !79               43) s
+5 298 M
+( 417  2 067         MCW   LABMOV&3,MOVTST&3                              V3M4      7  2067  M V47 !81           43) s
+5 290 M
+( 418  2 074         CW    MOVTST&1                                       V3M4      4  2074  \) !79               44) s
+5 282 M
+( 419  2 078  MOVTST MCW   0,TEST                                         V3M4      7  2078  M 000 J09           44) s
+5 274 M
+( 420  2 085         BCE   LABMOV,TEST-5,:                                V3M4      8  2085  B V44 J04 :         44) s
+5 266 M
+( 421  2 093         MCW   *-7,TEST-5                                     V3M4      7  2093  M !92 J04           44) s
+5 258 M
+( 422  2 100         B     SYNTX2                                         V3M4      4  2100  B Y01               44) s
+5 250 M
+( 423  2 109  TEST   DCW   @:     @                                       V3M4      6  2109                      44) s
+5 242 M
+( 424  2 110         DCW   @}@                                            V3M4      1  2110              GMARK   44) s
+5 234 M
+( 425                EX    BEGINN                                                            B 838               45) s
+5 226 M
+( 426                END                                                                     / 000 080) s
+_R
+S
+%%Page: (8) 8
+%%BeginPageSetup
+_S
+90 rotate
+24 -574 translate
+/pagenum 8 def
+/fname (phase-22.21.asc) def
+/fdir () def
+/ftail (phase-22.21.asc) def
+% User defined strings:
+/fmodstr (Tue Jul 15 00:10:50 2008) def
+/pagenumstr (8) def
+/user_header_p false def
+/user_footer_p false def
+%%EndPageSetup
+do_header
+5 482 M
+(                          FORTRAN COMPILER -- STATEMENT NUMBERS PHASE -- 22                              PAGE    8) s
+5 466 M
+(SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  SYMBOL  ADDRESS  ) s
+5 458 M
+(ACHARS   1999    ALBLWK   2002    BEGINN    838    CGO      1090    CGOFIN   1118    CH       1891    CH2      1981   ) s
+5 450 M
+(CHARS    1896    CLEARL    707    COMMA    1980    CONV50   1563    CONV5L   1703    CONV5X   1751    DO       1276   ) s
+5 442 M
+(DONE     1852    DOT      1884    ENDLAB   1540    ENDSTM    981    ERR13    2048    FLAG     1895    FORMT1   2058   ) s
+5 434 M
+(GETCOM   1137    GETEQ    1283    GETRP    1200    GETUP    1830    GLOBER    184    GM       1883    GOTCOM   1161   ) s
+5 426 M
+(GOTEQ    1299    GOTRP    1224    IF       1362    IFLOOP   1369    IFRP     1393    IFSS     1193    K1       1985   ) s
+5 418 M
+(K2       1990    K5050    1989    KZ6      1952    LABEL    1979    LABMOV   1544    LBLDEF   1003    LBLREF   1026   ) s
+5 410 M
+(LBLWRK   1890    LOADNX    700    LOADXX    793    LOOP      864    MORE     1809    MOVEUP    958    MOVTST   2078   ) s
+5 402 M
+(NOLABL    914    PHASID    110    PREFIX   1962    SAVLAB   1473    SAVLBX   1559    SAVLL    1496    SETCOM   1257   ) s
+5 394 M
+(SNAPSH    333    STMFIN   1174    STMTS    1973    SX1      1894    SYNTAX   1755    SYNTX2   1801    TAPE     1130   ) s
+5 386 M
+(TEST     2109    W3       1984    X1         89    X1TAGS   1996    X2         94    X3         99    ZLAB     1624   ) s
+5 378 M
+(ZTRIM    1597   ) s
+_R
+S
+%%Trailer
+%%Pages: 8
+%%DocumentNeededResources: font Courier-Bold Courier 
+%%EOF

@@ -1,0 +1,130 @@
+               JOB
+               CTL  6611
+               ORG  838
+  840          DCW  #3
+  843          DCW  #3
+  846          DCW  #3
+  849          DCW  #3
+  852          DCW  #3
+  855          DCW  #3
+  858          DCW  #3
+  861          DCW  #3
+  864          DCW  #3
+  867          DCW  #3
+  870          DCW  #3
+  873          DCW  #3
+  876          DCW  #3
+  879          DCW  #3
+  882          DCW  #3
+  885          DCW  #3
+  888          DCW  #3
+  891          DCW  #3
+  894          DCW  #3
+  897          DCW  #3
+  900          DCW  #3
+  903          DCW  #3
+  906          DCW  #3
+  909          DCW  #3
+  912          DCW  #3
+  915          DCW  #3
+  918          DCW  #3
+  921          DCW  #3
+  924          DCW  #3
+  927          DCW  #3
+  930          DCW  #3
+  933          DCW  #3
+  936          DCW  #3
+  939          DCW  #3
+  942          DCW  #3
+  945          DCW  #3
+  948          DCW  #3
+  951          DCW  #3
+  954          DCW  #3
+ 1004          DCW  @                                                  @
+               ORG  1006
+ 1006          W    13222&X2                     DCW  '2SKB'
+ 1010          CS   2599                         DCW  '/N99'
+ 1014          CS                                DCW  '/'
+ 1015          CS                                DCW  '/'
+ 1016          CS                                DCW  '/'
+ 1017          CS                                DCW  '/'
+ 1018          CS                                DCW  '/'
+ 1019          CS                                DCW  '/'
+ 1020          CS                                DCW  '/'
+ 1021          CS                                DCW  '/'
+ 1022          MCW  83,99                        DCW  'M083099'
+ 1029          MCM  2&X3                         DCW  'P0?2'
+ 1033          MCW                               DCW  'M'
+ 1034          SBR  99                           DCW  'H099'
+ 1038          MCW  0&X3,1352                    DCW  'M0?0T52'
+ 1045          ZA   1352,1357                    DCW  '?T52T57'
+ 1052          A    1357                         DCW  'AT57'
+ 1056          A    1352,1357                    DCW  'AT52T57'
+ 1063          S    1358,1357                    DCW  'ST58T57'
+ 1070          MCW  1357,1363                    DCW  'MT57T63'
+ 1077          MCW  1368,1357                    DCW  'MT68T57'
+ 1084          S    1363,1357                    DCW  'ST63T57'
+ 1091          BAV  1096                         DCW  'B|96Z'
+ 1096          A    1370,1354                    DCW  'AT70T54'
+ 1103          BAV  1096                         DCW  'B|96Z'
+ 1108          MN   1354,1118                    DCW  'DT54/18'
+ 1115          MZ   1009,1355                    DCW  'Y|09T55'
+ 1122          MCW  83,89                        DCW  'M083089'
+ 1129          MCW  89,1153                      DCW  'M089/53'
+ 1136          MCW  1357,94                      DCW  'MT57094'
+ 1143          MZ   1371,1152                    DCW  'YT71/52'
+ 1150          NOP  0                            DCW  'N000'
+ 1154          SAR  94                           DCW  'Q094'
+ 1158          S    1373                         DCW  'ST73'
+ 1162          S    1375                         DCW  'ST75'
+ 1166          MZ   94,1372                      DCW  'Y094T72'
+ 1173          MZ   92,1374                      DCW  'Y092T74'
+ 1180          BWZ  1199,1374,2                  DCW  'V/99T742'
+ 1188          A    1377,1375                    DCW  'AT77T75'
+ 1195          B    1180                         DCW  'B/80'
+ 1199          BWZ  1218,1372,2                  DCW  'VS18T722'
+ 1207          A    1379,1373                    DCW  'AT79T73'
+ 1214          B    1199                         DCW  'B/99'
+ 1218          A    1374,1373                    DCW  'AT74T73'
+ 1225          MCW  94,1357                      DCW  'M094T57'
+ 1232          MCW  1373                         DCW  'MT73'
+ 1236          ZA   1357                         DCW  '?T57'
+ 1240          MZ   1242,1357                    DCW  'YS42T57'
+ 1247          C    1357,1384                    DCW  'CT57T84'
+ 1254          BL   1293                         DCW  'BS93T'
+ 1259          CS   332                          DCW  '/332'
+ 1263          CS                                DCW  '/'
+ 1264          CC   1                            DCW  'F1'
+ 1266          MCW  1420,270                     DCW  'MU20270'
+ 1273          W                                 DCW  '2'
+ 1274          CC   1                            DCW  'F1'
+ 1276          BCE  1289,769,1                   DCW  'BS897691'
+ 1284          RWD  1                            DCW  'U%U1R'
+ 1289          H    1289                         DCW  '.S89'
+ 1293          MCW  94,83                        DCW  'M094083'
+ 1300          MCM  0&X1                         DCW  'P0|0'
+ 1304          SAR  89                           DCW  'Q089'
+ 1308          BSS  333,C                        DCW  'B333C'
+ 1313          SBR  786,1022                     DCW  'H786|22'
+ 1320          SBR  833                          DCW  'H833'
+ 1324          SBR  796,1022                     DCW  'H796|22'
+ 1331          SBR  710,1427                     DCW  'H710U27'
+ 1338          LCA  1426,110                     DCW  'LU26110'
+ 1345          B    700                          DCW  'B700'
+ 1349          DCW  @0@
+ 1352          DCW  #3
+ 1357          DCW  #5
+ 1358          B                                 DCW  'B'
+ 1363          DCW  #5
+ 1368          DCW  @16000@
+ 1370          DCW  @9F@
+ 1371          DCW  @J@
+ 1373          DCW  #2
+ 1375          DCW  #2
+ 1377          DCW  @A0@
+ 1379          DCW  @?4@
+ 1384          DCW  @02900@
+ 1420          DCW  @MESSAGE 2 - OBJECT PROGRAM TOO LARGE@
+ 1426          DCW  @SORT 2@
+ 1427          DCW  @}@
+               END
